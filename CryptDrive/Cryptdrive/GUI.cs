@@ -1,0 +1,103 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows.Forms;
+
+namespace Cryptdrive
+{
+    public partial class GUI : Form
+    {
+        public GUI()
+        {
+            InitializeComponent();
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else
+            {
+                throw new Exception("TODO: GUI Error");
+            }
+        }
+
+        public static GUI instance;
+
+        private void searchFilePath_Click(object sender, EventArgs e)
+        {
+            string path = "";
+            DialogResult pathObject = folderBrowserDialog.ShowDialog();
+            if (pathObject == DialogResult.OK)
+            {
+                path = folderBrowserDialog.SelectedPath;
+            }
+            FileWatcher.instance.monitorDirectory(path);
+            pathTextField.Text += path;
+        }
+
+        private void delete_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void searchFile_Click(object sender, EventArgs e)
+        {
+        }
+
+        public void listDirectory(List<string> paths)
+        {
+            TreeView treeView = treeView1;
+
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new MethodInvoker(delegate ()
+                {
+                    treeView.Nodes.Clear();
+                }));
+            }
+            else
+            {
+                treeView.Nodes.Clear();
+            }
+
+            foreach (string path in paths)
+            {
+                var rootDirectoryInfo = new DirectoryInfo(path);
+
+                if (this.InvokeRequired)
+                {
+                    this.Invoke(new MethodInvoker(delegate ()
+                    {
+                        treeView.CheckBoxes = true;
+
+                        //TODO https://stackoverflow.com/questions/28644011/how-to-show-multiple-check-boxes-in-a-treeview-in-c
+                        treeView.Nodes.Add(createDirectoryNode(rootDirectoryInfo));
+                    }));
+                }
+                else
+                {
+                    treeView.Nodes.Add(createDirectoryNode(rootDirectoryInfo)); ;
+                }
+
+                /*
+             System.InvalidOperationException: "Der für dieses Steuerelement durchgeführte Vorgang wird vom falschen Thread aufgerufen.
+             Marshallen Sie den richtigen Thread mit Control.Invoke oder Control.BeginInvoke, um den Vorgang auszuführen."
+             */
+            }
+        }
+
+        private static TreeNode createDirectoryNode(DirectoryInfo directoryInfo)
+        {
+            var directoryNode = new TreeNode(directoryInfo.Name);
+            foreach (var directory in directoryInfo.GetDirectories())
+                directoryNode.Nodes.Add(createDirectoryNode(directory));
+            foreach (var file in directoryInfo.GetFiles())
+                directoryNode.Nodes.Add(new TreeNode(file.Name));
+            return directoryNode;
+        }
+
+        public void LogToTextBox(string textLine)
+        {
+            //Called from Logger
+            output.Text += textLine + Environment.NewLine;
+        }
+    }
+}
