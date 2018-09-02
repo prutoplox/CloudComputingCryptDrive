@@ -29,13 +29,17 @@ namespace Cryptdrive
             if (pathObject == DialogResult.OK)
             {
                 path = folderBrowserDialog.SelectedPath;
+                List<string> paths = new List<string>();
+                paths.Add(path);
+                FileWatcher.instance.monitorDirectory(path);
+                pathTextField.Text += path;
+                FileWatcher.instance.syncClientTreeNode();
             }
-            FileWatcher.instance.monitorDirectory(path);
-            pathTextField.Text += path;
         }
 
         private void delete_Click(object sender, EventArgs e)
         {
+            Logger.instance.logInfo("Krass auf delete gedrückt, jo!!");
         }
 
         private void searchFile_Click(object sender, EventArgs e)
@@ -50,11 +54,13 @@ namespace Cryptdrive
             {
                 this.Invoke(new MethodInvoker(delegate ()
                 {
+                    //Muss = Else Block sein
                     treeView.Nodes.Clear();
                 }));
             }
             else
             {
+                //Muss = If Block sein!
                 treeView.Nodes.Clear();
             }
 
@@ -66,6 +72,7 @@ namespace Cryptdrive
                 {
                     this.Invoke(new MethodInvoker(delegate ()
                     {
+                        //Muss = Else Block sein!
                         treeView.CheckBoxes = true;
 
                         //TODO https://stackoverflow.com/questions/28644011/how-to-show-multiple-check-boxes-in-a-treeview-in-c
@@ -74,6 +81,10 @@ namespace Cryptdrive
                 }
                 else
                 {
+                    //Muss = If Block sein!
+                    treeView.CheckBoxes = true;
+
+                    //TODO https://stackoverflow.com/questions/28644011/how-to-show-multiple-check-boxes-in-a-treeview-in-c
                     treeView.Nodes.Add(createDirectoryNode(rootDirectoryInfo)); ;
                 }
 

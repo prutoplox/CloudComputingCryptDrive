@@ -69,12 +69,16 @@
             // 
             // output
             // 
+            this.output.BackColor = System.Drawing.SystemColors.HighlightText;
             this.output.Location = new System.Drawing.Point(41, 337);
             this.output.Multiline = true;
             this.output.Name = "output";
-            this.output.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.output.Size = new System.Drawing.Size(321, 91);
+            this.output.ReadOnly = true;
+            this.output.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.output.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.output.Size = new System.Drawing.Size(310, 126);
             this.output.TabIndex = 3;
+            this.output.WordWrap = false;
             // 
             // pathTextField
             // 
