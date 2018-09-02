@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Cryptdrive
 {
@@ -37,6 +38,24 @@ namespace Cryptdrive
 
         public void syncFiles(List<string> files)
         {
+            foreach (string path in files)
+            {
+                try
+                {
+                    byte[] fileAsByteArray = File.ReadAllBytes(path);
+                    Logger.instance.logInfo(fileAsByteArray.ToString());
+                    byte[] compressedByteArray = Compressor.compress(fileAsByteArray);
+                    Logger.instance.logInfo(compressedByteArray.ToString());
+                    byte[] encrpytedAndCompressedByteArray = Codec.encrypt(compressedByteArray);
+                    Logger.instance.logInfo(encrpytedAndCompressedByteArray.ToString());
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("The file could not be read:");
+                    Console.WriteLine(e.Message);
+                }
+            }
+
             // Todo Call Azure BlobSync
         }
 

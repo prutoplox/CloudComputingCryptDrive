@@ -40,6 +40,9 @@ namespace Cryptdrive
         private void delete_Click(object sender, EventArgs e)
         {
             Logger.instance.logInfo("Krass auf delete gedrückt, jo!!");
+            List<String> testTemp = new List<string>();
+            testTemp.Add(@"C:\Users\mariu\OneDrive\Desktop\Neuer Ordner (2)\awda.txt");
+            FileManager.instance.syncFiles(testTemp);
         }
 
         private void searchFile_Click(object sender, EventArgs e)
