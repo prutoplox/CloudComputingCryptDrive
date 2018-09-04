@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -14,9 +14,30 @@ namespace Cryptdrive
         private static bool isInit = false;
         private static RSACryptoServiceProvider rsa;
 
+        private static string encryptionParametersFileName = "EncryptionParameters.txt";
+
         private static void RSA()
         {
+            if (File.Exists(encryptionParametersFileName))
+            {
+                try
+                {
+                    string parametersString = File.ReadAllText(encryptionParametersFileName);
+                    rsa = new RSACryptoServiceProvider();
+                    rsa.FromXmlString(parametersString);
+                    Logger.instance.logInfo("Loaded the existing encrytion key from the file " + encryptionParametersFileName);
+                    return;
+                }
+                catch (CryptographicException e)
+                {
+                    Logger.instance.logError("Could not load the encryption key from the file, creating a new key for this session.");
+                }
+            }
+
             rsa = new RSACryptoServiceProvider();
+            var withprivate = rsa.ToXmlString(true);
+            File.WriteAllText(encryptionParametersFileName, withprivate);
+            Logger.instance.logInfo("Created a new encrytion key and saved it in the file " + encryptionParametersFileName);
         }
 
         public static byte[] decrypt(byte[] dataBytes)
@@ -25,8 +46,7 @@ namespace Cryptdrive
             {
                 RSA();
                 isInit = true;
-            }/*
-            return rsa.Decrypt(dataByte, true);*/
+            }
 
             // by default this will create a 128 bits AES (Rijndael) object
             SymmetricAlgorithm sa = SymmetricAlgorithm.Create();
@@ -52,8 +72,6 @@ namespace Cryptdrive
                 RSA();
                 isInit = true;
             }
-            /*
-                        return rsa.Encrypt(dataByte., true);*/
 
             // by default this will create a 128 bits AES (Rijndael) object
             SymmetricAlgorithm sa = SymmetricAlgorithm.Create();

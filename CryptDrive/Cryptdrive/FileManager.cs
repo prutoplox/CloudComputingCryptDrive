@@ -42,6 +42,15 @@ namespace Cryptdrive
             {
                 try
                 {
+                    //This if clause is just here to test that files were able to be decrypted after a program restart
+                    if (File.Exists(path + "_encrypted"))
+                    {
+                        byte[] rawData = File.ReadAllBytes(path + "_encrypted");
+                        byte[] rawDatadecrypted = Codec.decrypt(rawData);
+                        byte[] rawDatauncompressed = Compressor.decompress(rawDatadecrypted);
+                        File.WriteAllBytes(path + "_decrypted2", rawDatauncompressed);
+                    }
+
                     byte[] fileAsByteArray = File.ReadAllBytes(path);
                     Logger.instance.logInfo(fileAsByteArray.ToString());
                     byte[] compressedByteArray = Compressor.compress(fileAsByteArray);
