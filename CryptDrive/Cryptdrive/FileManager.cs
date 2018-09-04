@@ -48,11 +48,19 @@ namespace Cryptdrive
                     Logger.instance.logInfo(compressedByteArray.ToString());
                     byte[] encrpytedAndCompressedByteArray = Codec.encrypt(compressedByteArray);
                     Logger.instance.logInfo(encrpytedAndCompressedByteArray.ToString());
+
+                    File.WriteAllBytes(path + "_encrypted", encrpytedAndCompressedByteArray);
+
+                    byte[] decrypted = Codec.decrypt(encrpytedAndCompressedByteArray);
+                    byte[] uncompressed = Compressor.decompress(decrypted);
+
+                    File.WriteAllBytes(path + "_decrypted", uncompressed);
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("The file could not be read:");
                     Console.WriteLine(e.Message);
+                    Console.WriteLine(e.StackTrace);
                 }
             }
 

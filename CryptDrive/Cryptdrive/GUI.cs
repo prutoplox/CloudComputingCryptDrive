@@ -42,6 +42,9 @@ namespace Cryptdrive
             Logger.instance.logInfo("Krass auf delete gedrückt, jo!!");
             List<String> testTemp = new List<string>();
             testTemp.Add(@"C:\Users\mariu\OneDrive\Desktop\Neuer Ordner (2)\awda.txt");
+
+            testTemp.Add(@"F:\CloudComp\CryptDrive\Cryptdrive\Testfiles\small.txt");
+            testTemp.Add(@"F:\CloudComp\CryptDrive\Cryptdrive\Testfiles\large.txt");
             FileManager.instance.syncFiles(testTemp);
         }
 
