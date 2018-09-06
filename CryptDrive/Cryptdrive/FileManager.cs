@@ -1,6 +1,9 @@
-﻿using System;
+﻿using RestSharp;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 
 namespace Cryptdrive
 {
@@ -17,6 +20,7 @@ namespace Cryptdrive
         }
 
         public static FileManager instance = new FileManager();
+        public static HttpClient client = new HttpClient();
 
         List<String> clientFiles;
         List<String> cloudFiles;
@@ -64,6 +68,8 @@ namespace Cryptdrive
                     byte[] uncompressed = Compressor.decompress(decrypted);
 
                     File.WriteAllBytes(path + "_decrypted", uncompressed);
+
+                    uploadFileData(path, encrpytedAndCompressedByteArray);
                 }
                 catch (Exception e)
                 {
@@ -72,8 +78,27 @@ namespace Cryptdrive
                     Console.WriteLine(e.StackTrace);
                 }
             }
+        }
 
-            // Todo Call Azure BlobSync
+        private async void uploadFileData(string path, byte[] data)
+        {
+            var content = new ByteArrayContent(data);
+
+            string filename = Path.GetFileNameWithoutExtension(path);
+
+            //TODO convert full path into a single string which will be used on the storage to represent the folder structure
+            string relativePath = "";
+            string blobname = relativePath + filename;
+
+            //TODO retrieve username of this client which will be used as container name on the server, container must be created in SotrageCreate first.
+            string username = "testcontainer";
+
+            string fullURL = "https://functionapp20180905122323.azurewebsites.net/api/AddBlob?code=yA/tjdgIFG2x6VaICxFaBssdZLZMsi/7tYBKEaor9QQEZkPaJWRGnQ==&username=" + username + "&filename=" + blobname;
+            var response = await client.PostAsync(fullURL,
+                content);
+
+            var responseString = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("RESPONSE:" + responseString);
         }
 
         public void deleteFiles(List<string> files)
