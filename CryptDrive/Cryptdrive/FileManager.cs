@@ -34,6 +34,10 @@ namespace Cryptdrive
         public void addFiles(List<string> files)
         {
             // Todo Call Azure BlobAdd
+            foreach (string path in files)
+            {
+                byte[] encrpytedAndCompressedByteArray = encryptAndCompressFile(path);
+            }
         }
 
         public void syncFiles(List<string> files)
@@ -42,28 +46,10 @@ namespace Cryptdrive
             {
                 try
                 {
-                    //This if clause is just here to test that files were able to be decrypted after a program restart
-                    if (File.Exists(path + "_encrypted"))
-                    {
-                        byte[] rawData = File.ReadAllBytes(path + "_encrypted");
-                        byte[] rawDatadecrypted = Codec.decrypt(rawData);
-                        byte[] rawDatauncompressed = Compressor.decompress(rawDatadecrypted);
-                        File.WriteAllBytes(path + "_decrypted2", rawDatauncompressed);
-                    }
+                    helpMethod(path);
+                    byte[] encrpytedAndCompressedByteArray = encryptAndCompressFile(path);
 
-                    byte[] fileAsByteArray = File.ReadAllBytes(path);
-                    Logger.instance.logInfo(fileAsByteArray.ToString());
-                    byte[] compressedByteArray = Compressor.compress(fileAsByteArray);
-                    Logger.instance.logInfo(compressedByteArray.ToString());
-                    byte[] encrpytedAndCompressedByteArray = Codec.encrypt(compressedByteArray);
-                    Logger.instance.logInfo(encrpytedAndCompressedByteArray.ToString());
-
-                    File.WriteAllBytes(path + "_encrypted", encrpytedAndCompressedByteArray);
-
-                    byte[] decrypted = Codec.decrypt(encrpytedAndCompressedByteArray);
-                    byte[] uncompressed = Compressor.decompress(decrypted);
-
-                    File.WriteAllBytes(path + "_decrypted", uncompressed);
+                    helpMethod2(path, encrpytedAndCompressedByteArray);
                 }
                 catch (Exception e)
                 {
@@ -74,6 +60,37 @@ namespace Cryptdrive
             }
 
             // Todo Call Azure BlobSync
+        }
+
+        private static byte[] encryptAndCompressFile(string path)
+        {
+            byte[] fileAsByteArray = File.ReadAllBytes(path);
+            Logger.instance.logInfo(fileAsByteArray.ToString());
+            byte[] compressedByteArray = Compressor.compress(fileAsByteArray);
+            Logger.instance.logInfo(compressedByteArray.ToString());
+            byte[] encrpytedAndCompressedByteArray = Codec.encrypt(compressedByteArray);
+            Logger.instance.logInfo(encrpytedAndCompressedByteArray.ToString());
+            return encrpytedAndCompressedByteArray;
+        }
+
+        private static void helpMethod2(string path, byte[] encrpytedAndCompressedByteArray)
+        {
+            byte[] decrypted = Codec.decrypt(encrpytedAndCompressedByteArray);
+            byte[] uncompressed = Compressor.decompress(decrypted);
+
+            File.WriteAllBytes(path + "_decrypted", uncompressed);
+        }
+
+        private static void helpMethod(string path)
+        {
+            //This if clause is just here to test that files were able to be decrypted after a program restart
+            if (File.Exists(path + "_encrypted"))
+            {
+                byte[] rawData = File.ReadAllBytes(path + "_encrypted");
+                byte[] rawDatadecrypted = Codec.decrypt(rawData);
+                byte[] rawDatauncompressed = Compressor.decompress(rawDatadecrypted);
+                File.WriteAllBytes(path + "_decrypted2", rawDatauncompressed);
+            }
         }
 
         public void deleteFiles(List<string> files)
