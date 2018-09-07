@@ -8,13 +8,14 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace CryptdriveCloud
 {
     public static class BlobAdd
     {
         [FunctionName("AddBlob")]
-        public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequest req, ILogger log)
+        public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequest req, ILogger log)
         {
             try
             {
@@ -52,12 +53,11 @@ namespace CryptdriveCloud
                 // Upload a BlockBlob to the newly created container
                 log.LogInformation("Uploading BlockBlob");
                 CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
-                var test = blockBlob.UploadFromByteArrayAsync(data, 0, data.Length);
-                test.Wait();
+                await blockBlob.UploadFromByteArrayAsync(data, 0, data.Length);
 
                 // List the blobs in the container, without this the blobs weren't showing up on the panel on the website for some reason...
-                Console.WriteLine("List blobs in container.");
-                ListBlobs(container, log);
+                //Console.WriteLine("List blobs in container.");
+                //ListBlobs(container, log);
 
                 log.LogInformation("C# HTTP trigger function finish process a request.");
                 return new OkObjectResult($"Uploaded {fileName} to {containerName} which had a size of {req.ContentLength}");
