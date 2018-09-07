@@ -2,6 +2,18 @@
 {
     class Logger
     {
+        [System.Flags]
+        private enum LogLevel
+        {
+            INFO,
+            DEBUG,
+            ERROR
+        }
+
+        private readonly string datetimeFormat;
+        private readonly string logFilename;
+        public static Logger instance = new Logger();
+
         private Logger()
         {
             datetimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
@@ -14,10 +26,6 @@
                 WriteLine(System.DateTime.Now.ToString(datetimeFormat) + " " + logHeader, false);
             }
         }
-
-        private readonly string datetimeFormat;
-        private readonly string logFilename;
-        public static Logger instance = new Logger();
 
         public void logDebug(string text)
         {
@@ -76,14 +84,6 @@
             {
                 throw;
             }
-        }
-
-        [System.Flags]
-        private enum LogLevel
-        {
-            INFO,
-            DEBUG,
-            ERROR
         }
     }
 }
