@@ -20,7 +20,6 @@ namespace Cryptdrive
         }
 
         public static FileManager instance = new FileManager();
-        public static HttpClient client = new HttpClient();
 
         List<String> clientFiles;
         List<String> cloudFiles;
@@ -74,7 +73,7 @@ namespace Cryptdrive
             string username = "blobcontainer001";
 
             string fullURL = AzureLinkStringStorage.BLOB_ADD_AZURE_STRING + "&username=" + username + "&filename=" + blobname;
-            var response = await client.PostAsync(fullURL,
+            var response = await AzureConnectionManager.client.PostAsync(fullURL,
                 content);
 
             var responseString = await response.Content.ReadAsStringAsync();

@@ -62,7 +62,7 @@ namespace Cryptdrive
             {
                 paths.Add(watcher.Path);
             }
-            GUI.instance.listDirectory(paths);
+            GUIForm.instance.listDirectory(paths);
         }
     }
 }

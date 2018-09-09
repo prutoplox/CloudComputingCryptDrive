@@ -76,7 +76,7 @@
                     if (text != "")
                     {
                         writer.WriteLine(text);
-                        GUI.instance.LogToTextBox(text);
+                        GUIForm.instance.LogToTextBox(text);
                     }
                 }
             }

@@ -1,6 +1,6 @@
 ﻿namespace Cryptdrive
 {
-    partial class GUI
+    partial class GUIForm
     {
         /// <summary>
         /// Erforderliche Designervariable.
@@ -107,6 +107,7 @@
             this.Controls.Add(this.delete);
             this.Name = "GUI";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.GUI_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

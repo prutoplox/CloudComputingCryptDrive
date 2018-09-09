@@ -5,9 +5,11 @@ using System.Windows.Forms;
 
 namespace Cryptdrive
 {
-    public partial class GUI : Form
+    public partial class GUIForm : Form
     {
-        public GUI()
+        bool login = false;
+
+        public GUIForm()
         {
             InitializeComponent();
             if (instance == null)
@@ -20,7 +22,7 @@ namespace Cryptdrive
             }
         }
 
-        public static GUI instance;
+        public static GUIForm instance;
 
         private void searchFilePath_Click(object sender, EventArgs e)
         {
@@ -111,6 +113,15 @@ namespace Cryptdrive
         {
             //Called from Logger
             output.Text += textLine + Environment.NewLine;
+        }
+
+        private void GUI_Load(object sender, EventArgs e)
+        {
+            if (login == false)
+            {
+                LoginForm loginForm = new LoginForm();
+                loginForm.ShowDialog();
+            }
         }
     }
 }
