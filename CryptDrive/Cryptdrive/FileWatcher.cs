@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Cryptdrive
 {
@@ -14,6 +15,14 @@ namespace Cryptdrive
 
         public static FileWatcher instance = new FileWatcher();
         private List<FileSystemWatcher> fileSystemWatchers = new List<FileSystemWatcher>();
+
+        public IEnumerable<string> MonitoredFolders
+        {
+            get
+            {
+                return fileSystemWatchers.Select(X => X.Path);
+            }
+        }
 
         public void monitorDirectory(string path)
         {
@@ -35,6 +44,19 @@ namespace Cryptdrive
             temp.Add(e.FullPath);
             FileManager.instance.syncFiles(temp);
             syncClientTreeNode();
+        }
+
+        internal string searchSyncFolder(string path)
+        {
+            foreach (var item in MonitoredFolders)
+            {
+                if (path.Substring(0, item.Length) == item)
+                {
+                    return item;
+                }
+            }
+            Logger.instance.logError("File was not in monitored folder!");
+            return "";
         }
 
         private void fileSystemWatcher_Created(object sender, FileSystemEventArgs e)
