@@ -1,4 +1,6 @@
-﻿namespace Cryptdrive
+﻿using System.Windows.Forms;
+
+namespace Cryptdrive
 {
     class Logger
     {
@@ -76,7 +78,17 @@
                     if (text != "")
                     {
                         writer.WriteLine(text);
-                        GUIForm.instance.LogToTextBox(text);
+                        if (GUIForm.instance.InvokeRequired)
+                        {
+                            GUIForm.instance.Invoke(new MethodInvoker(delegate ()
+                            {
+                                GUIForm.instance.LogToTextBox(text);
+                            }));
+                        }
+                        else
+                        {
+                            GUIForm.instance.LogToTextBox(text);
+                        }
                     }
                 }
             }
