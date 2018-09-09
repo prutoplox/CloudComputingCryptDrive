@@ -9,6 +9,8 @@ namespace Cryptdrive
     {
         bool login = false;
 
+        public static GUIForm instance;
+
         public GUIForm()
         {
             InitializeComponent();
@@ -21,8 +23,6 @@ namespace Cryptdrive
                 throw new Exception("TODO: GUI Error");
             }
         }
-
-        public static GUIForm instance;
 
         private void searchFilePath_Click(object sender, EventArgs e)
         {

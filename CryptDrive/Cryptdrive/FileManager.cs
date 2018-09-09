@@ -51,9 +51,9 @@ namespace Cryptdrive
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("The file could not be read:");
-                    Console.WriteLine(e.Message);
-                    Console.WriteLine(e.StackTrace);
+                    Logger.instance.logError("The file could not be read:");
+                    Logger.instance.logError(e.Message);
+                    Logger.instance.logError(e.StackTrace);
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace Cryptdrive
                 content);
 
             var responseString = await response.Content.ReadAsStringAsync();
-            Console.WriteLine("RESPONSE:" + responseString);
+            Logger.instance.logInfo("RESPONSE:" + responseString);
         }
 
         private static byte[] encryptAndCompressFile(string path)

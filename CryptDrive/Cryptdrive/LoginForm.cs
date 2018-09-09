@@ -60,13 +60,13 @@ namespace Cryptdrive
                     if (password != confirmPassword)
                     {
                         //TODO ErrorMessage
-                        Console.WriteLine("Passwords are not matching");
+                        Logger.instance.logError("Passwords are not matching");
                         return;
                     }
                     else if (email != confirmEmail)
                     {
                         //TODO ErrorMessage
-                        Console.WriteLine("Emails are not matching");
+                        Logger.instance.logError("Emails are not matching");
                         return;
                     }
 
@@ -77,12 +77,12 @@ namespace Cryptdrive
                     var response = await AzureConnectionManager.client.PostAsync(AzureLinkStringStorage.REGISTER_USER_AZURE_STRING, multipartContent);
 
                     var responseString = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine("RESPONSE:" + responseString);
+                    Logger.instance.logInfo("RESPONSE:" + responseString);
                     register = false;
                 }
                 else
                 {
-                    Console.WriteLine("Not all textfelds are filled out, the empty textfields are "
+                    Logger.instance.logError("Not all textfelds are filled out, the empty textfields are "
                         + (String.IsNullOrWhiteSpace(Username_tf.Text) ? "Username " : "")
                         + (String.IsNullOrWhiteSpace(Password_tf.Text) ? "Password " : "")
                         + (String.IsNullOrWhiteSpace(Email_tf.Text) ? "Email " : "")

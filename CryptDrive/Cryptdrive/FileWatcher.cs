@@ -30,7 +30,7 @@ namespace Cryptdrive
 
         private void FileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
         {
-            Console.WriteLine("File changed: {0}", e.Name);
+            Logger.instance.logInfo("File changed: " + e.Name);
             List<string> temp = new List<string>();
             temp.Add(e.FullPath);
             FileManager.instance.syncFiles(temp);
@@ -39,19 +39,19 @@ namespace Cryptdrive
 
         private void fileSystemWatcher_Created(object sender, FileSystemEventArgs e)
         {
-            Console.WriteLine("File created: {0}", e.Name);
+            Logger.instance.logInfo("File created: " + e.Name);
             syncClientTreeNode();
         }
 
         private void fileSystemWatcher_Renamed(object sender, FileSystemEventArgs e)
         {
-            Console.WriteLine("File renamed: {0}", e.Name);
+            Logger.instance.logInfo("File renamed: " + e.Name);
             syncClientTreeNode();
         }
 
         private void fileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
         {
-            Console.WriteLine("File deleted: {0}", e.Name);
+            Logger.instance.logInfo("File deleted: " + e.Name);
             syncClientTreeNode();
         }
 
