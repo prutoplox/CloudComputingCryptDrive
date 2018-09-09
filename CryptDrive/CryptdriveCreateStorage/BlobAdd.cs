@@ -14,7 +14,7 @@ namespace CryptdriveCloud
 {
     public static class BlobAdd
     {
-        [FunctionName("AddBlob")]
+        [FunctionName("BlobAdd")]
         public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequest req, ILogger log)
         {
             try
@@ -54,10 +54,6 @@ namespace CryptdriveCloud
                 log.LogInformation("Uploading BlockBlob");
                 CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
                 await blockBlob.UploadFromByteArrayAsync(data, 0, data.Length);
-
-                // List the blobs in the container, without this the blobs weren't showing up on the panel on the website for some reason...
-                //Console.WriteLine("List blobs in container.");
-                //ListBlobs(container, log);
 
                 log.LogInformation("C# HTTP trigger function finish process a request.");
                 return new OkObjectResult($"Uploaded {fileName} to {containerName} which had a size of {req.ContentLength}");

@@ -37,11 +37,8 @@ namespace Cryptdrive
 
         public void addFiles(List<string> files)
         {
-            // Todo Call Azure BlobAdd
-            foreach (string path in files)
-            {
-                byte[] encrpytedAndCompressedByteArray = encryptAndCompressFile(path);
-            }
+            //Same as SyncFiles. Azure replaces old files with new files automatically
+            syncFiles(files);
         }
 
         public void syncFiles(List<string> files)
@@ -50,14 +47,7 @@ namespace Cryptdrive
             {
                 try
                 {
-                    helpMethod(path);
                     byte[] encrpytedAndCompressedByteArray = encryptAndCompressFile(path);
-
-                    byte[] decrypted = Codec.decrypt(encrpytedAndCompressedByteArray);
-                    byte[] uncompressed = Compressor.decompress(decrypted);
-
-                    File.WriteAllBytes(path + "_decrypted", uncompressed);
-
                     uploadFileData(path, encrpytedAndCompressedByteArray);
                 }
                 catch (Exception e)
@@ -75,14 +65,15 @@ namespace Cryptdrive
 
             string filename = Path.GetFileNameWithoutExtension(path);
 
-            //TODO convert full path into a single string which will be used on the storage to represent the folder structure
-            string relativePath = "";
-            string blobname = relativePath + filename;
+            string blobname = Codec.encrypt(path);
+            Console.WriteLine(blobname);
+            Console.WriteLine(path);
+            Console.WriteLine(Codec.decrypt(blobname));
 
             //TODO retrieve username of this client which will be used as container name on the server, container must be created in SotrageCreate first.
-            string username = "testcontainer";
+            string username = "blobcontainer001";
 
-            string fullURL = "https://functionapp20180905122323.azurewebsites.net/api/AddBlob?code=yA/tjdgIFG2x6VaICxFaBssdZLZMsi/7tYBKEaor9QQEZkPaJWRGnQ==&username=" + username + "&filename=" + blobname;
+            string fullURL = AzureLinkStringStorage.BLOB_ADD_AZURE_STRING + "&username=" + username + "&filename=" + blobname;
             var response = await client.PostAsync(fullURL,
                 content);
 
@@ -101,24 +92,9 @@ namespace Cryptdrive
             return encrpytedAndCompressedByteArray;
         }
 
-        private static void helpMethod2(string path, byte[] encrpytedAndCompressedByteArray)
+        public static string convertPathToRelativPath()
         {
-            byte[] decrypted = Codec.decrypt(encrpytedAndCompressedByteArray);
-            byte[] uncompressed = Compressor.decompress(decrypted);
-
-            File.WriteAllBytes(path + "_decrypted", uncompressed);
-        }
-
-        private static void helpMethod(string path)
-        {
-            //This if clause is just here to test that files were able to be decrypted after a program restart
-            if (File.Exists(path + "_encrypted"))
-            {
-                byte[] rawData = File.ReadAllBytes(path + "_encrypted");
-                byte[] rawDatadecrypted = Codec.decrypt(rawData);
-                byte[] rawDatauncompressed = Compressor.decompress(rawDatadecrypted);
-                File.WriteAllBytes(path + "_decrypted2", rawDatauncompressed);
-            }
+            return "";
         }
 
         public void deleteFiles(List<string> files)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NeoSmart.Utils;
+using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -87,6 +88,20 @@ namespace Cryptdrive
             Buffer.BlockCopy(sa.IV, 0, result, keyex.Length, sa.IV.Length);
             Buffer.BlockCopy(encrypt, 0, result, keyex.Length + sa.IV.Length, encrypt.Length);
             return result;
+        }
+
+        public static string encrypt(string input)
+        {
+            byte[] encryptedString = encrypt(System.Text.Encoding.UTF8.GetBytes(input));
+            string returnString = UrlBase64.Encode(encryptedString);
+            return returnString;
+        }
+
+        public static string decrypt(string input)
+        {
+            byte[] decryptedString = decrypt(UrlBase64.Decode(input));
+            string returnString = System.Text.Encoding.UTF8.GetString(decryptedString);
+            return returnString;
         }
     }
 }
