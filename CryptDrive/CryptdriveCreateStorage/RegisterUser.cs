@@ -17,8 +17,23 @@ namespace CryptdriveCloud
         {
             try
             {
-                var test = req.Form;
-                log.LogInformation(test.ToString());
+                Microsoft.Extensions.Primitives.StringValues usernameReturn;
+                bool gotUsername = req.Form.TryGetValue("username", out usernameReturn);
+
+                Microsoft.Extensions.Primitives.StringValues passwordReturn;
+                bool gotPassword = req.Form.TryGetValue("password", out passwordReturn);
+
+                Microsoft.Extensions.Primitives.StringValues emailReturn;
+                bool gotEmail = req.Form.TryGetValue("email", out emailReturn);
+
+                if (!gotUsername || !gotPassword || !gotEmail)
+                {
+                    return new BadRequestObjectResult("Not all required information was supplied");
+                }
+
+                string password = passwordReturn.ToString();
+                string username = usernameReturn.ToString();
+                string email = emailReturn.ToString();
                 /*
                 bool result = DbManager.RegisterUser(username, password, email);
                 if (result)
@@ -29,7 +44,7 @@ namespace CryptdriveCloud
                 {
                     return (ActionResult)new BadRequestObjectResult($"Can not register new user");
                 } */
-                return new OkObjectResult($"User successfully registered");
+                return new OkObjectResult($"{username} with the email {email} used the password {password}");
             }
             catch (Exception e)
             {

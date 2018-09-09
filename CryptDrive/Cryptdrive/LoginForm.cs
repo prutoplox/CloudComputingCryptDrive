@@ -73,6 +73,9 @@ namespace Cryptdrive
                     multipartContent.Add(new StringContent(email), "email");
                     multipartContent.Add(new StringContent(password), "password");
                     var response = await AzureConnectionManager.client.PostAsync(AzureLinkStringStorage.REGISTER_USER_AZURE_STRING, multipartContent);
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine("RESPONSE:" + responseString);
                     register = false;
 
                     /*HttpClient httpClient = new HttpClient();
