@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace CryptdriveCloud
 {
@@ -14,20 +15,27 @@ namespace CryptdriveCloud
         [FunctionName("RegisterUser")]
         public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequest req, ILogger log)
         {
-            string username = req.Query["name"];
-
-            //TODO KlartextPW
-            string password = req.Query["password"];
-            string pkString = req.Query["pkString"];
-            string email = req.Query["email"];
-            bool result = DbManager.RegisterUser(username, password, email);
-            if (result)
+            try
             {
-                return (ActionResult)new OkObjectResult($"register new user successful");
+                var test = req.Form;
+                log.LogInformation(test.ToString());
+                /*
+                bool result = DbManager.RegisterUser(username, password, email);
+                if (result)
+                {
+                    return (ActionResult)new OkObjectResult($"register new user successful");
+                }
+                else
+                {
+                    return (ActionResult)new BadRequestObjectResult($"Can not register new user");
+                } */
+                return new OkObjectResult($"User successfully registered");
             }
-            else
+            catch (Exception e)
             {
-                return (ActionResult)new BadRequestObjectResult($"Can not register new user");
+                log.LogError(e.Message);
+                log.LogError(e.StackTrace);
+                return new UnprocessableEntityObjectResult(e.Message);
             }
         }
     }
