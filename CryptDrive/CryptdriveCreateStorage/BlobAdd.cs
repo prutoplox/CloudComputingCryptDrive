@@ -20,7 +20,7 @@ namespace CryptdriveCloud
             try
             {
                 log.LogInformation("C# HTTP trigger function starts process a request.");
-                string connectionString = "DefaultEndpointsProtocol=https;AccountName=devstoragemarius;AccountKey=Z0+9qcUyTzgovwkCCsLWH0RZUkih8/tltiabksN3QfB7SthB3c7TYdJBgA7KuTi6B40CMqF1BRAQk5cL6tMfSQ==;EndpointSuffix=core.windows.net";
+                string connectionString = Cryptdrive.AzureLinkStringStorage.STORAGE_CONNECTION_STRING;
                 string containerName = req.Query["username"];
                 string fileName = req.Query["filename"];
 

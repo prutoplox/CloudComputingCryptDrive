@@ -6,15 +6,20 @@ using System.Threading.Tasks;
 
 namespace Cryptdrive
 {
-    class AzureLinkStringStorage
+    public class AzureLinkStringStorage
     {
-        public static string BLOB_ADD_AZURE_STRING = "https://cryptdrivecloud20180907011132.azurewebsites.net/api/BlobAdd?code=qC6Uu1UO7T6QEHPzawiKmqFCfDJrdAh5EbiVZViXvrmNUpITKStHlQ==";
-        public static string DBTESTFUNCTION_AZURE_STRING = "https://cryptdrivecloud20180907011132.azurewebsites.net/api/DBTestFunction?code=vEasRGccvWMboASnSwB7IzsnZaD1IkDocQ09xPX/tMVr91fEKxpabg==";
-        public static string DELETE_AZURE_STRING = "https://cryptdrivecloud20180907011132.azurewebsites.net/api/BlobDelete?code=JxScaYlupyEaohbpQpdl84YVUCm1JDMWhpBikLucxlulCyrAcdcshw==";
-        public static string BLOB_GET_AZURE_STRING = "https://cryptdrivecloud20180907011132.azurewebsites.net/api/BlobGet?code=Vvnp0PVAntZuYW5p3FCyBkmDhtqC5LlhK3VihJQ87cpGfYQXmsMasg==";
-        public static string REGISTER_USER_AZURE_STRING = "https://cryptdrivecloud20180907011132.azurewebsites.net/api/RegisterUser?code=a89nd6DH28IPjjxgpatrahQJB4im2zcDfVS4CLYnSctzFqqWYPoxUg==";
-        public static string STORAGE_CREATE_AZURE_STRING = "https://cryptdrivecloud20180907011132.azurewebsites.net/api/StorageCreate?code=MTe8PWUoX2U/dZ4oKxErnW05WNRBXWW1wFbkWgIDNH8J5cORi5P/zw==";
-        public static string STORAGE_DELETE_AZURE_STRING = "https://cryptdrivecloud20180907011132.azurewebsites.net/api/StorageDelete?code=1ZBvY8pnTPEh3j5/d5utIVUSiKPmsL/ne8RGigvsBIcAuiKoEPke1w==";
-        public static string SYNC_BLOB_AZURE_STRING = "https://cryptdrivecloud20180907011132.azurewebsites.net/api/SyncBlob?code=HnL9epsVfxASIjUWHbQmgDD2RDot67M3xhfwsdvaI4Ezb57AwpTb7g==";
+        public const string BLOB_ADD_AZURE_STRING = "http://localhost:7071/api/BlobAdd";
+        public const string DELETE_AZURE_STRING = "http://localhost:7071/api/BlobDelete";
+        public const string BLOB_GET_AZURE_STRING = "http://localhost:7071/api/BlobGet";
+        public const string DBTESTFUNCTION_AZURE_STRING = "http://localhost:7071/api/DBTestFunction";
+        public const string REGISTER_USER_AZURE_STRING = "http://localhost:7071/api/RegisterUser";
+        public const string STORAGE_CREATE_AZURE_STRING = "http://localhost:7071/api/StorageCreate";
+        public const string STORAGE_DELETE_AZURE_STRING = "http://localhost:7071/api/StorageDelete";
+        public const string SYNC_BLOB_AZURE_STRING = "http://localhost:7071/api/SyncBlob";
+        public const string STORAGE_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=devstoragemarius;AccountKey=Z0+9qcUyTzgovwkCCsLWH0RZUkih8/tltiabksN3QfB7SthB3c7TYdJBgA7KuTi6B40CMqF1BRAQk5cL6tMfSQ==;EndpointSuffix=core.windows.net";
+        public const string DB_DATASOURCE = "cryptdriveruserdb.database.windows.net";
+        public const string DB_USERID = "cryptAdmin";
+        public const string DB_PASSWORD = "CcSs2018";
+        public const string DB_INITALCATALOG = "cryptdriverdb";
     }
 }

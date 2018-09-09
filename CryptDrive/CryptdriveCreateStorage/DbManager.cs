@@ -11,10 +11,10 @@ namespace CryptdriveCloud
         private static SqlConnectionStringBuilder CreateConnectionString()
         {
             var cb = new SqlConnectionStringBuilder();
-            cb.DataSource = "cryptdriveruserdb.database.windows.net";
-            cb.UserID = "cryptAdmin";
-            cb.Password = "CcSs2018";
-            cb.InitialCatalog = "cryptdriverdb";
+            cb.DataSource = Cryptdrive.AzureLinkStringStorage.DB_DATASOURCE;
+            cb.UserID = Cryptdrive.AzureLinkStringStorage.DB_USERID;
+            cb.Password = Cryptdrive.AzureLinkStringStorage.DB_PASSWORD;
+            cb.InitialCatalog = Cryptdrive.AzureLinkStringStorage.DB_INITALCATALOG;
             return cb;
         }
 
