@@ -49,7 +49,7 @@ namespace Cryptdrive
         {
             if (register == true)
             {
-                if (!String.IsNullOrWhiteSpace(Username_tf.Text) || !String.IsNullOrWhiteSpace(Password_tf.Text) || !String.IsNullOrWhiteSpace(Email_tf.Text))
+                if (!String.IsNullOrWhiteSpace(Username_tf.Text) && !String.IsNullOrWhiteSpace(Password_tf.Text) && !String.IsNullOrWhiteSpace(Email_tf.Text))
                 {
                     string username = Username_tf.Text;
                     string password = Password_tf.Text;
@@ -60,11 +60,13 @@ namespace Cryptdrive
                     if (password != confirmPassword)
                     {
                         //TODO ErrorMessage
+                        Console.WriteLine("Passwords are not matching");
                         return;
                     }
                     else if (email != confirmEmail)
                     {
                         //TODO ErrorMessage
+                        Console.WriteLine("Emails are not matching");
                         return;
                     }
 
@@ -77,22 +79,15 @@ namespace Cryptdrive
                     var responseString = await response.Content.ReadAsStringAsync();
                     Console.WriteLine("RESPONSE:" + responseString);
                     register = false;
-
-                    /*HttpClient httpClient = new HttpClient();
-        MultipartFormDataContent form = new MultipartFormDataContent();
-
-        form.Add(new StringContent(username), "username");
-        form.Add(new StringContent(useremail), "email");
-        form.Add(new StringContent(password), "password");
-        form.Add(new ByteArrayContent(file_bytes, 0, file_bytes.Length), "profile_pic", "hello1.jpg");
-        HttpResponseMessage response = await httpClient.PostAsync("PostUrl", form);
-
-        response.EnsureSuccessStatusCode();
-        httpClient.Dispose();
-        string sd = response.Content.ReadAsStringAsync().Result;*/
                 }
                 else
                 {
+                    Console.WriteLine("Not all textfelds are filled out, the empty textfields are "
+                        + (String.IsNullOrWhiteSpace(Username_tf.Text) ? "Username " : "")
+                        + (String.IsNullOrWhiteSpace(Password_tf.Text) ? "Password " : "")
+                        + (String.IsNullOrWhiteSpace(Email_tf.Text) ? "Email " : "")
+                        );
+
                     //TODO ErrorMessage
                     showRegisterFields();
                     register = true;
