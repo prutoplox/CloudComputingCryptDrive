@@ -42,7 +42,18 @@ namespace Cryptdrive
             Logger.instance.logInfo("File changed: " + e.Name);
             List<string> temp = new List<string>();
             temp.Add(e.FullPath);
-            FileManager.instance.syncFiles(temp);
+            string monitoredFolder = "";
+
+            if (sender is FileSystemWatcher watcher)
+            {
+                monitoredFolder = watcher.Path;
+            }
+            else
+            {
+                throw new Exception("Change event not from FileSystemWatcher!");
+            }
+
+            FileManager.instance.syncFiles(temp, monitoredFolder);
             syncClientTreeNode();
         }
 

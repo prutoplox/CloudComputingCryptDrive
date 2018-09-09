@@ -34,13 +34,13 @@ namespace Cryptdrive
             return new List<String>();
         }
 
-        public void addFiles(List<string> files)
+        public void addFiles(List<string> files, string observedFolder)
         {
             //Same as SyncFiles. Azure replaces old files with new files automatically
-            syncFiles(files);
+            syncFiles(files, observedFolder);
         }
 
-        public void syncFiles(List<string> files)
+        public void syncFiles(List<string> files, string observedFolder)
         {
             foreach (string path in files)
             {
@@ -91,8 +91,9 @@ namespace Cryptdrive
             return encrpytedAndCompressedByteArray;
         }
 
-        public static string convertPathToRelativPath()
+        public static string convertPathToRelativPath(string fullPath)
         {
+            //Prepends the virtual path of the folder in the cryptdrive where it's stored and removes unneeded parts of the full path on the client
             return "";
         }
 
