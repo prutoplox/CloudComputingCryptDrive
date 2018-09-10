@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace CryptdriveCloud
@@ -45,6 +47,23 @@ namespace CryptdriveCloud
                 Console.WriteLine(e.ToString());
             }
             return true;
+        }
+
+        public static UpdateRowSource GetUser(string username)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(cb.ConnectionString))
+                {
+                    string getUserSQL = GetUserSQL(username);
+                    return SumbitSqlCommand(connection, getUserSQL);
+                }
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e.ToString());
+                throw e;
+            }
         }
 
         public static bool CreateTableUser()
@@ -139,6 +158,12 @@ namespace CryptdriveCloud
         static string DropUserTable()
         {
             string returnstring = String.Format(@"DROP TABLE [dbo].[Users];");
+            return returnstring;
+        }
+
+        static string GetUserSQL(string username)
+        {
+            string returnstring = String.Format(@"SELECT * FROM [dbo].[Users] WHERE Username='{0}'", username);
             return returnstring;
         }
     }

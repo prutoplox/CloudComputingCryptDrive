@@ -29,8 +29,46 @@ namespace Cryptdrive
         {
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void Login_button_Click(object sender, EventArgs e)
         {
+            if (register == false)
+            {
+                if (!String.IsNullOrWhiteSpace(Username_tf.Text) && !String.IsNullOrWhiteSpace(Password_tf.Text))
+                {
+                    string username = Username_tf.Text;
+                    string password = Password_tf.Text;
+                    var multipartContent = new MultipartFormDataContent();
+                    multipartContent.Add(new StringContent(username), "username");
+                    multipartContent.Add(new StringContent(password), "password");
+                    var response = await AzureConnectionManager.client.PostAsync(AzureLinkStringStorage.LOGIN_AZURE_STRING, multipartContent);
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        Output_tf.Text = responseString;
+                        this.Close();
+                    }
+
+                    Logger.instance.logInfo("RESPONSE:" + responseString);
+                    register = false;
+                }
+                else
+                {
+                    Logger.instance.logError("Not all textfelds are filled out, the empty textfields are "
+                        + (String.IsNullOrWhiteSpace(Username_tf.Text) ? "Username " : "")
+                        + (String.IsNullOrWhiteSpace(Password_tf.Text) ? "Password " : "")
+                        );
+
+                    //TODO ErrorMessage
+                    showRegisterFields();
+                    register = true;
+                    return;
+                }
+            }
+            else
+            {
+                showRegisterFields();
+                register = true;
+            }
         }
 
         private void textBox1_TextChanged_1(object sender, EventArgs e)
@@ -75,8 +113,13 @@ namespace Cryptdrive
                     multipartContent.Add(new StringContent(email), "email");
                     multipartContent.Add(new StringContent(password), "password");
                     var response = await AzureConnectionManager.client.PostAsync(AzureLinkStringStorage.REGISTER_USER_AZURE_STRING, multipartContent);
-
                     var responseString = await response.Content.ReadAsStringAsync();
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        Output_tf.Text = responseString;
+                        this.Close();
+                    }
+
                     Logger.instance.logInfo("RESPONSE:" + responseString);
                     register = false;
                 }
@@ -119,6 +162,10 @@ namespace Cryptdrive
             Email_tf.Hide();
             ConfirmEmail_label.Hide();
             ConfirmEmail_tf.Hide();
+        }
+
+        private void Output_tf_TextChanged(object sender, EventArgs e)
+        {
         }
     }
 }
