@@ -59,6 +59,7 @@
             // 
             // searchFilePath
             // 
+            this.searchFilePath.Enabled = false;
             this.searchFilePath.Location = new System.Drawing.Point(287, 292);
             this.searchFilePath.Name = "searchFilePath";
             this.searchFilePath.Size = new System.Drawing.Size(75, 23);
@@ -86,6 +87,7 @@
             this.pathTextField.Name = "pathTextField";
             this.pathTextField.Size = new System.Drawing.Size(159, 20);
             this.pathTextField.TabIndex = 4;
+            this.pathTextField.TextChanged += new System.EventHandler(this.pathTextField_TextChanged);
             // 
             // treeView1
             // 
@@ -94,7 +96,7 @@
             this.treeView1.Size = new System.Drawing.Size(321, 231);
             this.treeView1.TabIndex = 5;
             // 
-            // GUI
+            // GUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -105,7 +107,7 @@
             this.Controls.Add(this.searchFilePath);
             this.Controls.Add(this.searchFile);
             this.Controls.Add(this.delete);
-            this.Name = "GUI";
+            this.Name = "GUIForm";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.GUI_Load);
             this.ResumeLayout(false);

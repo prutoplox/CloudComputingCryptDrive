@@ -78,19 +78,26 @@ namespace Cryptdrive
                 {
                     if (text != "")
                     {
-                        writer.WriteLine(text);
                         Console.WriteLine(text);
-                        if (GUIForm.instance.InvokeRequired)
+                        if (GUIForm.instance != null)
                         {
-                            GUIForm.instance.Invoke(new MethodInvoker(delegate ()
+                            if (GUIForm.instance.InvokeRequired)
+                            {
+                                GUIForm.instance.Invoke(new MethodInvoker(delegate ()
+                                {
+                                    GUIForm.instance.LogToTextBox(text);
+                                }));
+                            }
+                            else
                             {
                                 GUIForm.instance.LogToTextBox(text);
-                            }));
+                            }
                         }
                         else
                         {
-                            GUIForm.instance.LogToTextBox(text);
+                            writer.WriteLine("Couldn't log next message to the UI:");
                         }
+                        writer.WriteLine(text);
                     }
                 }
             }

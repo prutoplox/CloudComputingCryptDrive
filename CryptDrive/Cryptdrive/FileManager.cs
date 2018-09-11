@@ -34,24 +34,25 @@ namespace Cryptdrive
             return new List<String>();
         }
 
-        public void addFiles(List<string> files, string observedFolder)
+        public void addFiles(List<string> files)
         {
             //Same as SyncFiles. Azure replaces old files with new files automatically
-            syncFiles(files, observedFolder);
+            syncFiles(files);
         }
 
-        public void syncFiles(List<string> files, string observedFolder)
+        public void syncFiles(List<string> files)
         {
             foreach (string path in files)
             {
                 try
                 {
                     byte[] encrpytedAndCompressedByteArray = encryptAndCompressFile(path);
-                    uploadFileData(path, encrpytedAndCompressedByteArray);
+                    string cryptDriveFilePath = convertPathToCryptPath(path);
+                    uploadFileData(cryptDriveFilePath, encrpytedAndCompressedByteArray);
                 }
                 catch (Exception e)
                 {
-                    Logger.instance.logError("The file could not be read:");
+                    Logger.instance.logError("The file could not be read: " + path);
                     Logger.instance.logError(e.Message);
                     Logger.instance.logError(e.StackTrace);
                 }
@@ -62,12 +63,7 @@ namespace Cryptdrive
         {
             var content = new ByteArrayContent(data);
 
-            string filename = Path.GetFileNameWithoutExtension(path);
-
             string blobname = Codec.encrypt(path);
-            Console.WriteLine(blobname);
-            Console.WriteLine(path);
-            Console.WriteLine(Codec.decrypt(blobname));
 
             //TODO retrieve username of this client which will be used as container name on the server, container must be created in SotrageCreate first.
             string username = "blobcontainer001";
@@ -91,10 +87,14 @@ namespace Cryptdrive
             return encrpytedAndCompressedByteArray;
         }
 
-        public static string convertPathToRelativPath(string fullPath)
+        public static string convertPathToCryptPath(string fullPath)
         {
+            string cryptFolderName = FileWatcher.instance.getMonitoredCryptFolderName(fullPath);
+            string localFolderPath = FileWatcher.instance.getMonitoredFolderName(fullPath);
+            string pathRelativeToMonitored = fullPath.Substring(localFolderPath.Length);
+
             //Prepends the virtual path of the folder in the cryptdrive where it's stored and removes unneeded parts of the full path on the client
-            return "";
+            return cryptFolderName + ">" + pathRelativeToMonitored;
         }
 
         public void deleteFiles(List<string> files)

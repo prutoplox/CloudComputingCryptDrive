@@ -9,23 +9,66 @@ namespace Cryptdrive
     // Function 2: Remove path to FileWatcher(String path)
     class FileWatcher
     {
+        private static string folderMappingFile = "Foldermapping.txt";
+
         private FileWatcher()
         {
+            if (File.Exists(folderMappingFile))
+            {
+                try
+                {
+                    string[] lines = File.ReadAllLines(folderMappingFile);
+                    Logger.instance.logInfo("Loaded the existing mappings from the file " + folderMappingFile);
+                    foreach (var line in lines)
+                    {
+                        string[] parts = line.Split(new char[] { '>' });
+                        monitorDirectory(parts[0], parts[1], false);
+                    }
+
+                    return;
+                }
+                catch (Exception e)
+                {
+                    Logger.instance.logError("Could not load the encryption key from the file, creating a new key for this session.");
+                }
+            }
         }
 
         public static FileWatcher instance = new FileWatcher();
-        private List<FileSystemWatcher> fileSystemWatchers = new List<FileSystemWatcher>();
+        private Dictionary<string, FileSystemWatcher> fileSystemWatchers = new Dictionary<string, FileSystemWatcher>();
 
         public IEnumerable<string> MonitoredFolders
         {
             get
             {
-                return fileSystemWatchers.Select(X => X.Path);
+                return fileSystemWatchers.Select(X => X.Value.Path);
             }
         }
 
-        public void monitorDirectory(string path)
+        public IEnumerable<string> CryptDriveFolders
         {
+            get
+            {
+                return fileSystemWatchers.Select(X => X.Key);
+            }
+        }
+
+        public void monitorDirectory(string cryptDrivepathname, string path)
+        {
+            monitorDirectory(cryptDrivepathname, path, !MonitoredFolders.Contains(path));
+        }
+
+        public void monitorDirectory(string cryptDrivepathname, string path, bool isNewlyMonitored)
+        {
+            if (fileSystemWatchers.Keys.Contains(cryptDrivepathname))
+            {
+                Logger.instance.logError(cryptDrivepathname + " is already a monitored Cryptdrive folder!");
+                return;
+            }
+
+            //want to make relative paths unambigitous where they are located.
+            path = Path.GetFullPath(path);
+
             FileSystemWatcher fileSystemWatcher = new FileSystemWatcher();
             fileSystemWatcher.Path = path;
             fileSystemWatcher.IncludeSubdirectories = true;
@@ -34,7 +77,12 @@ namespace Cryptdrive
             fileSystemWatcher.Deleted += fileSystemWatcher_Deleted;
             fileSystemWatcher.Changed += FileSystemWatcher_Changed;
             fileSystemWatcher.EnableRaisingEvents = true;
-            fileSystemWatchers.Add(fileSystemWatcher);
+            fileSystemWatchers.Add(cryptDrivepathname, fileSystemWatcher);
+
+            if (isNewlyMonitored)
+            {
+                File.AppendAllText(folderMappingFile, cryptDrivepathname + ">" + path + Environment.NewLine);
+            }
         }
 
         private void FileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
@@ -42,32 +90,9 @@ namespace Cryptdrive
             Logger.instance.logInfo("File changed: " + e.Name);
             List<string> temp = new List<string>();
             temp.Add(e.FullPath);
-            string monitoredFolder = "";
 
-            if (sender is FileSystemWatcher watcher)
-            {
-                monitoredFolder = watcher.Path;
-            }
-            else
-            {
-                throw new Exception("Change event not from FileSystemWatcher!");
-            }
-
-            FileManager.instance.syncFiles(temp, monitoredFolder);
+            FileManager.instance.syncFiles(temp);
             syncClientTreeNode();
-        }
-
-        internal string searchSyncFolder(string path)
-        {
-            foreach (var item in MonitoredFolders)
-            {
-                if (path.Substring(0, item.Length) == item)
-                {
-                    return item;
-                }
-            }
-            Logger.instance.logError("File was not in monitored folder!");
-            return "";
         }
 
         private void fileSystemWatcher_Created(object sender, FileSystemEventArgs e)
@@ -91,11 +116,39 @@ namespace Cryptdrive
         public void syncClientTreeNode()
         {
             List<string> paths = new List<string>();
-            foreach (FileSystemWatcher watcher in fileSystemWatchers)
+            foreach (FileSystemWatcher watcher in fileSystemWatchers.Values)
             {
                 paths.Add(watcher.Path);
             }
             GUIForm.instance.listDirectory(paths);
+        }
+
+        internal string getMonitoredCryptFolderName(string path)
+        {
+            foreach (var item in fileSystemWatchers)
+            {
+                string monitoredPath = item.Value.Path;
+                if (path.Substring(0, monitoredPath.Length) == monitoredPath)
+                {
+                    return item.Key;
+                }
+            }
+            Logger.instance.logError("File was not in monitored folder!");
+            return "";
+        }
+
+        internal string getMonitoredFolderName(string path)
+        {
+            foreach (var item in fileSystemWatchers)
+            {
+                string monitoredPath = item.Value.Path;
+                if (path.Substring(0, monitoredPath.Length) == monitoredPath)
+                {
+                    return monitoredPath;
+                }
+            }
+            Logger.instance.logError("File was not in monitored folder!");
+            return "";
         }
     }
 }
