@@ -7,12 +7,13 @@ using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Data;
 
 namespace CryptdriveCloud
 {
-    public static class RegisterUser
+    public static class Login
     {
-        [FunctionName("RegisterUser")]
+        [FunctionName("Login")]
         public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequest req, ILogger log)
         {
             try
@@ -23,22 +24,18 @@ namespace CryptdriveCloud
                 Microsoft.Extensions.Primitives.StringValues passwordReturn;
                 bool gotPassword = req.Form.TryGetValue("password", out passwordReturn);
 
-                Microsoft.Extensions.Primitives.StringValues emailReturn;
-                bool gotEmail = req.Form.TryGetValue("email", out emailReturn);
-
-                if (!gotUsername || !gotPassword || !gotEmail)
+                if (!gotUsername || !gotPassword)
                 {
                     return new BadRequestObjectResult("Not all required information was supplied");
                 }
 
                 string password = passwordReturn.ToString();
                 string username = usernameReturn.ToString();
-                string email = emailReturn.ToString();
 
-                bool result = DbManager.RegisterUser(username, password, email);
-                if (result)
+                UpdateRowSource result = DbManager.GetUser(username);
+                if (result != null)
                 {
-                    return new OkObjectResult($"{username} with the email {email} used the password {password}");
+                    return new OkObjectResult($"{username} used the password {password}");
                 }
                 else
                 {

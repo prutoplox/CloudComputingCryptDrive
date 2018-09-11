@@ -40,6 +40,7 @@
             this.Email_label = new System.Windows.Forms.Label();
             this.ConfirmPassword_label = new System.Windows.Forms.Label();
             this.ConfirmEmail_label = new System.Windows.Forms.Label();
+            this.Output_tf = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // Login_button
@@ -50,7 +51,7 @@
             this.Login_button.TabIndex = 0;
             this.Login_button.Text = "Login";
             this.Login_button.UseVisualStyleBackColor = true;
-            this.Login_button.Click += new System.EventHandler(this.button1_Click);
+            this.Login_button.Click += new System.EventHandler(this.Login_button_Click);
             // 
             // Register_button
             // 
@@ -145,11 +146,20 @@
             this.ConfirmEmail_label.TabIndex = 11;
             this.ConfirmEmail_label.Text = "Confirm Email";
             // 
+            // Output_tf
+            // 
+            this.Output_tf.Location = new System.Drawing.Point(15, 217);
+            this.Output_tf.Name = "Output_tf";
+            this.Output_tf.Size = new System.Drawing.Size(390, 20);
+            this.Output_tf.TabIndex = 12;
+            this.Output_tf.TextChanged += new System.EventHandler(this.Output_tf_TextChanged);
+            // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.Output_tf);
             this.Controls.Add(this.ConfirmEmail_label);
             this.Controls.Add(this.ConfirmPassword_label);
             this.Controls.Add(this.Email_label);
@@ -184,5 +194,6 @@
         private System.Windows.Forms.Label Email_label;
         private System.Windows.Forms.Label ConfirmPassword_label;
         private System.Windows.Forms.Label ConfirmEmail_label;
+        private System.Windows.Forms.TextBox Output_tf;
     }
 }
