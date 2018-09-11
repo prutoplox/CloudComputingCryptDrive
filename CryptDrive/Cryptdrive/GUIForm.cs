@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace Cryptdrive
 {
@@ -24,7 +25,14 @@ namespace Cryptdrive
             }
             Logger.instance.logInfo("Working in the folder " + Application.StartupPath);
             Directory.CreateDirectory("testFolder");
-            FileWatcher.instance.monitorDirectory("testFolder");
+            if (FileWatcher.instance.CryptDriveFolders.Contains("main"))
+            {
+                Logger.instance.logDebug("The main crypt folder is already monitored");
+            }
+            else
+            {
+                FileWatcher.instance.monitorDirectory("main", "testFolder");
+            }
             System.Diagnostics.Process.Start("explorer.exe", @"testFolder");
         }
 
@@ -37,8 +45,8 @@ namespace Cryptdrive
                 path = folderBrowserDialog.SelectedPath;
                 List<string> paths = new List<string>();
                 paths.Add(path);
-                FileWatcher.instance.monitorDirectory(path);
-                pathTextField.Text += path;
+
+                FileWatcher.instance.monitorDirectory(pathTextField.Text, path);
                 FileWatcher.instance.syncClientTreeNode();
             }
         }
@@ -47,7 +55,7 @@ namespace Cryptdrive
         {
             List<String> testTemp = new List<string>();
             testTemp.Add(@"C:\Users\mariu\OneDrive\Desktop\Neuer Ordner (2)\awda.txt");
-            FileManager.instance.syncFiles(testTemp, FileWatcher.instance.searchSyncFolder(testTemp[0]));
+            FileManager.instance.syncFiles(testTemp);
         }
 
         private void searchFile_Click(object sender, EventArgs e)
@@ -126,6 +134,23 @@ namespace Cryptdrive
                 LoginForm loginForm = new LoginForm();
                 loginForm.ShowDialog();
             }
+        }
+
+        private void pathTextField_TextChanged(object sender, EventArgs e)
+        {
+            if (String.IsNullOrWhiteSpace(pathTextField.Text))
+            {
+                searchFilePath.Enabled = false;
+                return;
+            }
+
+            if (FileWatcher.instance.CryptDriveFolders.Contains(pathTextField.Text))
+            {
+                searchFilePath.Enabled = false;
+                return;
+            }
+
+            searchFilePath.Enabled = true;
         }
     }
 }
