@@ -7,13 +7,14 @@ using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 
 namespace CryptdriveCloud
 {
     public static class RegisterUser
     {
         [FunctionName("RegisterUser")]
-        public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequest req, ILogger log)
+        public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequest req, ILogger log)
         {
             try
             {
@@ -34,11 +35,12 @@ namespace CryptdriveCloud
                 string password = passwordReturn.ToString();
                 string username = usernameReturn.ToString();
                 string email = emailReturn.ToString();
+                string container = await StorageCreate.create(username);
 
-                bool result = DbManager.RegisterUser(username, password, email);
+                bool result = DbManager.RegisterUser(username, password, email, container);
                 if (result)
                 {
-                    return new OkObjectResult($"{username} with the email {email} used the password {password}");
+                    return new OkObjectResult($"{container}");
                 }
                 else
                 {

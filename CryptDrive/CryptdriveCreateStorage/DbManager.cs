@@ -61,13 +61,13 @@ namespace CryptdriveCloud
         }
 
         //DB Manager DB Methods
-        public static bool RegisterUser(string username, string password, string email)
+        public static bool RegisterUser(string username, string password, string email, string container)
         {
             try
             {
                 using (var connection = new SqlConnection(cb.ConnectionString))
                 {
-                    string registerUserSql = InsertIntoUserSQL(username, password, email);
+                    string registerUserSql = InsertIntoUserSQL(username, password, email, container);
                     SumbitSqlCommand(connection, registerUserSql);
                     return true;
                 }
@@ -157,13 +157,14 @@ namespace CryptdriveCloud
                                         Username NVARCHAR(128) NOT NULL,
                                         Pw   NVARCHAR(128) NOT NULL,
                                         Email   NVARCHAR(128) NOT NULL,
+                                        Container   NVARCHAR(512) NOT NULL,
                                         )";
             return createUserTable;
         }
 
-        static string InsertIntoUserSQL(string username, string password, string email)
+        static string InsertIntoUserSQL(string username, string password, string email, string container)
         {
-            string returnstring = String.Format(@"INSERT INTO [dbo].[Users] (Username,Pw,Email) VALUES('{0}','{1}','{2}');", username, password, email);
+            string returnstring = String.Format(@"INSERT INTO [dbo].[Users] (Username,Pw,Email,Container) VALUES('{0}','{1}','{2}','{3}');", username, password, email, container);
             return returnstring;
         }
 

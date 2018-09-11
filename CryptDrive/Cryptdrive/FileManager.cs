@@ -19,8 +19,8 @@ namespace Cryptdrive
         {
         }
 
+        public string containerName { get; set; }
         public static FileManager instance = new FileManager();
-
         List<String> clientFiles;
         List<String> cloudFiles;
 
@@ -62,16 +62,10 @@ namespace Cryptdrive
         private async void uploadFileData(string path, byte[] data)
         {
             var content = new ByteArrayContent(data);
-
             string blobname = Codec.encrypt(path);
-
-            //TODO retrieve username of this client which will be used as container name on the server, container must be created in SotrageCreate first.
-            string username = "blobcontainer001";
-
+            string username = containerName;
             string fullURL = AzureLinkStringStorage.BLOB_ADD_AZURE_STRING + "&username=" + username + "&filename=" + blobname;
-            var response = await AzureConnectionManager.client.PostAsync(fullURL,
-                content);
-
+            var response = await AzureConnectionManager.client.PostAsync(fullURL, content);
             var responseString = await response.Content.ReadAsStringAsync();
             Logger.instance.logInfo("RESPONSE:" + responseString);
         }

@@ -35,6 +35,8 @@
             this.output = new System.Windows.Forms.TextBox();
             this.pathTextField = new System.Windows.Forms.TextBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
+            this.Logout_bt = new System.Windows.Forms.Button();
+            this.Settings_btn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // delete
@@ -96,11 +98,32 @@
             this.treeView1.Size = new System.Drawing.Size(321, 231);
             this.treeView1.TabIndex = 5;
             // 
+            // Logout_bt
+            // 
+            this.Logout_bt.Location = new System.Drawing.Point(817, 11);
+            this.Logout_bt.Name = "Logout_bt";
+            this.Logout_bt.Size = new System.Drawing.Size(75, 23);
+            this.Logout_bt.TabIndex = 6;
+            this.Logout_bt.Text = "Logout";
+            this.Logout_bt.UseVisualStyleBackColor = true;
+            this.Logout_bt.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // Settings_btn
+            // 
+            this.Settings_btn.Location = new System.Drawing.Point(736, 11);
+            this.Settings_btn.Name = "Settings_btn";
+            this.Settings_btn.Size = new System.Drawing.Size(75, 23);
+            this.Settings_btn.TabIndex = 7;
+            this.Settings_btn.Text = "Settings";
+            this.Settings_btn.UseVisualStyleBackColor = true;
+            // 
             // GUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(920, 475);
+            this.Controls.Add(this.Settings_btn);
+            this.Controls.Add(this.Logout_bt);
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.pathTextField);
             this.Controls.Add(this.output);
@@ -124,6 +147,8 @@
         private System.Windows.Forms.TextBox output;
         private System.Windows.Forms.TextBox pathTextField;
         public System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.Button Logout_bt;
+        private System.Windows.Forms.Button Settings_btn;
     }
 }
 

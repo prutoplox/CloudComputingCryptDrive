@@ -23,15 +23,6 @@ namespace Cryptdrive
                 throw new Exception("TODO: GUI Error");
             }
             Logger.instance.logInfo("Working in the folder " + Application.StartupPath);
-<<<<<<< HEAD
-            FileWatcher.instance.monitorDirectory("testFolder");
-            FileWatcher.instance.syncClientTreeNode();
-
-            //Directory.CreateDirectory("testFolder");
-            //FileWatcher.instance.monitorDirectory("testFolder");
-            //Open Explorer! DONT DELETE
-            //  System.Diagnostics.Process.Start("explorer.exe", @"testFolder");
-=======
             Directory.CreateDirectory("testFolder");
             if (FileWatcher.instance.CryptDriveFolders.Contains("main"))
             {
@@ -42,7 +33,7 @@ namespace Cryptdrive
                 FileWatcher.instance.monitorDirectory("main", "testFolder");
             }
             System.Diagnostics.Process.Start("explorer.exe", @"testFolder");
->>>>>>> seb_playground
+            FileWatcher.instance.syncClientTreeNode();
         }
 
         private void searchFilePath_Click(object sender, EventArgs e)
@@ -160,6 +151,11 @@ namespace Cryptdrive
             }
 
             searchFilePath.Enabled = true;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

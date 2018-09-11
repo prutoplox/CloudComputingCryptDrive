@@ -117,6 +117,7 @@ namespace Cryptdrive
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         Output_tf.Text = responseString;
+                        FileManager.instance.containerName = responseString;
                         this.Close();
                     }
 

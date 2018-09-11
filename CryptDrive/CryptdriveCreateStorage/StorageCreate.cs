@@ -1,31 +1,38 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Host;
-using Newtonsoft.Json;
-using System.IO;
+ï»¿using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using NeoSmart.Utils;
+using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
-namespace CryptdriveCreateStorage
+namespace CryptdriveCloud
 {
-    // Erstellt 1xstorage pro Nutzer der mit private/public key identifiziert wird
-    // + Erstellt Access key gibt ergebnis als json zurück
-    public static class StorageCreate
+    static class StorageCreate
     {
-        [FunctionName("StorageCreate")]
-        public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequest req, TraceWriter log)
+        static async public Task<string> create(string username)
         {
-            log.Info("C# HTTP trigger function processed a request.");
+            string usernameContainer = get(username);
+            usernameContainer = Regex.Replace(usernameContainer, "[^a-zA-Z0-9]+", "", RegexOptions.Compiled).ToLower();
 
-            string name = req.Query["name"];
+            //get the storage account.
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(Cryptdrive.AzureLinkStringStorage.STORAGE_CONNECTION_STRING);
 
-            string requestBody = new StreamReader(req.Body).ReadToEnd();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            //blob client now
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+            CloudBlobContainer container = blobClient.GetContainerReference(usernameContainer);
 
-            return name != null
-                ? (ActionResult)new OkObjectResult($"Hello, {name}")
-                : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
+            //Create a new container, if it does not exist
+            await container.CreateIfNotExistsAsync();
+            return (usernameContainer);
+        }
+
+        static public string get(string username)
+        {
+            var sha256 = new SHA256CryptoServiceProvider();
+            return UrlBase64.Encode(sha256.ComputeHash(Encoding.UTF8.GetBytes(username)));
         }
     }
 }
