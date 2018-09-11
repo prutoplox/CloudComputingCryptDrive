@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace Cryptdrive
 {
@@ -78,6 +79,7 @@ namespace Cryptdrive
                     if (text != "")
                     {
                         writer.WriteLine(text);
+                        Console.WriteLine(text);
                         if (GUIForm.instance.InvokeRequired)
                         {
                             GUIForm.instance.Invoke(new MethodInvoker(delegate ()

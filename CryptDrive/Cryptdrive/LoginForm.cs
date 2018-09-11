@@ -121,7 +121,6 @@ namespace Cryptdrive
                     }
 
                     Logger.instance.logInfo("RESPONSE:" + responseString);
-                    register = false;
                 }
                 else
                 {
@@ -132,8 +131,8 @@ namespace Cryptdrive
                         );
 
                     //TODO ErrorMessage
-                    showRegisterFields();
-                    register = true;
+                    hideRegisterFields();
+                    register = false;
                     return;
                 }
             }

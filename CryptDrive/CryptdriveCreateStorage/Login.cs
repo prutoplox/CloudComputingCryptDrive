@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Data;
+using System.Collections.Generic;
 
 namespace CryptdriveCloud
 {
@@ -32,14 +33,22 @@ namespace CryptdriveCloud
                 string password = passwordReturn.ToString();
                 string username = usernameReturn.ToString();
 
-                UpdateRowSource result = DbManager.GetUser(username);
-                if (result != null)
+                List<string> result = DbManager.GetUser(username);
+
+                if (result.Count != 0)
                 {
-                    return new OkObjectResult($"{username} used the password {password}");
+                    if (result[1] == username && result[2] == password)
+                    {
+                        return new OkObjectResult($"{username} logged in with {password}");
+                    }
+                    else
+                    {
+                        return (ActionResult)new BadRequestObjectResult($"Wrong Login Data for {username} ");
+                    }
                 }
                 else
                 {
-                    return (ActionResult)new BadRequestObjectResult($"Can not register new user");
+                    return (ActionResult)new BadRequestObjectResult($"Can not login user");
                 }
             }
             catch (Exception e)

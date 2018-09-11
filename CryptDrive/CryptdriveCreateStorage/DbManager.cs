@@ -31,6 +31,35 @@ namespace CryptdriveCloud
             }
         }
 
+        static List<string> SubmitSelectUser(SqlConnection connection, string sql)
+        {
+            using (var command = new SqlCommand(sql, connection))
+            {
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                List<string> resultList = new List<string>();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        resultList.Add(reader.GetInt32(0).ToString());
+                        resultList.Add(reader.GetString(1));
+                        resultList.Add(reader.GetString(2));
+                        resultList.Add(reader.GetString(3));
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No rows found.");
+                }
+                reader.Close();
+                connection.Close();
+                Console.WriteLine("");
+                return resultList;
+            }
+        }
+
         //DB Manager DB Methods
         public static bool RegisterUser(string username, string password, string email)
         {
@@ -40,23 +69,24 @@ namespace CryptdriveCloud
                 {
                     string registerUserSql = InsertIntoUserSQL(username, password, email);
                     SumbitSqlCommand(connection, registerUserSql);
+                    return true;
                 }
             }
             catch (SqlException e)
             {
                 Console.WriteLine(e.ToString());
+                return false;
             }
-            return true;
         }
 
-        public static UpdateRowSource GetUser(string username)
+        public static List<string> GetUser(string username)
         {
             try
             {
                 using (var connection = new SqlConnection(cb.ConnectionString))
                 {
                     string getUserSQL = GetUserSQL(username);
-                    return SumbitSqlCommand(connection, getUserSQL);
+                    return SubmitSelectUser(connection, getUserSQL);
                 }
             }
             catch (SqlException e)

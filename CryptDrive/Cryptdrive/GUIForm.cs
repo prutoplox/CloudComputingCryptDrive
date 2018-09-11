@@ -7,8 +7,7 @@ namespace Cryptdrive
 {
     public partial class GUIForm : Form
     {
-        bool login = false;
-
+        private bool login = false;
         public static GUIForm instance;
 
         public GUIForm()
@@ -23,9 +22,13 @@ namespace Cryptdrive
                 throw new Exception("TODO: GUI Error");
             }
             Logger.instance.logInfo("Working in the folder " + Application.StartupPath);
-            Directory.CreateDirectory("testFolder");
             FileWatcher.instance.monitorDirectory("testFolder");
-            System.Diagnostics.Process.Start("explorer.exe", @"testFolder");
+            FileWatcher.instance.syncClientTreeNode();
+
+            //Directory.CreateDirectory("testFolder");
+            //FileWatcher.instance.monitorDirectory("testFolder");
+            //Open Explorer! DONT DELETE
+            //  System.Diagnostics.Process.Start("explorer.exe", @"testFolder");
         }
 
         private void searchFilePath_Click(object sender, EventArgs e)
