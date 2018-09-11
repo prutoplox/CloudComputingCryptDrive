@@ -22,6 +22,10 @@ namespace Cryptdrive
             {
                 throw new Exception("TODO: GUI Error");
             }
+            Logger.instance.logInfo("Working in the folder " + Application.StartupPath);
+            Directory.CreateDirectory("testFolder");
+            FileWatcher.instance.monitorDirectory("testFolder");
+            System.Diagnostics.Process.Start("explorer.exe", @"testFolder");
         }
 
         private void searchFilePath_Click(object sender, EventArgs e)

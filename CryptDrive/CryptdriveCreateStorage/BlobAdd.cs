@@ -24,7 +24,7 @@ namespace CryptdriveCloud
                 string containerName = req.Query["username"];
                 string fileName = req.Query["filename"];
 
-                if (req.ContentLength == 0)
+                if (req.ContentLength == null || req.ContentLength == 0)
                 {
                     return new BadRequestObjectResult("Could not see raw data");
                 }
