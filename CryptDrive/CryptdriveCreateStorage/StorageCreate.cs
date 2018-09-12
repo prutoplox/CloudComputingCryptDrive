@@ -14,7 +14,7 @@ namespace CryptdriveCloud
     {
         static async public Task<string> create(string username)
         {
-            string usernameContainer = get(username);
+            string usernameContainer = getNameFor(username);
             usernameContainer = Regex.Replace(usernameContainer, "[^a-zA-Z0-9]+", "", RegexOptions.Compiled).ToLower();
 
             //get the storage account.
@@ -29,7 +29,7 @@ namespace CryptdriveCloud
             return (usernameContainer);
         }
 
-        static public string get(string username)
+        static public string getNameFor(string username)
         {
             var sha256 = new SHA256CryptoServiceProvider();
             return UrlBase64.Encode(sha256.ComputeHash(Encoding.UTF8.GetBytes(username))).ToLower();
