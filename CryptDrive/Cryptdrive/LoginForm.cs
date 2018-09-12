@@ -41,14 +41,14 @@ namespace Cryptdrive
                     multipartContent.Add(new StringContent(username), "username");
                     multipartContent.Add(new StringContent(password), "password");
                     var response = await AzureConnectionManager.client.PostAsync(AzureLinkStringStorage.LOGIN_AZURE_STRING, multipartContent);
-                    var responseString = await response.Content.ReadAsStringAsync();
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        Output_tf.Text = responseString;
-                        this.Close();
+                        this.Visible = false;
+                        var responseString = await response.Content.ReadAsStringAsync();
+                        Logger.instance.logInfo("RESPONSE:" + responseString);
+                        FileManager.instance.containerName = responseString;
+                        GUIForm.instance.Visible = true;
                     }
-
-                    Logger.instance.logInfo("RESPONSE:" + responseString);
                     register = false;
                 }
                 else
@@ -59,14 +59,12 @@ namespace Cryptdrive
                         );
 
                     //TODO ErrorMessage
-                    showRegisterFields();
                     register = true;
                     return;
                 }
             }
             else
             {
-                showRegisterFields();
                 register = true;
             }
         }
@@ -118,7 +116,8 @@ namespace Cryptdrive
                     {
                         Output_tf.Text = responseString;
                         FileManager.instance.containerName = responseString;
-                        this.Close();
+                        this.Hide();
+                        GUIForm.instance.Visible = true;
                     }
 
                     Logger.instance.logInfo("RESPONSE:" + responseString);
@@ -165,6 +164,10 @@ namespace Cryptdrive
         }
 
         private void Output_tf_TextChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void LoginForm_FormClosed(object sender, FormClosedEventArgs e)
         {
         }
     }

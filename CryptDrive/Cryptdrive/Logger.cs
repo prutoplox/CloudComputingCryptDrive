@@ -74,30 +74,34 @@ namespace Cryptdrive
         {
             try
             {
-                using (System.IO.StreamWriter writer = new System.IO.StreamWriter(logFilename, append, System.Text.Encoding.UTF8))
+                lock (this)
                 {
-                    if (text != "")
+                    using (System.IO.StreamWriter writer = new System.IO.StreamWriter(logFilename, append, System.Text.Encoding.UTF8))
                     {
-                        Console.WriteLine(text);
-                        if (GUIForm.instance != null)
+                        if (text != "")
                         {
-                            if (GUIForm.instance.InvokeRequired)
+                            Console.WriteLine(text);
+                            if (GUIForm.instance != null)
                             {
-                                GUIForm.instance.Invoke(new MethodInvoker(delegate ()
+                                if (GUIForm.instance.InvokeRequired)
+                                {
+                                    GUIForm.instance.Invoke(new MethodInvoker(delegate ()
+                                    {
+                                        GUIForm.instance.LogToTextBox(text);
+                                    }));
+                                }
+                                else
                                 {
                                     GUIForm.instance.LogToTextBox(text);
-                                }));
+                                }
                             }
                             else
                             {
-                                GUIForm.instance.LogToTextBox(text);
+                                writer.WriteLine("Couldn't log next message to the UI:");
                             }
+                            writer.WriteLine(text);
+                            writer.Flush();
                         }
-                        else
-                        {
-                            writer.WriteLine("Couldn't log next message to the UI:");
-                        }
-                        writer.WriteLine(text);
                     }
                 }
             }

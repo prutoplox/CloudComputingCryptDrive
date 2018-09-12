@@ -9,11 +9,12 @@ namespace Cryptdrive
     public partial class GUIForm : Form
     {
         private bool login = false;
-        public static GUIForm instance;
+        public static GUIForm instance = new GUIForm();
 
         public GUIForm()
         {
             InitializeComponent();
+            this.Visible = false;
             if (instance == null)
             {
                 instance = this;
@@ -53,9 +54,9 @@ namespace Cryptdrive
 
         private void delete_Click(object sender, EventArgs e)
         {
-            List<String> testTemp = new List<string>();
-            testTemp.Add(@"C:\Users\mariu\OneDrive\Desktop\Neuer Ordner (2)\awda.txt");
-            FileManager.instance.syncFiles(testTemp);
+            //TODO ONLY USE CHECKED FILES
+            IEnumerable<string> paths = FileWatcher.instance.MonitoredFiles;
+            FileManager.instance.deleteFiles(paths);
         }
 
         private void searchFile_Click(object sender, EventArgs e)
@@ -127,15 +128,6 @@ namespace Cryptdrive
             output.Text += textLine + Environment.NewLine;
         }
 
-        private void GUI_Load(object sender, EventArgs e)
-        {
-            if (login == false)
-            {
-                LoginForm loginForm = new LoginForm();
-                loginForm.ShowDialog();
-            }
-        }
-
         private void pathTextField_TextChanged(object sender, EventArgs e)
         {
             if (String.IsNullOrWhiteSpace(pathTextField.Text))
@@ -155,7 +147,19 @@ namespace Cryptdrive
 
         private void button1_Click(object sender, EventArgs e)
         {
+        }
 
+        private void GUIForm_Load(object sender, EventArgs e)
+        {
+        }
+
+        private void GUIForm_Activated(object sender, EventArgs e)
+        {
+        }
+
+        private void Debug_bt_Click(object sender, EventArgs e)
+        {
+            FileNameStorage.instance.saveMappingToCloud();
         }
     }
 }
