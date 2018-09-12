@@ -174,6 +174,7 @@
             this.Controls.Add(this.Login_button);
             this.Name = "LoginForm";
             this.Text = "CryptDrive Login / Register";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LoginForm_FormClosed);
             this.Load += new System.EventHandler(this.LoginForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

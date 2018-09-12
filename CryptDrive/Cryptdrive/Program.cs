@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Cryptdrive
@@ -13,7 +15,7 @@ namespace Cryptdrive
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new GUIForm());
+            Application.Run(new LoginForm());
         }
     }
 }

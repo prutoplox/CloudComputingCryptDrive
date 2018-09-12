@@ -32,7 +32,7 @@ namespace CryptdriveCloud
         static public string get(string username)
         {
             var sha256 = new SHA256CryptoServiceProvider();
-            return UrlBase64.Encode(sha256.ComputeHash(Encoding.UTF8.GetBytes(username)));
+            return UrlBase64.Encode(sha256.ComputeHash(Encoding.UTF8.GetBytes(username))).ToLower();
         }
     }
 }

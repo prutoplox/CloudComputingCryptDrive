@@ -37,6 +37,7 @@
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.Logout_bt = new System.Windows.Forms.Button();
             this.Settings_btn = new System.Windows.Forms.Button();
+            this.Debug_bt = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // delete
@@ -117,11 +118,25 @@
             this.Settings_btn.Text = "Settings";
             this.Settings_btn.UseVisualStyleBackColor = true;
             // 
+            // Debug_bt
+            // 
+            this.Debug_bt.BackColor = System.Drawing.Color.Maroon;
+            this.Debug_bt.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.55F);
+            this.Debug_bt.ForeColor = System.Drawing.Color.LawnGreen;
+            this.Debug_bt.Location = new System.Drawing.Point(688, 323);
+            this.Debug_bt.Name = "Debug_bt";
+            this.Debug_bt.Size = new System.Drawing.Size(220, 140);
+            this.Debug_bt.TabIndex = 8;
+            this.Debug_bt.Text = "DEBUG !";
+            this.Debug_bt.UseVisualStyleBackColor = false;
+            this.Debug_bt.Click += new System.EventHandler(this.Debug_bt_Click);
+            // 
             // GUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(920, 475);
+            this.Controls.Add(this.Debug_bt);
             this.Controls.Add(this.Settings_btn);
             this.Controls.Add(this.Logout_bt);
             this.Controls.Add(this.treeView1);
@@ -131,8 +146,9 @@
             this.Controls.Add(this.searchFile);
             this.Controls.Add(this.delete);
             this.Name = "GUIForm";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.GUI_Load);
+            this.Text = "7";
+            this.Activated += new System.EventHandler(this.GUIForm_Activated);
+            this.Load += new System.EventHandler(this.GUIForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -149,6 +165,7 @@
         public System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.Button Logout_bt;
         private System.Windows.Forms.Button Settings_btn;
+        private System.Windows.Forms.Button Debug_bt;
     }
 }
 

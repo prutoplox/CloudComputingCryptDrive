@@ -19,6 +19,7 @@ namespace CryptdriveCloud
         {
             try
             {
+                //DbManager.instance.CreateTableIfNotExists();
                 Microsoft.Extensions.Primitives.StringValues usernameReturn;
                 bool gotUsername = req.Form.TryGetValue("username", out usernameReturn);
 
@@ -39,7 +40,7 @@ namespace CryptdriveCloud
                 {
                     if (result[1] == username && result[2] == password)
                     {
-                        return new OkObjectResult($"{username} logged in with {password}");
+                        return new OkObjectResult($"{StorageCreate.get(username)}");
                     }
                     else
                     {
