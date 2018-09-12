@@ -48,7 +48,7 @@ namespace Cryptdrive
                 {
                     byte[] encrpytedAndCompressedByteArray = encryptAndCompressFile(path);
                     string cryptDriveFilePath = convertPathToCryptPath(path);
-                    uploadFileData(cryptDriveFilePath, encrpytedAndCompressedByteArray);
+                    uploadFileDataHashedName(cryptDriveFilePath, encrpytedAndCompressedByteArray);
                 }
                 catch (Exception e)
                 {
@@ -59,14 +59,43 @@ namespace Cryptdrive
             }
         }
 
-        private async void uploadFileData(string path, byte[] data)
+        public void uploadFileDataHashedName(string path, byte[] data)
+        {
+            string blobname = FileNameStorage.instance.hashPath(path);
+            uploadFileData(blobname, data);
+        }
+
+        public async void uploadFileData(string path, byte[] data)
         {
             var content = new ByteArrayContent(data);
-            string blobname = Codec.encrypt(path);
             string username = containerName;
-            string fullURL = AzureLinkStringStorage.BLOB_ADD_AZURE_STRING + "&username=" + username + "&filename=" + blobname;
+            string fullURL = AzureLinkStringStorage.BLOB_ADD_AZURE_STRING + "?username=" + username + "&filename=" + path;
             var response = await AzureConnectionManager.client.PostAsync(fullURL, content);
             var responseString = await response.Content.ReadAsStringAsync();
+            Logger.instance.logInfo("RESPONSE:" + responseString);
+        }
+
+        public async void downloadFile(string blobname, string path)
+        {
+            string fullURL = AzureLinkStringStorage.BLOB_GET_AZURE_STRING + "?containername=" + containerName + "&blobname=" + blobname;
+            var response = await AzureConnectionManager.client.PostAsync(fullURL, null);
+            var responseString = await response.Content.ReadAsStringAsync();
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                Logger.instance.logError("File " + blobname + " does not exist in Cloud");
+            }
+
+            try
+            {
+                using (var client = new WebClient())
+                {
+                    client.DownloadFile(responseString, path);
+                }
+            }
+            catch (WebException e)
+            {
+                Logger.instance.logError("Could not dowload the file " + blobname + "!");
+            }
             Logger.instance.logInfo("RESPONSE:" + responseString);
         }
 
@@ -91,9 +120,29 @@ namespace Cryptdrive
             return cryptFolderName + ">" + pathRelativeToMonitored;
         }
 
-        public void deleteFiles(List<string> files)
+        public async void deleteFiles(IEnumerable<string> files)
         {
-            // Todo Call Azure BlobDelete
+            string containername = containerName;
+            string fullURL = AzureLinkStringStorage.DELETE_AZURE_STRING + "?containername=" + containername;
+            var content = new MultipartFormDataContent();
+            int i = 0;
+            foreach (string path in files)
+            {
+                var stringContent = new StringContent(FileNameStorage.instance.hashPath(path));
+                content.Add(stringContent, i++.ToString());
+            }
+            var response = await AzureConnectionManager.client.PostAsync(fullURL, content);
+            var responseString = await response.Content.ReadAsStringAsync();
+            Logger.instance.logInfo("RESPONSE:" + responseString);
+        }
+
+        public async void getBlobs()
+        {
+            string containername = containerName;
+            string fullURL = AzureLinkStringStorage.BLOB_GET_AZURE_STRING + "?containername=" + containername;
+            var response = await AzureConnectionManager.client.PostAsync(fullURL, null);
+            var responseString = await response.Content.ReadAsStringAsync();
+            Logger.instance.logInfo("RESPONSE:" + responseString);
         }
     }
 }

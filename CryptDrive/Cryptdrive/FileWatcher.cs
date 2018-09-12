@@ -10,6 +10,8 @@ namespace Cryptdrive
     class FileWatcher
     {
         private static string folderMappingFile = "Foldermapping.txt";
+        public static FileWatcher instance = new FileWatcher();
+        private Dictionary<string, FileSystemWatcher> fileSystemWatchers = new Dictionary<string, FileSystemWatcher>();
 
         private FileWatcher()
         {
@@ -29,13 +31,10 @@ namespace Cryptdrive
                 }
                 catch (Exception e)
                 {
-                    Logger.instance.logError("Could not load the encryption key from the file, creating a new key for this session.");
+                    Logger.instance.logError("Could not load the folder mapping from the mapping file, will create a new mapping");
                 }
             }
         }
-
-        public static FileWatcher instance = new FileWatcher();
-        private Dictionary<string, FileSystemWatcher> fileSystemWatchers = new Dictionary<string, FileSystemWatcher>();
 
         public IEnumerable<string> MonitoredFolders
         {
@@ -50,6 +49,20 @@ namespace Cryptdrive
             get
             {
                 return fileSystemWatchers.Select(X => X.Key);
+            }
+        }
+
+        public IEnumerable<string> MonitoredFiles
+        {
+            get
+            {
+                foreach (var folder in MonitoredFolders)
+                {
+                    foreach (var file in Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories))
+                    {
+                        yield return FileManager.convertPathToCryptPath(file);
+                    }
+                }
             }
         }
 

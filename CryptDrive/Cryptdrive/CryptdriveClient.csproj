@@ -56,7 +56,7 @@
     <Compile Include="AzureConnectionManager.cs" />
     <Compile Include="AzureLinkStringStorage.cs" />
     <Compile Include="Compressor.cs" />
-    <Compile Include="FileStorage.cs" />
+    <Compile Include="FileNameStorage.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="FileWatcher.cs" />
     <Compile Include="LoginForm.cs">
