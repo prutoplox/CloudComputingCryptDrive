@@ -35,11 +35,13 @@ namespace CryptdriveCloud
                 string password = passwordReturn.ToString();
                 string username = usernameReturn.ToString();
                 string email = emailReturn.ToString();
-                string container = await StorageCreate.create(username);
+                string container = StorageCreate.getNameFor(username);
 
                 bool result = DbManager.RegisterUser(username, password, email, container);
+
                 if (result)
                 {
+                    await StorageCreate.create(username);
                     return new OkObjectResult($"{container}");
                 }
                 else
