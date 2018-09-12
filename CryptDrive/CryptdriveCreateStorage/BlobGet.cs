@@ -3,27 +3,52 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace CryptdriveCloud
 {
     public static class BlobGet
     {
+        /// <summary>
+        /// Returns a link to the blob which can then be downloaded
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
         [FunctionName("BlobGet")]
-        public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequest req, ILogger log)
+        public async static Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequest req, ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-
-            string name = req.Query["name"];
-
-            string requestBody = new StreamReader(req.Body).ReadToEnd();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
-
-            return name != null
-                ? (ActionResult)new OkObjectResult($"Hello, {name}")
-                : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
+            try
+            {
+                log.LogInformation("C# HTTP trigger function starts process a request.");
+                string containerName = req.Query["containername"];
+                string blobName = req.Query["blobname"];
+                CloudStorageAccount storageAccount = CloudStorageAccount.Parse(Cryptdrive.AzureLinkStringStorage.STORAGE_CONNECTION_STRING);
+                var backupBlobClient = storageAccount.CreateCloudBlobClient();
+                var cloudBlobContainer = backupBlobClient.GetContainerReference(containerName);
+                CloudBlob blob = cloudBlobContainer.GetBlobReference(blobName);
+                if (await blob.ExistsAsync())
+                {
+                    return new OkObjectResult(blob.Uri.ToString());
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Error while getting File");
+                }
+            }
+            catch (Exception e)
+            {
+                log.LogError(e.Message);
+                log.LogError(e.StackTrace);
+                return new UnprocessableEntityObjectResult(e.Message);
+            }
         }
     }
 }

@@ -20,7 +20,6 @@ namespace CryptdriveCloud
             try
             {
                 log.LogInformation("C# HTTP trigger function starts process a request.");
-                string connectionString = Cryptdrive.AzureLinkStringStorage.STORAGE_CONNECTION_STRING;
                 string containerName = req.Query["username"];
                 string fileName = req.Query["filename"];
 
@@ -37,25 +36,20 @@ namespace CryptdriveCloud
                 {
                     return new BadRequestObjectResult("Content to upload is too large");
                 }
+
                 byte[] data = new byte[(int)req.ContentLength];
                 req.Body.Read(data, 0, (int)req.ContentLength);
-
-                // Retrieve storage account information from connection string
-                // How to create a storage connection string - http://msdn.microsoft.com/en-us/library/azure/ee758697.aspx
-                CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connectionString);
-
                 log.LogInformation("Reading container name");
-
-                // Create a blob client for interacting with the blob service.
-                CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-                CloudBlobContainer container = blobClient.GetContainerReference(containerName);
+                CloudBlobContainer container = BlobManager.getBlobContainer(containerName);
 
                 // Upload a BlockBlob to the newly created container
                 log.LogInformation("Uploading BlockBlob");
                 CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
+
                 await blockBlob.UploadFromByteArrayAsync(data, 0, data.Length);
 
                 log.LogInformation("C# HTTP trigger function finish process a request.");
+
                 return new OkObjectResult($"Uploaded {fileName} to {containerName} which had a size of {req.ContentLength}");
             }
             catch (Exception e)

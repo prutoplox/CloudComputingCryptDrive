@@ -5,12 +5,24 @@ using System.Data.SqlClient;
 
 namespace CryptdriveCloud
 {
-    static class DbManager
+    class DbManager
     {
         private static SqlConnectionStringBuilder cb = CreateConnectionString();
 
+        public static void CreateTableIfNotExists()
+        {
+            if (!doesTableExists())
+            {
+                CreateTableUser();
+            }
+        }
+
+        static DbManager()
+        {
+        }
+
         //DB Manager System methods
-        private static SqlConnectionStringBuilder CreateConnectionString()
+        public static SqlConnectionStringBuilder CreateConnectionString()
         {
             var cb = new SqlConnectionStringBuilder();
             cb.DataSource = Cryptdrive.AzureLinkStringStorage.DB_DATASOURCE;
@@ -20,7 +32,7 @@ namespace CryptdriveCloud
             return cb;
         }
 
-        static void SumbitSqlCommand(SqlConnection connection, string sql)
+        public static int SumbitSqlCommand(SqlConnection connection, string sql)
         {
             using (var command = new SqlCommand(sql, connection))
             {
@@ -28,10 +40,11 @@ namespace CryptdriveCloud
                 int rowsAffected = command.ExecuteNonQuery();
                 connection.Close();
                 Console.WriteLine(rowsAffected + " = rows affected.");
+                return rowsAffected;
             }
         }
 
-        static List<string> SubmitSelectUser(SqlConnection connection, string sql)
+        public static List<string> SubmitSelectUser(SqlConnection connection, string sql)
         {
             using (var command = new SqlCommand(sql, connection))
             {
@@ -149,7 +162,7 @@ namespace CryptdriveCloud
 
         // SQL String Methods. Return formatted SQL String
 
-        static string CreateUserDbSQL()
+        public static string CreateUserDbSQL()
         {
             string createUserTable = @"CREATE TABLE Users
                                         (
@@ -162,40 +175,65 @@ namespace CryptdriveCloud
             return createUserTable;
         }
 
-        static string InsertIntoUserSQL(string username, string password, string email, string container)
+        public static string InsertIntoUserSQL(string username, string password, string email, string container)
         {
             string returnstring = String.Format(@"INSERT INTO [dbo].[Users] (Username,Pw,Email,Container) VALUES('{0}','{1}','{2}','{3}');", username, password, email, container);
             return returnstring;
         }
 
-        static string DeleteUserSQL(string username)
+        public static string DeleteUserSQL(string username)
         {
             string returnstring = String.Format(@"DELETE FROM [dbo].[Users] WHERE Username='{0}'", username);
             return returnstring;
         }
 
-        static string UpdateUserPasswordSQL(string username, string newPassword)
+        public static string UpdateUserPasswordSQL(string username, string newPassword)
         {
             string returnstring = String.Format(@"UPDATE [dbo].[Users] SET [dbo].[Users].[Pw] = '{0}' WHERE [dbo].[Users].[Username] = '{1}'", newPassword, username);
             return returnstring;
         }
 
-        static string UpdateUserEmailSQL(string username, string newEmail)
+        public static string UpdateUserEmailSQL(string username, string newEmail)
         {
             string returnstring = String.Format(@"UPDATE [dbo].[Users] SET [dbo].[Users].[Email] = '{0}' WHERE [dbo].[Users].[Username] = '{1}'", newEmail, username);
             return returnstring;
         }
 
-        static string DropUserTable()
+        public static string DropUserTable()
         {
             string returnstring = String.Format(@"DROP TABLE [dbo].[Users];");
             return returnstring;
         }
 
-        static string GetUserSQL(string username)
+        public static string GetUserSQL(string username)
         {
             string returnstring = String.Format(@"SELECT * FROM [dbo].[Users] WHERE Username='{0}'", username);
             return returnstring;
+        }
+
+        public static bool doesTableExists()
+        {
+            try
+            {
+                using (var connection = new SqlConnection(cb.ConnectionString))
+                {
+                    string checkIfTableExistsString = "SELECT * FROM sys.tables t JOIN sys.schemas s ON t.schema_id = s.schema_id WHERE s.name = 'dbo' AND t.name = 'Users'";
+                    int rows = SumbitSqlCommand(connection, checkIfTableExistsString);
+                    if (rows == 0)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e.ToString());
+                return false;
+            }
         }
     }
 }
