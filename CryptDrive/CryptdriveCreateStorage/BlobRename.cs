@@ -50,6 +50,14 @@ namespace CryptdriveCloud
                     log.LogInformation("Completion time: {0}", destBlob.CopyState.CompletionTime);
                     log.LogInformation("Bytes copied: {0}", destBlob.CopyState.BytesCopied.ToString());
                     log.LogInformation("Total bytes: {0}", destBlob.CopyState.TotalBytes.ToString());
+
+                    await releaseLease(sourceBlob);
+
+                    log.LogInformation("Released the lease, now comes the deleting...");
+
+                    //delete old file after copy is done
+                    await sourceBlob.DeleteIfExistsAsync();
+                    log.LogInformation("... file deleted, rename finished");
                 }
                 else
                 {
@@ -63,8 +71,17 @@ namespace CryptdriveCloud
             }
             finally
             {
-                // Break the lease on the source blob.
-                if (sourceBlob != null)
+                await releaseLease(sourceBlob);
+            }
+            return (ActionResult)new OkObjectResult($"Hello, ");
+        }
+
+        private static async Task releaseLease(CloudBlockBlob sourceBlob)
+        {
+            // Break the lease on the source blob.
+            if (sourceBlob != null)
+            {
+                if (await sourceBlob.ExistsAsync())
                 {
                     await sourceBlob.FetchAttributesAsync();
 
@@ -74,7 +91,6 @@ namespace CryptdriveCloud
                     }
                 }
             }
-            return (ActionResult)new OkObjectResult($"Hello, ");
         }
     }
 }
