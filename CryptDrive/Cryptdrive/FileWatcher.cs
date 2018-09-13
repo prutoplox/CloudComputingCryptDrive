@@ -112,9 +112,10 @@ namespace Cryptdrive
             syncClientTreeNode();
         }
 
-        private void fileSystemWatcher_Renamed(object sender, FileSystemEventArgs e)
+        private void fileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
         {
-            Logger.instance.logInfo("File renamed: " + e.Name);
+            Logger.instance.logInfo("File " + e.OldFullPath + " was renamed to " + e.FullPath);
+            FileManager.instance.renameFileHashedNames(e.OldFullPath, e.FullPath);
             syncClientTreeNode();
         }
 
