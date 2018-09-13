@@ -26,12 +26,12 @@ namespace Cryptdrive
 
         public List<String> getClientFiles()
         {
-            return new List<String>();
+            throw new NotImplementedException();
         }
 
         public List<String> getCloudFiles()
         {
-            return new List<String>();
+            throw new NotImplementedException();
         }
 
         public void addFiles(List<string> files)
@@ -40,22 +40,32 @@ namespace Cryptdrive
             syncFiles(files);
         }
 
+        public void addFile(string path)
+        {
+            syncFile(path);
+        }
+
         public void syncFiles(List<string> files)
         {
             foreach (string path in files)
             {
-                try
-                {
-                    byte[] encrpytedAndCompressedByteArray = encryptAndCompressFile(path);
-                    string cryptDriveFilePath = convertPathToCryptPath(path);
-                    uploadFileDataHashedName(cryptDriveFilePath, encrpytedAndCompressedByteArray);
-                }
-                catch (Exception e)
-                {
-                    Logger.instance.logError("The file could not be read: " + path);
-                    Logger.instance.logError(e.Message);
-                    Logger.instance.logError(e.StackTrace);
-                }
+                syncFile(path);
+            }
+        }
+
+        private void syncFile(string path)
+        {
+            try
+            {
+                byte[] encrpytedAndCompressedByteArray = encryptAndCompressFile(path);
+                string cryptDriveFilePath = convertPathToCryptPath(path);
+                uploadFileDataHashedName(cryptDriveFilePath, encrpytedAndCompressedByteArray);
+            }
+            catch (Exception e)
+            {
+                Logger.instance.logError("The file could not be read: " + path);
+                Logger.instance.logError(e.Message);
+                Logger.instance.logError(e.StackTrace);
             }
         }
 
@@ -132,15 +142,6 @@ namespace Cryptdrive
                 content.Add(stringContent, i++.ToString());
             }
             var response = await AzureConnectionManager.client.PostAsync(fullURL, content);
-            var responseString = await response.Content.ReadAsStringAsync();
-            Logger.instance.logInfo("RESPONSE:" + responseString);
-        }
-
-        public async void getBlobs()
-        {
-            string containername = containerName;
-            string fullURL = AzureLinkStringStorage.BLOB_GET_AZURE_STRING + "?containername=" + containername;
-            var response = await AzureConnectionManager.client.PostAsync(fullURL, null);
             var responseString = await response.Content.ReadAsStringAsync();
             Logger.instance.logInfo("RESPONSE:" + responseString);
         }
