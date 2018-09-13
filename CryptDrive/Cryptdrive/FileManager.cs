@@ -70,6 +70,28 @@ namespace Cryptdrive
             }
         }
 
+        public void renameFiles(List<string> oldFileNames, List<string> newFileNames)
+        {
+            if (oldFileNames.Count != newFileNames.Count)
+            {
+                throw new Exception("Number of filenames must match!");
+            }
+
+            for (int i = 0; i < oldFileNames.Count; i++)
+            {
+                renameFileAsync(oldFileNames[i], newFileNames[i]);
+            }
+        }
+
+        public async void renameFileAsync(string oldPath, string newPath)
+        {
+            string fullURL = AzureLinkStringStorage.BLOB_RENAME_AZURE_STRING + AzureLinkStringStorage.LINKING_INITALCHARACTER +
+                "container=" + containerName + "&filenameOld=" + FileNameStorage.instance.hashPath(oldPath) + "&filenameNew=" + FileNameStorage.instance.hashPath(newPath);
+            var response = await AzureConnectionManager.client.PostAsync(fullURL, null);
+            var responseString = await response.Content.ReadAsStringAsync();
+            Logger.instance.logInfo("RESPONSE:" + responseString);
+        }
+
         public void deleteFile(string file)
         {
             deleteFiles(new List<string>() { file });
