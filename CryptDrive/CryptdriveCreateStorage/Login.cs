@@ -40,7 +40,7 @@ namespace CryptdriveCloud
                 {
                     if (result[1] == username && result[2] == password)
                     {
-                        return new OkObjectResult($"{StorageCreate.get(username)}");
+                        return new OkObjectResult($"{StorageCreate.getNameFor(username)}");
                     }
                     else
                     {

@@ -69,6 +69,27 @@ namespace Cryptdrive
             }
         }
 
+        public void deleteFile(string file)
+        {
+            deleteFiles(new List<string>() { file });
+        }
+
+        public async void deleteFiles(IEnumerable<string> files)
+        {
+            string containername = containerName;
+            string fullURL = AzureLinkStringStorage.DELETE_AZURE_STRING + AzureLinkStringStorage.LINKING_INITALCHARACTER + "containername =" + containername;
+            var content = new MultipartFormDataContent();
+            int i = 0;
+            foreach (string path in files)
+            {
+                var stringContent = new StringContent(FileNameStorage.instance.hashPath(path));
+                content.Add(stringContent, i++.ToString());
+            }
+            var response = await AzureConnectionManager.client.PostAsync(fullURL, content);
+            var responseString = await response.Content.ReadAsStringAsync();
+            Logger.instance.logInfo("RESPONSE:" + responseString);
+        }
+
         public void uploadFileDataHashedName(string path, byte[] data)
         {
             string blobname = FileNameStorage.instance.hashPath(path);
@@ -79,7 +100,7 @@ namespace Cryptdrive
         {
             var content = new ByteArrayContent(data);
             string username = containerName;
-            string fullURL = AzureLinkStringStorage.BLOB_ADD_AZURE_STRING + "?username=" + username + "&filename=" + path;
+            string fullURL = AzureLinkStringStorage.BLOB_ADD_AZURE_STRING + AzureLinkStringStorage.LINKING_INITALCHARACTER + "username=" + username + "&filename=" + path;
             var response = await AzureConnectionManager.client.PostAsync(fullURL, content);
             var responseString = await response.Content.ReadAsStringAsync();
             Logger.instance.logInfo("RESPONSE:" + responseString);
@@ -87,7 +108,7 @@ namespace Cryptdrive
 
         public async void downloadFile(string blobname, string path)
         {
-            string fullURL = AzureLinkStringStorage.BLOB_GET_AZURE_STRING + "?containername=" + containerName + "&blobname=" + blobname;
+            string fullURL = AzureLinkStringStorage.BLOB_GET_AZURE_STRING + AzureLinkStringStorage.LINKING_INITALCHARACTER + "containername=" + containerName + "&blobname=" + blobname;
             var response = await AzureConnectionManager.client.PostAsync(fullURL, null);
             var responseString = await response.Content.ReadAsStringAsync();
             if (response.StatusCode != HttpStatusCode.OK)
@@ -128,22 +149,6 @@ namespace Cryptdrive
 
             //Prepends the virtual path of the folder in the cryptdrive where it's stored and removes unneeded parts of the full path on the client
             return cryptFolderName + ">" + pathRelativeToMonitored;
-        }
-
-        public async void deleteFiles(IEnumerable<string> files)
-        {
-            string containername = containerName;
-            string fullURL = AzureLinkStringStorage.DELETE_AZURE_STRING + "?containername=" + containername;
-            var content = new MultipartFormDataContent();
-            int i = 0;
-            foreach (string path in files)
-            {
-                var stringContent = new StringContent(FileNameStorage.instance.hashPath(path));
-                content.Add(stringContent, i++.ToString());
-            }
-            var response = await AzureConnectionManager.client.PostAsync(fullURL, content);
-            var responseString = await response.Content.ReadAsStringAsync();
-            Logger.instance.logInfo("RESPONSE:" + responseString);
         }
     }
 }
