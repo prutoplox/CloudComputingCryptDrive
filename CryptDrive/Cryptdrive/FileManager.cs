@@ -102,10 +102,20 @@ namespace Cryptdrive
             deleteFiles(new List<string>() { file });
         }
 
+        public void deleteCryptFile(string file)
+        {
+            deleteFiles(new List<string>() { convertPathToCryptPath(file) });
+        }
+
+        public void deleteCryptFiles(IEnumerable<string> files)
+        {
+            deleteFiles(files.Select(X => convertPathToCryptPath(X)));
+        }
+
         public async void deleteFiles(IEnumerable<string> files)
         {
             string containername = containerName;
-            string fullURL = AzureLinkStringStorage.DELETE_AZURE_STRING + AzureLinkStringStorage.LINKING_INITALCHARACTER + "containername =" + containername;
+            string fullURL = AzureLinkStringStorage.DELETE_AZURE_STRING + AzureLinkStringStorage.LINKING_INITALCHARACTER + "containername=" + containername;
             var content = new MultipartFormDataContent();
             int i = 0;
             foreach (string path in files)
@@ -142,6 +152,7 @@ namespace Cryptdrive
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 Logger.instance.logError("File " + blobname + " does not exist in Cloud");
+                return;
             }
 
             try
@@ -155,7 +166,6 @@ namespace Cryptdrive
             {
                 Logger.instance.logError("Could not dowload the file " + blobname + "!");
             }
-            Logger.instance.logInfo("RESPONSE:" + responseString);
         }
 
         private static byte[] encryptAndCompressFile(string path)

@@ -100,29 +100,77 @@ namespace Cryptdrive
 
         private void FileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
         {
-            Logger.instance.logInfo("File changed: " + e.Name);
-            FileManager.instance.syncFile(e.FullPath);
+            //TODO make sure that  File.GetAttributes(e.FullPath) never causes an unhandeled exception, had some cases where it failed for some yet unknownn reason if it was a directory
+            if (false && File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
+            {
+                Logger.instance.logInfo("Folder changed: " + e.Name);
+
+                //The changed path is a directory, iterate over all files in it
+                FileManager.instance.syncFiles(filesInFolder(e.FullPath));
+            }
+            else
+            {
+                Logger.instance.logInfo("File changed: " + e.Name);
+                FileManager.instance.syncFile(e.FullPath);
+            }
             syncClientTreeNode();
         }
 
         private void fileSystemWatcher_Created(object sender, FileSystemEventArgs e)
         {
-            Logger.instance.logInfo("File created: " + e.Name);
-            FileManager.instance.syncFile(e.FullPath);
+            if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
+            {
+                Logger.instance.logInfo("Folder created: " + e.Name);
+
+                //The changed path is a directory, iterate over all files in it
+                FileManager.instance.syncFiles(filesInFolder(e.FullPath));
+            }
+            else
+            {
+                Logger.instance.logInfo("File created: " + e.Name);
+                FileManager.instance.syncFile(e.FullPath);
+            }
+
             syncClientTreeNode();
         }
 
         private void fileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
         {
-            Logger.instance.logInfo("File " + e.OldFullPath + " was renamed to " + e.FullPath);
-            FileManager.instance.renameFileHashedNames(e.OldFullPath, e.FullPath);
+            if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
+            {
+                Logger.instance.logInfo("Folder " + e.OldFullPath + " was renamed to " + e.FullPath);
+
+                //The changed path is a directory, iterate over all files in it
+                foreach (var fileName in filesInFolder(e.FullPath))
+                {
+                    FileManager.instance.renameFileHashedNames(fileName.Replace(e.FullPath, e.OldFullPath), fileName);
+                }
+            }
+            else
+            {
+                Logger.instance.logInfo("File " + e.OldFullPath + " was renamed to " + e.FullPath);
+                FileManager.instance.renameFileHashedNames(e.OldFullPath, e.FullPath);
+            }
+
             syncClientTreeNode();
         }
 
         private void fileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
         {
-            Logger.instance.logInfo("File deleted: " + e.Name);
-            FileManager.instance.deleteFile(e.FullPath);
+            //TODO search all files which where in that folder
+            if (false)// && File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
+            {
+                Logger.instance.logInfo("Folder deleted: " + e.Name);
+
+                //The changed path is a directory, iterate over all files in it
+                FileManager.instance.deleteFiles(filesInFolder(e.FullPath));
+            }
+            else
+            {
+                Logger.instance.logInfo("File deleted: " + e.Name);
+                FileManager.instance.deleteCryptFile(e.FullPath);
+            }
+
             syncClientTreeNode();
         }
 
@@ -162,6 +210,24 @@ namespace Cryptdrive
             }
             Logger.instance.logError("File was not in monitored folder!");
             return "";
+        }
+
+        public List<string> filesInFolder(string path)
+        {
+            return filesInFolder(new DirectoryInfo(path)).Select(X => X.FullName).ToList();
+        }
+
+        private IEnumerable<FileInfo> filesInFolder(DirectoryInfo directoryInfo)
+        {
+            foreach (var directory in directoryInfo.GetDirectories())
+            {
+                foreach (var item in filesInFolder(directory))
+                {
+                    yield return item;
+                }
+            }
+            foreach (var file in directoryInfo.GetFiles())
+                yield return file;
         }
     }
 }
