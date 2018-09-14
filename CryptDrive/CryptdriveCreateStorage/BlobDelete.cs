@@ -40,6 +40,9 @@ namespace CryptdriveCloud
                 {
                     StringValues returns;
                     req.Form.TryGetValue(key, out returns);
+
+                    log.LogInformation("Trying to delete " + returns);
+                    log.LogInformation("    From key " + key);
                     await container.GetBlockBlobReference(returns).DeleteIfExistsAsync();
                 }
                 return new OkObjectResult($"lul");
