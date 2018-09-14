@@ -22,6 +22,12 @@ namespace CryptdriveCloud
             {
                 log.LogInformation("C# HTTP trigger function starts process a request.");
                 string containerName = req.Query["containername"];
+                if (containerName == null)
+                {
+                    string errorMessage = "No container name given!";
+                    log.LogError(errorMessage);
+                    return new BadRequestObjectResult(errorMessage);
+                }
 
                 CloudStorageAccount storageAccount = CloudStorageAccount.Parse(Cryptdrive.AzureLinkStringStorage.STORAGE_CONNECTION_STRING);
                 var backupBlobClient = storageAccount.CreateCloudBlobClient();

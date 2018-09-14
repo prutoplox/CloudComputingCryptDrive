@@ -19,9 +19,31 @@ namespace CryptdriveCloud
         public static async System.Threading.Tasks.Task<IActionResult> RunAsync([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequest req, ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
+
             string containerName = req.Query["container"];
+            if (containerName == null)
+            {
+                string errorMessage = "No container name given!";
+                log.LogError(errorMessage);
+                return new BadRequestObjectResult(errorMessage);
+            }
+
             string filenameOld = req.Query["filenameOld"];
+            if (filenameOld == null)
+            {
+                string errorMessage = "No old file name given!";
+                log.LogError(errorMessage);
+                return new BadRequestObjectResult(errorMessage);
+            }
+
             string filenameNew = req.Query["filenameNew"];
+            if (filenameNew == null)
+            {
+                string errorMessage = "No new file name given!";
+                log.LogError(errorMessage);
+                return new BadRequestObjectResult(errorMessage);
+            }
+
             log.LogInformation("Got the names:" + filenameOld + "->" + filenameNew + " in " + containerName);
             CloudBlobContainer container = BlobManager.getBlobContainer(containerName);
 

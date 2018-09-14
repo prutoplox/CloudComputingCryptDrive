@@ -20,8 +20,22 @@ namespace CryptdriveCloud
             try
             {
                 log.LogInformation("C# HTTP trigger function starts process a request.");
+
                 string containerName = req.Query["username"];
+                if (containerName == null)
+                {
+                    string errorMessage = "No container name given!";
+                    log.LogError(errorMessage);
+                    return new BadRequestObjectResult(errorMessage);
+                }
+
                 string fileName = req.Query["filename"];
+                if (fileName == null)
+                {
+                    string errorMessage = "No file name given!";
+                    log.LogError(errorMessage);
+                    return new BadRequestObjectResult(errorMessage);
+                }
 
                 if (req.ContentLength == null || req.ContentLength == 0)
                 {
