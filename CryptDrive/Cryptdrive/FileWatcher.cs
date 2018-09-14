@@ -212,22 +212,12 @@ namespace Cryptdrive
             return "";
         }
 
-        public List<string> filesInFolder(string path)
+        public IEnumerable<string> filesInFolder(string path)
         {
-            return filesInFolder(new DirectoryInfo(path)).Select(X => X.FullName).ToList();
-        }
-
-        private IEnumerable<FileInfo> filesInFolder(DirectoryInfo directoryInfo)
-        {
-            foreach (var directory in directoryInfo.GetDirectories())
+            foreach (var file in Directory.GetFiles(path, "*.*", SearchOption.AllDirectories))
             {
-                foreach (var item in filesInFolder(directory))
-                {
-                    yield return item;
-                }
-            }
-            foreach (var file in directoryInfo.GetFiles())
                 yield return file;
+            }
         }
     }
 }
