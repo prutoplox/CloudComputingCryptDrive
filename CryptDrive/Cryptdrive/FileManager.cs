@@ -46,7 +46,7 @@ namespace Cryptdrive
             syncFile(path);
         }
 
-        public void syncFiles(List<string> files)
+        public void syncFiles(IEnumerable<string> files)
         {
             foreach (string path in files)
             {
