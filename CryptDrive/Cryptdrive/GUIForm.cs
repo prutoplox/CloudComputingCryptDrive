@@ -35,6 +35,7 @@ namespace Cryptdrive
             }
             System.Diagnostics.Process.Start("explorer.exe", @"testFolder");
             FileWatcher.instance.syncClientTreeNode();
+            FileNameStorage.instance.Init();
         }
 
         private void searchFilePath_Click(object sender, EventArgs e)
