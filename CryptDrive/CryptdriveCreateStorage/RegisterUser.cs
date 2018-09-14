@@ -18,6 +18,9 @@ namespace CryptdriveCloud
         {
             try
             {
+                log.LogInformation("C# HTTP trigger function starts process a request.");
+                log.LogInformation("Request is a " + System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
                 Microsoft.Extensions.Primitives.StringValues usernameReturn;
                 bool gotUsername = req.Form.TryGetValue("username", out usernameReturn);
 

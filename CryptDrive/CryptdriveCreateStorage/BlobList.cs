@@ -21,6 +21,8 @@ namespace CryptdriveCloud
             try
             {
                 log.LogInformation("C# HTTP trigger function starts process a request.");
+                log.LogInformation("Request is a " + System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
                 string containerName = req.Query["containername"];
                 if (containerName == null)
                 {

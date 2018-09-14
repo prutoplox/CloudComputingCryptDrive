@@ -1,4 +1,3 @@
-
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -16,6 +15,7 @@ namespace CryptdriveCloud
         public static IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)]HttpRequest req, ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
+            log.LogInformation("Request is a " + System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
             string name = req.Query["name"];
 
