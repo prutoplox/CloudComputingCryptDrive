@@ -80,7 +80,7 @@ namespace CryptdriveCloud
             {
                 using (var connection = new SqlConnection(cb.ConnectionString))
                 {
-                    string registerUserSql = InsertIntoUserSQL(username, password, email, container);
+                    string registerUserSql = InsertIntoUserSQL(username, password, email, container, 0);
                     SumbitSqlCommand(connection, registerUserSql);
                     return true;
                 }
@@ -160,6 +160,24 @@ namespace CryptdriveCloud
             return true;
         }
 
+        public static bool UpdateUserEmailConfirmed(string username)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(cb.ConnectionString))
+                {
+                    string updateUserEmailConfirmedSQL = UpdateUserEmailConfirmedSQL(username);
+                    SumbitSqlCommand(connection, updateUserEmailConfirmedSQL);
+                    return true;
+                }
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e.ToString());
+                return false;
+            }
+        }
+
         // SQL String Methods. Return formatted SQL String
 
         public static string CreateUserDbSQL()
@@ -171,13 +189,14 @@ namespace CryptdriveCloud
                                         Pw   NVARCHAR(128) NOT NULL,
                                         Email   NVARCHAR(128) NOT NULL,
                                         Container   NVARCHAR(512) NOT NULL,
+                                        Confirmed INT Not NULL
                                         )";
             return createUserTable;
         }
 
-        public static string InsertIntoUserSQL(string username, string password, string email, string container)
+        public static string InsertIntoUserSQL(string username, string password, string email, string container, int confirmed)
         {
-            string returnstring = String.Format(@"INSERT INTO [dbo].[Users] (Username,Pw,Email,Container) VALUES('{0}','{1}','{2}','{3}');", username, password, email, container);
+            string returnstring = String.Format(@"INSERT INTO [dbo].[Users] (Username,Pw,Email,Container,Confirmed) VALUES('{0}','{1}','{2}','{3}','{4}');", username, password, email, container, confirmed);
             return returnstring;
         }
 
@@ -196,6 +215,12 @@ namespace CryptdriveCloud
         public static string UpdateUserEmailSQL(string username, string newEmail)
         {
             string returnstring = String.Format(@"UPDATE [dbo].[Users] SET [dbo].[Users].[Email] = '{0}' WHERE [dbo].[Users].[Username] = '{1}'", newEmail, username);
+            return returnstring;
+        }
+
+        public static string UpdateUserEmailConfirmedSQL(string username)
+        {
+            string returnstring = String.Format(@"UPDATE [dbo].[Users] SET [dbo].[Users].[Confirmed] = {0} WHERE [dbo].[Users].[Username] = '{1}'", 1, username);
             return returnstring;
         }
 
