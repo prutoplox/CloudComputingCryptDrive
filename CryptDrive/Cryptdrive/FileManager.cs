@@ -85,7 +85,7 @@ namespace Cryptdrive
 
         public void renameFileHashedNames(string oldPath, string newPath)
         {
-            renameFileAsync(FileNameStorage.instance.hashPath(oldPath), FileNameStorage.instance.hashPath(newPath));
+            renameFileAsync(FileNameStorage.instance.hashPath(convertPathToCryptPath(oldPath)), FileNameStorage.instance.hashPath(convertPathToCryptPath(newPath)));
         }
 
         public async void renameFileAsync(string oldPath, string newPath)
