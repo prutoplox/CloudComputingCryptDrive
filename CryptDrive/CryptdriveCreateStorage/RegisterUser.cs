@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace CryptdriveCloud
 {
@@ -18,6 +19,7 @@ namespace CryptdriveCloud
         {
             try
             {
+                // TODO WORK IN PROGRESS DONT WORK AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
                 log.LogInformation("C# HTTP trigger function starts process a request.");
                 log.LogInformation("Request is a " + System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -44,8 +46,14 @@ namespace CryptdriveCloud
 
                 if (result)
                 {
-                    await StorageCreate.create(username);
-                    return new OkObjectResult($"{container}");
+                    using (SHA256CryptoServiceProvider hashFunction = new SHA256CryptoServiceProvider())
+                    {
+                        string content = "username=" + username + "&linkId=" + NeoSmart.Utils.UrlBase64.Encode(hashFunction.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password))) + NeoSmart.Utils.UrlBase64.Encode(hashFunction.ComputeHash(System.Text.Encoding.UTF8.GetBytes(email)));
+                        string registrationLink = Cryptdrive.AzureLinkStringStorage.CONFIRM_EMAIL_AZURE_STRING + Cryptdrive.AzureLinkStringStorage.LINKING_INITALCHARACTER + content;
+                        await EmailManager.sendEmailToUser(email, username, registrationLink, log);
+                        await StorageCreate.create(username);
+                        return new OkObjectResult($"{container}");
+                    }
                 }
                 else
                 {

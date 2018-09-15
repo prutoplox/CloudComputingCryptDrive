@@ -4,10 +4,13 @@
     <AzureFunctionsVersion>v2</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Mailjet.Api" Version="1.0.1" />
     <PackageReference Include="Microsoft.Azure.DocumentDB" Version="2.0.0" />
     <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.0.0" />
     <PackageReference Include="Microsoft.Azure.Storage.DataMovement" Version="0.8.1" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.19" />
+    <PackageReference Include="Microsoft.Office.Interop.Outlook" Version="15.0.4797.1003" />
+    <PackageReference Include="MicrosoftOfficeCore" Version="15.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.5.1" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.109.1" />
     <PackageReference Include="UrlBase64" Version="0.1.2" />

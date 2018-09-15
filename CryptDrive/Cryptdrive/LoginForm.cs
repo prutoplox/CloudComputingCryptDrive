@@ -46,6 +46,7 @@ namespace Cryptdrive
                         this.Visible = false;
                         var responseString = await response.Content.ReadAsStringAsync();
                         Logger.instance.logInfo("RESPONSE:" + responseString);
+                        ActiveUserStorage.instance.setActiveUser(username, responseString);
                         FileManager.instance.containerName = responseString;
                         GUIForm.instance.Visible = true;
                     }
@@ -112,10 +113,12 @@ namespace Cryptdrive
                     multipartContent.Add(new StringContent(password), "password");
                     var response = await AzureConnectionManager.client.PostAsync(AzureLinkStringStorage.REGISTER_USER_AZURE_STRING, multipartContent);
                     var responseString = await response.Content.ReadAsStringAsync();
+
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         Output_tf.Text = responseString;
                         FileManager.instance.containerName = responseString;
+                        ActiveUserStorage.instance.setActiveUser(username, responseString);
                         this.Hide();
                         GUIForm.instance.Visible = true;
                     }

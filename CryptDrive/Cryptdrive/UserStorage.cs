@@ -1,8 +1,17 @@
 ﻿namespace Cryptdrive
 {
-    //Speicher link zur storage account und die access keys
-    class UserStorage
+    class ActiveUserStorage
     {
-        public string name;
+        public static ActiveUserStorage instance = new ActiveUserStorage();
+
+        public void setActiveUser(string username, string containername)
+        {
+            this.username = username;
+            this.userContainerName = containername;
+        }
+
+        public string username { get; private set; }
+
+        public string userContainerName { get; private set; }
     }
 }
