@@ -219,5 +219,27 @@ namespace Cryptdrive
                 yield return file;
             }
         }
+
+        public string getFoldernameOfCryptFolder(string cryptfolder)
+        {
+            fileSystemWatchers.TryGetValue(cryptfolder, out FileSystemWatcher watcher);
+            return watcher.Path;
+        }
+
+        public DateTime getLastWriteToCryptFileUTC(string cryptPath)
+        {
+            //Convert to physical path
+            string path = getFoldernameOfCryptFolder(cryptPath);
+
+            //read attribute about last write
+            if (File.Exists(path))
+            {
+                return File.GetLastWriteTimeUtc(path);
+            }
+            else
+            {
+                return DateTime.MinValue;
+            }
+        }
     }
 }

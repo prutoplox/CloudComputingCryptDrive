@@ -35,7 +35,7 @@ namespace Cryptdrive
             throw new NotImplementedException();
         }
 
-        public void addFiles(List<string> files)
+        public void addFiles(IEnumerable<string> files)
         {
             //Same as SyncFiles. Azure replaces old files with new files automatically
             syncFiles(files);
@@ -187,6 +187,15 @@ namespace Cryptdrive
 
             //Prepends the virtual path of the folder in the cryptdrive where it's stored and removes unneeded parts of the full path on the client
             return cryptFolderName + ">" + pathRelativeToMonitored;
+        }
+
+        public static string convertCryptPathToPath(string cryptPath)
+        {
+            string cryptFolderName = cryptPath.Split('>')[0];
+            string relativePath = cryptPath.Split('>')[1];
+
+            //Prepends the virtual path of the folder in the cryptdrive where it's stored and removes unneeded parts of the full path on the client
+            return FileWatcher.instance.getFoldernameOfCryptFolder(cryptFolderName) + "//" + relativePath;
         }
     }
 }
