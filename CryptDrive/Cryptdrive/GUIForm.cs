@@ -23,19 +23,6 @@ namespace Cryptdrive
             {
                 throw new Exception("TODO: GUI Error");
             }
-            Logger.instance.logInfo("Working in the folder " + Application.StartupPath);
-            Directory.CreateDirectory("testFolder");
-            if (FileWatcher.instance.CryptDriveFolders.Contains("main"))
-            {
-                Logger.instance.logDebug("The main crypt folder is already monitored");
-            }
-            else
-            {
-                FileWatcher.instance.monitorDirectory("main", "testFolder");
-            }
-            System.Diagnostics.Process.Start("explorer.exe", @"testFolder");
-            FileWatcher.instance.syncClientTreeNode();
-            FileNameStorage.instance.Init();
         }
 
         private void searchFilePath_Click(object sender, EventArgs e)
@@ -161,6 +148,28 @@ namespace Cryptdrive
         private void Debug_bt_Click(object sender, EventArgs e)
         {
             FileNameStorage.instance.saveMappingToCloud();
+        }
+
+        private void GUIForm_VisibleChanged(object sender, EventArgs e)
+        {
+            if (this.Visible == false)
+            {
+                return;
+            }
+
+            Logger.instance.logInfo("Working in the folder " + Application.StartupPath);
+            Directory.CreateDirectory("testFolder");
+            if (FileWatcher.instance.CryptDriveFolders.Contains("main"))
+            {
+                Logger.instance.logDebug("The main crypt folder is already monitored");
+            }
+            else
+            {
+                FileWatcher.instance.monitorDirectory("main", "testFolder");
+            }
+            System.Diagnostics.Process.Start("explorer.exe", @"testFolder");
+            FileWatcher.instance.syncClientTreeNode();
+            FileNameStorage.instance.Init();
         }
     }
 }

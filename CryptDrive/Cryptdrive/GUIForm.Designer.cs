@@ -149,6 +149,7 @@
             this.Text = "7";
             this.Activated += new System.EventHandler(this.GUIForm_Activated);
             this.Load += new System.EventHandler(this.GUIForm_Load);
+            this.VisibleChanged += new System.EventHandler(this.GUIForm_VisibleChanged);
             this.ResumeLayout(false);
             this.PerformLayout();
 
