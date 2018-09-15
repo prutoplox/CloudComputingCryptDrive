@@ -170,5 +170,12 @@ namespace Cryptdrive
         private void LoginForm_FormClosed(object sender, FormClosedEventArgs e)
         {
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            FileManager.instance.containerName = "testcontainer";
+            this.Hide();
+            GUIForm.instance.Visible = true;
+        }
     }
 }
