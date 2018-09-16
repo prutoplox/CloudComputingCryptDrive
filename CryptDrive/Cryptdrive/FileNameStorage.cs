@@ -162,5 +162,18 @@ namespace Cryptdrive
                 return String.Empty;
             }
         }
+
+        internal IEnumerable<string> getFilesWithPrefix(string v)
+        {
+            List<string> files = new List<string>();
+            foreach (var item in pathDict.Values)
+            {
+                if(item.StartsWith(v))
+                {
+                    files.Add(item);
+                }
+            }
+            return files;
+        }
     }
 }

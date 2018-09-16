@@ -157,19 +157,9 @@ namespace Cryptdrive
 
         private void fileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
         {
-            //TODO search all files which where in that folder
-            if (false)// && File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
-            {
-                Logger.instance.logInfo("Folder deleted: " + e.Name);
-
-                //The changed path is a directory, iterate over all files in it
-                FileManager.instance.deleteFiles(filesInFolder(e.FullPath));
-            }
-            else
-            {
-                Logger.instance.logInfo("File deleted: " + e.Name);
-                FileManager.instance.deleteCryptFile(e.FullPath);
-            }
+            Logger.instance.logInfo("File or Folder deleted: " + e.Name);
+            IEnumerable<string> names = FileNameStorage.instance.getFilesWithPrefix(FileManager.convertPathToCryptPath(e.FullPath));
+            FileManager.instance.deleteFiles(names);
 
             syncClientTreeNode();
         }
