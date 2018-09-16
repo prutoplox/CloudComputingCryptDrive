@@ -160,7 +160,7 @@ namespace Cryptdrive
             Logger.instance.logInfo("File or Folder deleted: " + e.Name);
             IEnumerable<string> names = FileNameStorage.instance.getFilesWithPrefix(FileManager.convertPathToCryptPath(e.FullPath));
             FileManager.instance.deleteFiles(names);
-
+            FileNameStorage.instance.removeMappings(names);
             syncClientTreeNode();
         }
 

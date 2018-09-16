@@ -163,12 +163,28 @@ namespace Cryptdrive
             }
         }
 
+        internal void removeMappings(IEnumerable<string> names)
+        {
+            List<string> filesToRemove = new List<string>();
+            foreach (var file in pathDict)
+            {
+                if (names.Contains(file.Value))
+                {
+                    filesToRemove.Add(file.Key);
+                }
+            }
+            foreach (var file in filesToRemove)
+            {
+                pathDict.Remove(file);
+            }
+        }
+
         internal IEnumerable<string> getFilesWithPrefix(string v)
         {
             List<string> files = new List<string>();
             foreach (var item in pathDict.Values)
             {
-                if(item.StartsWith(v))
+                if (item.StartsWith(v))
                 {
                     files.Add(item);
                 }
