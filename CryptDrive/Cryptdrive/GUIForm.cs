@@ -113,7 +113,7 @@ namespace Cryptdrive
         public void LogToTextBox(string textLine)
         {
             //Called from Logger
-            output.Text += textLine + Environment.NewLine;
+            output.AppendText(textLine + Environment.NewLine);
         }
 
         private void pathTextField_TextChanged(object sender, EventArgs e)
