@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Cryptdrive
 {
@@ -23,7 +24,7 @@ namespace Cryptdrive
         public IEnumerable<string> filePathsInCloudNotOnClientTracked;
         public IEnumerable<string> filePathsOnClientNotInCloud;
 
-        public void Init()
+        public async void Init()
         {
             //Read the filelist.txt from the local folder
             IEnumerable<string> trackedClientFiles = Enumerable.Empty<string>();//avoid null reference
@@ -41,7 +42,7 @@ namespace Cryptdrive
             //Download the filelist from the cloud
             IEnumerable<string> trackedCloudFiles = Enumerable.Empty<string>(); //avoid null reference
             DateTime? timeStampCloud = null;
-            FileManager.instance.downloadFile(fileMappingFile, fileMappingFileCloud);
+            await FileManager.instance.downloadFile(fileMappingFile, fileMappingFileCloud);
             if (File.Exists(fileMappingFileCloud))
             {
                 ParseFile(fileMappingFileCloud, out trackedCloudFiles, out timeStampCloud);
@@ -60,19 +61,37 @@ namespace Cryptdrive
             //client & cloud are there, => use newer tracking and merge file on client into it(just as one of them is null)
             if (timeStampCloud != null && timeStampClient != null)
             {
-                //TODO need to compare timers on each file and ask which one to use
+                DateTime newerTimeStamp;
+                bool localIsNewer;
                 if (timeStampClient > timeStampCloud)
                 {
-                    timeStampCloud = null;
+                    localIsNewer = true;
+                    newerTimeStamp = (DateTime)timeStampClient; //can't be null since timstamp of client and cloud must not be null here
                 }
                 else
                 {
-                    timeStampClient = null;
+                    localIsNewer = false;
+                    newerTimeStamp = (DateTime)timeStampCloud; //can't be null since timstamp of client and cloud must not be null here
                 }
+
+                Task<IEnumerable<string>> cloudFilesNewserThenClientTimestampTask = FileManager.instance.ListNewerFiles((DateTime)timeStampClient);
+
+                IEnumerable<string> clientFilesNewerThenCloudTimestamp = FileWatcher.instance.MonitoredFilesNewerThen((DateTime)timeStampCloud);
+
+                await cloudFilesNewserThenClientTimestampTask;
+                IEnumerable<string> cloudFilesNewserThenClientTimestamp = cloudFilesNewserThenClientTimestampTask.Result;
+
+                //Got a list of files on the server and client which are newer then the counterpart(client/server)
+
+                //TODO FIX BELOW
+
+                filesNeedToBeTracked = filesOnClient.Except(trackedClientFiles);
+                filePathsInCloudNotOnClientTracked = Enumerable.Empty<string>(); //TODO
+                filePathsOnClientNotInCloud = Enumerable.Empty<string>();//TODO
             }
 
             //both null -> not yet tracked => make new with all files in folder
-            if (timeStampCloud == null && timeStampClient == null)
+            else if (timeStampCloud == null && timeStampClient == null)
             {
                 filesNeedToBeTracked = filesOnClient;
                 filePathsInCloudNotOnClientTracked = Enumerable.Empty<string>();
@@ -114,7 +133,13 @@ namespace Cryptdrive
             trackedFiles = trackedFiles.Select(X => Codec.decrypt(X.Split('>')[1]));
         }
 
-        private void SaveMappingToFile()
+        public void SaveMappingToFileAndCloud()
+        {
+            SaveMappingToFile();
+            saveMappingToCloud();
+        }
+
+        public void SaveMappingToFile()
         {
             StreamWriter writer = File.AppendText("_" + fileMappingFile);
 

@@ -66,6 +66,20 @@ namespace Cryptdrive
             }
         }
 
+        public IEnumerable<string> MonitoredFilesNewerThen(DateTime timestamp)
+        {
+            foreach (var folder in MonitoredFolders)
+            {
+                foreach (var file in Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories))
+                {
+                    if (File.GetLastWriteTimeUtc(file) > timestamp)
+                    {
+                        yield return FileManager.convertPathToCryptPath(file);
+                    }
+                }
+            }
+        }
+
         public void monitorDirectory(string cryptDrivepathname, string path)
         {
             monitorDirectory(cryptDrivepathname, path, !MonitoredFolders.Contains(path));
@@ -101,12 +115,12 @@ namespace Cryptdrive
         private void FileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             //TODO make sure that  File.GetAttributes(e.FullPath) never causes an unhandeled exception, had some cases where it failed for some yet unknownn reason if it was a directory
-            if (false && File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
+            if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
             {
                 Logger.instance.logInfo("Folder changed: " + e.Name);
 
-                //The changed path is a directory, iterate over all files in it
-                FileManager.instance.syncFiles(filesInFolder(e.FullPath));
+                //Should be no need to iterate over the files in the folder since they should raise a separate change/create event
+                //FileManager.instance.syncFiles(filesInFolder(e.FullPath));
             }
             else
             {

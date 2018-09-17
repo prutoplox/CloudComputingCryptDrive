@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Cryptdrive
 {
@@ -144,7 +145,7 @@ namespace Cryptdrive
             Logger.instance.logInfo("RESPONSE:" + responseString);
         }
 
-        public async void downloadFile(string blobname, string path)
+        public async Task downloadFile(string blobname, string path)
         {
             string fullURL = AzureLinkStringStorage.BLOB_GET_AZURE_STRING + AzureLinkStringStorage.LINKING_INITALCHARACTER + "containername=" + containerName + "&blobname=" + blobname;
             var response = await AzureConnectionManager.client.PostAsync(fullURL, null);
@@ -165,6 +166,23 @@ namespace Cryptdrive
             catch (WebException e)
             {
                 Logger.instance.logError("Could not dowload the file " + blobname + "!");
+            }
+        }
+
+        public async Task<IEnumerable<string>> ListNewerFiles(DateTime timestamp)
+        {
+            try
+            {
+                string fullURL = AzureLinkStringStorage.BLOB_LIST_NEWER + AzureLinkStringStorage.LINKING_INITALCHARACTER + "containername=" + FileManager.instance.containerName + "&timestamp=" + timestamp;
+                var response = await AzureConnectionManager.client.PostAsync(fullURL, null);
+                var responseString = await response.Content.ReadAsStringAsync();
+                Logger.instance.logInfo("RESPONSE:" + responseString);
+                return responseString.Split('>');
+            }
+            catch (Exception e)
+            {
+                Logger.instance.logError("Soemthing went wrong....");
+                return Enumerable.Empty<string>();
             }
         }
 
