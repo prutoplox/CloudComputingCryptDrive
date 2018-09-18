@@ -41,6 +41,7 @@
             this.ConfirmPassword_label = new System.Windows.Forms.Label();
             this.ConfirmEmail_label = new System.Windows.Forms.Label();
             this.Output_tf = new System.Windows.Forms.TextBox();
+            this.ResetDB = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Login_button
@@ -154,11 +155,22 @@
             this.Output_tf.TabIndex = 12;
             this.Output_tf.TextChanged += new System.EventHandler(this.Output_tf_TextChanged);
             // 
+            // ResetDB
+            // 
+            this.ResetDB.Location = new System.Drawing.Point(621, 230);
+            this.ResetDB.Name = "ResetDB";
+            this.ResetDB.Size = new System.Drawing.Size(151, 61);
+            this.ResetDB.TabIndex = 13;
+            this.ResetDB.Text = "ResetDB";
+            this.ResetDB.UseVisualStyleBackColor = true;
+            this.ResetDB.Click += new System.EventHandler(this.ResetDB_Click);
+            // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.ResetDB);
             this.Controls.Add(this.Output_tf);
             this.Controls.Add(this.ConfirmEmail_label);
             this.Controls.Add(this.ConfirmPassword_label);
@@ -196,5 +208,6 @@
         private System.Windows.Forms.Label ConfirmPassword_label;
         private System.Windows.Forms.Label ConfirmEmail_label;
         private System.Windows.Forms.TextBox Output_tf;
+        private System.Windows.Forms.Button ResetDB;
     }
 }

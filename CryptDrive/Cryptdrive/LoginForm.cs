@@ -173,5 +173,11 @@ namespace Cryptdrive
         private void LoginForm_FormClosed(object sender, FormClosedEventArgs e)
         {
         }
+
+        private void ResetDB_Click(object sender, EventArgs e)
+        {
+            var response = await AzureConnectionManager.client.PostAsync(AzureLinkStringStorage.REGISTER_USER_AZURE_STRING, null);
+            var responseString = await response.Content.ReadAsStringAsync();
+        }
     }
 }
