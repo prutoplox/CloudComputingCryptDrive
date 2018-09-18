@@ -35,6 +35,7 @@ namespace CryptdriveCloud
                 var client = storageAccount.CreateCloudBlobClient();
                 CloudBlobContainer container = BlobManager.getBlobContainer(containerName);
                 bool isFormType = req.HasFormContentType;
+                int numberOfDeletedFiles = 0;
                 var keys = req.Form.Keys;
                 foreach (var key in keys)
                 {
@@ -42,9 +43,13 @@ namespace CryptdriveCloud
                     req.Form.TryGetValue(key, out returns);
                     log.LogInformation("Trying to delete " + returns);
                     log.LogInformation("    From key " + key);
-                    await container.GetBlockBlobReference(returns).DeleteIfExistsAsync();
+                    bool deleted = await container.GetBlockBlobReference(returns).DeleteIfExistsAsync();
+                    if (deleted)
+                    {
+                        numberOfDeletedFiles++;
+                    }
                 }
-                return new OkObjectResult($"lul");
+                return new OkObjectResult(numberOfDeletedFiles + " files deleted from the cloud");
             }
             catch (Exception e)
             {

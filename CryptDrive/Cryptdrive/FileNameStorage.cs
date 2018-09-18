@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Cryptdrive
 {
@@ -20,15 +21,18 @@ namespace Cryptdrive
         public static FileNameStorage instance = new FileNameStorage();
         private Dictionary<string, string> pathDict = new Dictionary<string, string>();
 
-        public void Init()
+        public IEnumerable<string> filePathsInCloudNotOnClientTracked;
+        public IEnumerable<string> filePathsOnClientNotInCloud;
+
+        public async void Init()
         {
             //Read the filelist.txt from the local folder
             IEnumerable<string> trackedClientFiles = Enumerable.Empty<string>();//avoid null reference
-            DateTime? timeStampClient;
+            DateTime? timeStampClient = null;
             if (File.Exists(fileMappingFile))
             {
-                trackedClientFiles = File.ReadAllLines(fileMappingFile);
-                timeStampClient = DateTime.FromFileTime(Int64.Parse(trackedClientFiles.First()));
+                ParseFile(fileMappingFile, out trackedClientFiles, out timeStampClient);
+                Logger.instance.logInfo("Loaded local file mapping file");
             }
             else
             {
@@ -37,45 +41,117 @@ namespace Cryptdrive
 
             //Download the filelist from the cloud
             IEnumerable<string> trackedCloudFiles = Enumerable.Empty<string>(); //avoid null reference
-            DateTime? timeStampCloud;
-            FileManager.instance.downloadFile(fileMappingFile, fileMappingFileCloud);
+            DateTime? timeStampCloud = null;
+            await FileManager.instance.downloadFile(fileMappingFile, fileMappingFileCloud);
             if (File.Exists(fileMappingFileCloud))
             {
-                trackedCloudFiles = File.ReadAllLines(fileMappingFileCloud);
-                timeStampCloud = DateTime.FromFileTime(Int64.Parse(trackedCloudFiles.First()));
-
+                ParseFile(fileMappingFileCloud, out trackedCloudFiles, out timeStampCloud);
                 File.Delete(fileMappingFileCloud);
+                Logger.instance.logInfo("Loaded remote file mapping file");
             }
             else
             {
                 Logger.instance.logError("Could not load the file mapping from the cloud");
             }
 
-            //Get a list of files which are currently on the file system
-            foreach (var file in FileWatcher.instance.MonitoredFiles)
-            {
-            }
+            IEnumerable<string> filesOnClient = FileWatcher.instance.MonitoredFiles;
 
-            IEnumerable<string> untrackedClientFiles = FileWatcher.instance.MonitoredFiles;
+            IEnumerable<string> filesNeedToBeTracked;
+
+            //client & cloud are there, => use newer tracking and merge file on client into it(just as one of them is null)
+            if (timeStampCloud != null && timeStampClient != null)
+            {
+                DateTime newerTimeStamp;
+                bool localIsNewer;
+                if (timeStampClient > timeStampCloud)
+                {
+                    localIsNewer = true;
+                    newerTimeStamp = (DateTime)timeStampClient; //can't be null since timstamp of client and cloud must not be null here
+                }
+                else
+                {
+                    localIsNewer = false;
+                    newerTimeStamp = (DateTime)timeStampCloud; //can't be null since timstamp of client and cloud must not be null here
+                }
+
+                Task<IEnumerable<string>> cloudFilesNewserThenClientTimestampTask = FileManager.instance.ListNewerFiles((DateTime)timeStampClient);
+
+                IEnumerable<string> clientFilesNewerThenCloudTimestamp = FileWatcher.instance.MonitoredFilesNewerThen((DateTime)timeStampCloud);
+
+                await cloudFilesNewserThenClientTimestampTask;
+                IEnumerable<string> cloudFilesNewserThenClientTimestamp = cloudFilesNewserThenClientTimestampTask.Result;
+
+                //Got a list of files on the server and client which are newer then the counterpart(client/server)
+
+                //TODO FIX BELOW
+
+                filesNeedToBeTracked = filesOnClient.Except(trackedClientFiles);
+                filePathsInCloudNotOnClientTracked = Enumerable.Empty<string>(); //TODO
+                filePathsOnClientNotInCloud = Enumerable.Empty<string>();//TODO
+            }
 
             //both null -> not yet tracked => make new with all files in folder
-            //cloud null -> local tracked => check if some new files appeared and upload new tracking to cloud
+            else if (timeStampCloud == null && timeStampClient == null)
+            {
+                filesNeedToBeTracked = filesOnClient;
+                filePathsInCloudNotOnClientTracked = Enumerable.Empty<string>();
+                filePathsOnClientNotInCloud = filesOnClient; //ok
+            }
+
+            //cloud null -> local tracked => check if some new files appeared and remove not existant files from tracking and upload new tracking to cloud
+            else if (timeStampCloud == null && timeStampClient != null)
+            {
+                filesNeedToBeTracked = filesOnClient.Except(trackedClientFiles);
+                filePathsOnClientNotInCloud = filesOnClient;
+                filePathsInCloudNotOnClientTracked = Enumerable.Empty<string>(); //ok
+            }
+
             //client null -> client is a new computer => download files and merge files on computer into it
-            //client & cloud are there, => use newer tracking and merge file on client into it
+            else if (timeStampCloud != null && timeStampClient == null)
+            {
+                filesNeedToBeTracked = filesOnClient.Except(trackedClientFiles);
+                filePathsOnClientNotInCloud = filesOnClient.Except(trackedCloudFiles);
+                filePathsInCloudNotOnClientTracked = trackedCloudFiles.Except(trackedClientFiles);
+            }
+            else
+            {
+                throw new Exception("Unreachable statement got reached!");
+            }
+
+            foreach (string item in filesNeedToBeTracked)
+            {
+                hashPath(item);
+            }
+            SaveMappingToFile();
         }
 
-        private void LoadFromStrings(IEnumerable<string> clientFiles)
+        private static void ParseFile(string filename, out IEnumerable<string> trackedFiles, out DateTime? timestampFile)
         {
-            foreach (string item in clientFiles)
+            trackedFiles = File.ReadAllLines(filename);
+            timestampFile = DateTime.Parse(trackedFiles.First());
+            trackedFiles = trackedFiles.Skip(1);
+            trackedFiles = trackedFiles.Select(X => Codec.decrypt(X.Split('>')[1]));
+        }
+
+        public void SaveMappingToFileAndCloud()
+        {
+            SaveMappingToFile();
+            saveMappingToCloud();
+        }
+
+        public void SaveMappingToFile()
+        {
+            StreamWriter writer = File.AppendText("_" + fileMappingFile);
+
+            writer.WriteLine(DateTime.UtcNow);
+            foreach (var item in pathDict)
             {
-                string[] parts = item.Split(new char[] { '>' });
-                string decryptedPath = Codec.decrypt(parts[0]);
-                string hash = hashPath(decryptedPath);
-                if (hash != parts[1])
-                {
-                    Logger.instance.logError("Hashes do not match for " + decryptedPath);
-                }
+                writer.WriteLine(item.Key + ">" + Codec.encrypt(item.Value));
             }
+            writer.Flush();
+            writer.Close();
+            File.Delete(fileMappingFile);
+            File.Move("_" + fileMappingFile, fileMappingFile);
         }
 
         public void saveMappingToCloud()
@@ -110,6 +186,35 @@ namespace Cryptdrive
             {
                 return String.Empty;
             }
+        }
+
+        internal void removeMappings(IEnumerable<string> names)
+        {
+            List<string> filesToRemove = new List<string>();
+            foreach (var file in pathDict)
+            {
+                if (names.Contains(file.Value))
+                {
+                    filesToRemove.Add(file.Key);
+                }
+            }
+            foreach (var file in filesToRemove)
+            {
+                pathDict.Remove(file);
+            }
+        }
+
+        internal IEnumerable<string> getFilesWithPrefix(string v)
+        {
+            List<string> files = new List<string>();
+            foreach (var item in pathDict.Values)
+            {
+                if (item.StartsWith(v))
+                {
+                    files.Add(item);
+                }
+            }
+            return files;
         }
     }
 }

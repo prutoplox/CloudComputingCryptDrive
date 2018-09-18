@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Cryptdrive
 {
@@ -35,7 +36,7 @@ namespace Cryptdrive
             throw new NotImplementedException();
         }
 
-        public void addFiles(List<string> files)
+        public void addFiles(IEnumerable<string> files)
         {
             //Same as SyncFiles. Azure replaces old files with new files automatically
             syncFiles(files);
@@ -85,7 +86,7 @@ namespace Cryptdrive
 
         public void renameFileHashedNames(string oldPath, string newPath)
         {
-            renameFileAsync(FileNameStorage.instance.hashPath(oldPath), FileNameStorage.instance.hashPath(newPath));
+            renameFileAsync(FileNameStorage.instance.hashPath(convertPathToCryptPath(oldPath)), FileNameStorage.instance.hashPath(convertPathToCryptPath(newPath)));
         }
 
         public async void renameFileAsync(string oldPath, string newPath)
@@ -144,7 +145,7 @@ namespace Cryptdrive
             Logger.instance.logInfo("RESPONSE:" + responseString);
         }
 
-        public async void downloadFile(string blobname, string path)
+        public async Task downloadFile(string blobname, string path)
         {
             string fullURL = AzureLinkStringStorage.BLOB_GET_AZURE_STRING + AzureLinkStringStorage.LINKING_INITALCHARACTER + "containername=" + containerName + "&blobname=" + blobname;
             var response = await AzureConnectionManager.client.PostAsync(fullURL, null);
@@ -168,6 +169,23 @@ namespace Cryptdrive
             }
         }
 
+        public async Task<IEnumerable<string>> ListNewerFiles(DateTime timestamp)
+        {
+            try
+            {
+                string fullURL = AzureLinkStringStorage.BLOB_LIST_NEWER + AzureLinkStringStorage.LINKING_INITALCHARACTER + "containername=" + FileManager.instance.containerName + "&timestamp=" + timestamp;
+                var response = await AzureConnectionManager.client.PostAsync(fullURL, null);
+                var responseString = await response.Content.ReadAsStringAsync();
+                Logger.instance.logInfo("RESPONSE:" + responseString);
+                return responseString.Split('>');
+            }
+            catch (Exception e)
+            {
+                Logger.instance.logError("Soemthing went wrong....");
+                return Enumerable.Empty<string>();
+            }
+        }
+
         private static byte[] encryptAndCompressFile(string path)
         {
             byte[] fileAsByteArray = File.ReadAllBytes(path);
@@ -187,6 +205,15 @@ namespace Cryptdrive
 
             //Prepends the virtual path of the folder in the cryptdrive where it's stored and removes unneeded parts of the full path on the client
             return cryptFolderName + ">" + pathRelativeToMonitored;
+        }
+
+        public static string convertCryptPathToPath(string cryptPath)
+        {
+            string cryptFolderName = cryptPath.Split('>')[0];
+            string relativePath = cryptPath.Split('>')[1];
+
+            //Prepends the virtual path of the folder in the cryptdrive where it's stored and removes unneeded parts of the full path on the client
+            return FileWatcher.instance.getFoldernameOfCryptFolder(cryptFolderName) + "//" + relativePath;
         }
     }
 }

@@ -66,6 +66,20 @@ namespace Cryptdrive
             }
         }
 
+        public IEnumerable<string> MonitoredFilesNewerThen(DateTime timestamp)
+        {
+            foreach (var folder in MonitoredFolders)
+            {
+                foreach (var file in Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories))
+                {
+                    if (File.GetLastWriteTimeUtc(file) > timestamp)
+                    {
+                        yield return FileManager.convertPathToCryptPath(file);
+                    }
+                }
+            }
+        }
+
         public void monitorDirectory(string cryptDrivepathname, string path)
         {
             monitorDirectory(cryptDrivepathname, path, !MonitoredFolders.Contains(path));
@@ -101,12 +115,12 @@ namespace Cryptdrive
         private void FileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             //TODO make sure that  File.GetAttributes(e.FullPath) never causes an unhandeled exception, had some cases where it failed for some yet unknownn reason if it was a directory
-            if (false && File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
+            if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
             {
                 Logger.instance.logInfo("Folder changed: " + e.Name);
 
-                //The changed path is a directory, iterate over all files in it
-                FileManager.instance.syncFiles(filesInFolder(e.FullPath));
+                //Should be no need to iterate over the files in the folder since they should raise a separate change/create event
+                //FileManager.instance.syncFiles(filesInFolder(e.FullPath));
             }
             else
             {
@@ -157,20 +171,10 @@ namespace Cryptdrive
 
         private void fileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
         {
-            //TODO search all files which where in that folder
-            if (false)// && File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
-            {
-                Logger.instance.logInfo("Folder deleted: " + e.Name);
-
-                //The changed path is a directory, iterate over all files in it
-                FileManager.instance.deleteFiles(filesInFolder(e.FullPath));
-            }
-            else
-            {
-                Logger.instance.logInfo("File deleted: " + e.Name);
-                FileManager.instance.deleteCryptFile(e.FullPath);
-            }
-
+            Logger.instance.logInfo("File or Folder deleted: " + e.Name);
+            IEnumerable<string> names = FileNameStorage.instance.getFilesWithPrefix(FileManager.convertPathToCryptPath(e.FullPath));
+            FileManager.instance.deleteFiles(names);
+            FileNameStorage.instance.removeMappings(names);
             syncClientTreeNode();
         }
 
@@ -217,6 +221,28 @@ namespace Cryptdrive
             foreach (var file in Directory.GetFiles(path, "*.*", SearchOption.AllDirectories))
             {
                 yield return file;
+            }
+        }
+
+        public string getFoldernameOfCryptFolder(string cryptfolder)
+        {
+            fileSystemWatchers.TryGetValue(cryptfolder, out FileSystemWatcher watcher);
+            return watcher.Path;
+        }
+
+        public DateTime getLastWriteToCryptFileUTC(string cryptPath)
+        {
+            //Convert to physical path
+            string path = getFoldernameOfCryptFolder(cryptPath);
+
+            //read attribute about last write
+            if (File.Exists(path))
+            {
+                return File.GetLastWriteTimeUtc(path);
+            }
+            else
+            {
+                return DateTime.MinValue;
             }
         }
     }
