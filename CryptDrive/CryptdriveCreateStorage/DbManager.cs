@@ -126,6 +126,23 @@ namespace CryptdriveCloud
             return true;
         }
 
+        public static bool DropTableUser()
+        {
+            try
+            {
+                using (var connection = new SqlConnection(cb.ConnectionString))
+                {
+                    string dropTableSql = DropUserTableSQL();
+                    SumbitSqlCommand(connection, dropTableSql);
+                }
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+            return true;
+        }
+
         public static bool DeleteUser(string username)
         {
             try
@@ -224,7 +241,7 @@ namespace CryptdriveCloud
             return returnstring;
         }
 
-        public static string DropUserTable()
+        public static string DropUserTableSQL()
         {
             string returnstring = String.Format(@"DROP TABLE [dbo].[Users];");
             return returnstring;

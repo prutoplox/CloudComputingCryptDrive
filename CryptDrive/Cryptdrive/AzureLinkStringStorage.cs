@@ -19,8 +19,8 @@ namespace Cryptdrive
         public const string SYNC_BLOB_AZURE_STRING = "http://localhost:7071/api/SyncBlob";
         public const string LOGIN_AZURE_STRING = "http://localhost:7071/api/Login";
         public const string CONFIRM_EMAIL_AZURE_STRING = "http://localhost:7071/api/ConfirmEmail";
-        public const string ResetDB = "http://localhost:7071/api/ConfirmEmail";
-
+        public const string BLOB_LIST_NEWER = "http://localhost:7071/api/BlobListNewer";
+        public const string ResetDB = "http://localhost:7071/api/ResetDB";
         public const string STORAGE_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=devstoragemarius;AccountKey=Z0+9qcUyTzgovwkCCsLWH0RZUkih8/tltiabksN3QfB7SthB3c7TYdJBgA7KuTi6B40CMqF1BRAQk5cL6tMfSQ==;EndpointSuffix=core.windows.net";
         public const string LINKING_INITALCHARACTER = "?";
         public const string DB_DATASOURCE = "cryptdriveruserdb.database.windows.net";
