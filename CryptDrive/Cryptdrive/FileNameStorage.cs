@@ -120,30 +120,38 @@ namespace Cryptdrive
             trackedFiles = trackedFiles.Select(X => Codec.decrypt(X.Split('>')[1]));
         }
 
-        public void SaveMappingToFileAndCloud()
+        public async Task<bool> SaveMappingToFileAndCloud()
         {
-            SaveMappingToFile();
-            saveMappingToCloud();
+            return SaveMappingToFile() && await saveMappingToCloud();
         }
 
-        public void SaveMappingToFile()
+        public bool SaveMappingToFile()
         {
-            StreamWriter writer = File.AppendText("_" + fileMappingFile);
-
-            writer.WriteLine(DateTime.UtcNow);
-            foreach (var item in pathDict)
+            try
             {
-                writer.WriteLine(item.Key + ">" + Codec.encrypt(item.Value));
+                StreamWriter writer = File.AppendText("_" + fileMappingFile);
+
+                writer.WriteLine(DateTime.UtcNow);
+                foreach (var item in pathDict)
+                {
+                    writer.WriteLine(item.Key + ">" + Codec.encrypt(item.Value));
+                }
+                writer.Flush();
+                writer.Close();
+                File.Delete(fileMappingFile);
+                File.Move("_" + fileMappingFile, fileMappingFile);
+                return true;
             }
-            writer.Flush();
-            writer.Close();
-            File.Delete(fileMappingFile);
-            File.Move("_" + fileMappingFile, fileMappingFile);
+            catch (Exception e)
+            {
+                Logger.instance.logError(e.Message);
+                return false;
+            }
         }
 
-        public void saveMappingToCloud()
+        public async Task<bool> saveMappingToCloud()
         {
-            FileManager.instance.uploadFileData(fileMappingFile, File.ReadAllBytes(fileMappingFile));
+            return await FileManager.instance.uploadFileData(fileMappingFile, File.ReadAllBytes(fileMappingFile));
         }
 
         public string hashPath(string path)

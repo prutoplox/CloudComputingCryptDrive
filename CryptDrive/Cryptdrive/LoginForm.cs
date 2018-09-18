@@ -45,7 +45,7 @@ namespace Cryptdrive
                     {
                         this.Visible = false;
                         var responseString = await response.Content.ReadAsStringAsync();
-                        Logger.instance.logInfo("RESPONSE:" + responseString);
+                        Logger.instance.logInfo("Logged in successfully with following server answer:" + responseString);
                         ActiveUserStorage.instance.setActiveUser(username, responseString);
                         FileManager.instance.containerName = responseString;
                         GUIForm.instance.Visible = true;
@@ -123,7 +123,7 @@ namespace Cryptdrive
                         GUIForm.instance.Visible = true;
                     }
 
-                    Logger.instance.logInfo("RESPONSE:" + responseString);
+                    Logger.instance.logInfo("Registered successfully with following server message:" + responseString);
                 }
                 else
                 {
