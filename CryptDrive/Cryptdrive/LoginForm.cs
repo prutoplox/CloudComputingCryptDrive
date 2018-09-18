@@ -179,5 +179,12 @@ namespace Cryptdrive
             var response = await AzureConnectionManager.client.PostAsync(AzureLinkStringStorage.ResetDB, null);
             var responseString = await response.Content.ReadAsStringAsync();
         }
+
+        private void skipLogin_Click(object sender, EventArgs e)
+        {
+            FileManager.instance.containerName = "testcontainer";
+            this.Hide();
+            GUIForm.instance.Visible = true;
+        }
     }
 }
