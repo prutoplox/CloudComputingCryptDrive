@@ -23,11 +23,13 @@ namespace Cryptdrive
 
         public IEnumerable<string> filePathsInCloudNotOnClientTracked;
         public IEnumerable<string> filePathsOnClientNotInCloud;
+        public IEnumerable<string> cloudFilesNewserThenClientTimestamp;
+        public IEnumerable<string> clientFilesNewerThenCloudTimestamp;
 
         public async void Init()
         {
             //Read the filelist.txt from the local folder
-            IEnumerable<string> trackedClientFiles = Enumerable.Empty<string>();//avoid null reference
+            IEnumerable<string> trackedClientFiles = null;
             DateTime? timeStampClient = null;
             if (File.Exists(fileMappingFile))
             {
@@ -61,33 +63,18 @@ namespace Cryptdrive
             //client & cloud are there, => use newer tracking and merge file on client into it(just as one of them is null)
             if (timeStampCloud != null && timeStampClient != null)
             {
-                DateTime newerTimeStamp;
-                bool localIsNewer;
-                if (timeStampClient > timeStampCloud)
-                {
-                    localIsNewer = true;
-                    newerTimeStamp = (DateTime)timeStampClient; //can't be null since timstamp of client and cloud must not be null here
-                }
-                else
-                {
-                    localIsNewer = false;
-                    newerTimeStamp = (DateTime)timeStampCloud; //can't be null since timstamp of client and cloud must not be null here
-                }
-
                 Task<IEnumerable<string>> cloudFilesNewserThenClientTimestampTask = FileManager.instance.ListNewerFiles((DateTime)timeStampClient);
 
-                IEnumerable<string> clientFilesNewerThenCloudTimestamp = FileWatcher.instance.MonitoredFilesNewerThen((DateTime)timeStampCloud);
+                clientFilesNewerThenCloudTimestamp = FileWatcher.instance.MonitoredFilesNewerThen((DateTime)timeStampCloud);
 
                 await cloudFilesNewserThenClientTimestampTask;
-                IEnumerable<string> cloudFilesNewserThenClientTimestamp = cloudFilesNewserThenClientTimestampTask.Result;
+                cloudFilesNewserThenClientTimestamp = cloudFilesNewserThenClientTimestampTask.Result;
 
                 //Got a list of files on the server and client which are newer then the counterpart(client/server)
 
-                //TODO FIX BELOW
-
                 filesNeedToBeTracked = filesOnClient.Except(trackedClientFiles);
-                filePathsInCloudNotOnClientTracked = Enumerable.Empty<string>(); //TODO
-                filePathsOnClientNotInCloud = Enumerable.Empty<string>();//TODO
+                filePathsInCloudNotOnClientTracked = trackedCloudFiles.Except(filesOnClient);
+                filePathsOnClientNotInCloud = filesOnClient.Except(trackedCloudFiles);
             }
 
             //both null -> not yet tracked => make new with all files in folder
@@ -133,30 +120,38 @@ namespace Cryptdrive
             trackedFiles = trackedFiles.Select(X => Codec.decrypt(X.Split('>')[1]));
         }
 
-        public void SaveMappingToFileAndCloud()
+        public async Task<bool> SaveMappingToFileAndCloud()
         {
-            SaveMappingToFile();
-            saveMappingToCloud();
+            return SaveMappingToFile() && await saveMappingToCloud();
         }
 
-        public void SaveMappingToFile()
+        public bool SaveMappingToFile()
         {
-            StreamWriter writer = File.AppendText("_" + fileMappingFile);
-
-            writer.WriteLine(DateTime.UtcNow);
-            foreach (var item in pathDict)
+            try
             {
-                writer.WriteLine(item.Key + ">" + Codec.encrypt(item.Value));
+                StreamWriter writer = File.AppendText("_" + fileMappingFile);
+
+                writer.WriteLine(DateTime.UtcNow);
+                foreach (var item in pathDict)
+                {
+                    writer.WriteLine(item.Key + ">" + Codec.encrypt(item.Value));
+                }
+                writer.Flush();
+                writer.Close();
+                File.Delete(fileMappingFile);
+                File.Move("_" + fileMappingFile, fileMappingFile);
+                return true;
             }
-            writer.Flush();
-            writer.Close();
-            File.Delete(fileMappingFile);
-            File.Move("_" + fileMappingFile, fileMappingFile);
+            catch (Exception e)
+            {
+                Logger.instance.logError(e.Message);
+                return false;
+            }
         }
 
-        public void saveMappingToCloud()
+        public async Task<bool> saveMappingToCloud()
         {
-            FileManager.instance.uploadFileData(fileMappingFile, File.ReadAllBytes(fileMappingFile));
+            return await FileManager.instance.uploadFileData(fileMappingFile, File.ReadAllBytes(fileMappingFile));
         }
 
         public string hashPath(string path)

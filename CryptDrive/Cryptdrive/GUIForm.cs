@@ -147,7 +147,12 @@ namespace Cryptdrive
 
         private void Debug_bt_Click(object sender, EventArgs e)
         {
+            Console.WriteLine(FileNameStorage.instance.filePathsInCloudNotOnClientTracked);
+            Console.WriteLine(FileNameStorage.instance.filePathsOnClientNotInCloud);
+
             FileNameStorage.instance.saveMappingToCloud();
+
+            //FileManager.instance.renameFileAsync("large", "newlarge");
         }
 
         private void GUIForm_VisibleChanged(object sender, EventArgs e)

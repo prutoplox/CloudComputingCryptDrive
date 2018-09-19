@@ -32,6 +32,7 @@ namespace Cryptdrive
                 catch (CryptographicException e)
                 {
                     Logger.instance.logError("Could not load the encryption key from the file, creating a new key for this session.");
+                    Logger.instance.logError(e.Message);
                 }
             }
 

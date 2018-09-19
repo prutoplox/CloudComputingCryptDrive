@@ -31,42 +31,44 @@ namespace Cryptdrive
 
         private async void Login_button_Click(object sender, EventArgs e)
         {
-            if (register == false)
+            if (ConfirmPassword_tf.Visible)
             {
-                if (!String.IsNullOrWhiteSpace(Username_tf.Text) && !String.IsNullOrWhiteSpace(Password_tf.Text))
-                {
-                    string username = Username_tf.Text;
-                    string password = Password_tf.Text;
-                    var multipartContent = new MultipartFormDataContent();
-                    multipartContent.Add(new StringContent(username), "username");
-                    multipartContent.Add(new StringContent(password), "password");
-                    var response = await AzureConnectionManager.client.PostAsync(AzureLinkStringStorage.LOGIN_AZURE_STRING, multipartContent);
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        this.Visible = false;
-                        var responseString = await response.Content.ReadAsStringAsync();
-                        Logger.instance.logInfo("RESPONSE:" + responseString);
-                        ActiveUserStorage.instance.setActiveUser(username, responseString);
-                        FileManager.instance.containerName = responseString;
-                        GUIForm.instance.Visible = true;
-                    }
-                    register = false;
-                }
-                else
-                {
-                    Logger.instance.logError("Not all textfelds are filled out, the empty textfields are "
-                        + (String.IsNullOrWhiteSpace(Username_tf.Text) ? "Username " : "")
-                        + (String.IsNullOrWhiteSpace(Password_tf.Text) ? "Password " : "")
-                        );
+                toggleRegisterFields();
+            }
 
-                    //TODO ErrorMessage
-                    register = true;
-                    return;
+            if (String.IsNullOrWhiteSpace(Username_tf.Text) || String.IsNullOrWhiteSpace(Password_tf.Text))
+            {
+                Logger.instance.logError("Not all textfelds are filled out, the empty textfields are "
+                    + (String.IsNullOrWhiteSpace(Username_tf.Text) ? "Username " : "")
+                    + (String.IsNullOrWhiteSpace(Password_tf.Text) ? "Password " : "")
+                    );
+
+                //TODO ErrorMessage
+                register = true;
+                return;
+            }
+
+            try
+            {
+                string username = Username_tf.Text;
+                string password = Password_tf.Text;
+                var multipartContent = new MultipartFormDataContent();
+                multipartContent.Add(new StringContent(username), "username");
+                multipartContent.Add(new StringContent(password), "password");
+                var response = await AzureConnectionManager.client.PostAsync(AzureLinkStringStorage.LOGIN_AZURE_STRING, multipartContent);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    this.Visible = false;
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    Logger.instance.logInfo("Logged in successfully with following server answer:" + responseString);
+                    ActiveUserStorage.instance.setActiveUser(username, responseString);
+                    FileManager.instance.containerName = responseString;
+                    GUIForm.instance.Visible = true;
                 }
             }
-            else
+            catch (HttpRequestException exc)
             {
-                register = true;
+                Logger.instance.logError("Could not log in due to the network error " + exc.Message);
             }
         }
 
@@ -84,65 +86,71 @@ namespace Cryptdrive
 
         private async void Register_button_Click(object sender, EventArgs e)
         {
-            if (register == true)
+            if (!ConfirmPassword_tf.Visible)
             {
-                if (!String.IsNullOrWhiteSpace(Username_tf.Text) && !String.IsNullOrWhiteSpace(Password_tf.Text) && !String.IsNullOrWhiteSpace(Email_tf.Text))
+                toggleRegisterFields();
+                return;
+            }
+
+            if (String.IsNullOrWhiteSpace(Username_tf.Text) || String.IsNullOrWhiteSpace(Password_tf.Text) || String.IsNullOrWhiteSpace(Email_tf.Text))
+            {
+                Logger.instance.logError("Not all textfelds are filled out, the empty textfields are "
+                       + (String.IsNullOrWhiteSpace(Username_tf.Text) ? "Username " : "")
+                       + (String.IsNullOrWhiteSpace(Password_tf.Text) ? "Password " : "")
+                       + (String.IsNullOrWhiteSpace(Email_tf.Text) ? "Email " : "")
+                       );
+
+                //TODO ErrorMessage
+                return;
+            }
+
+            string username = Username_tf.Text;
+            string password = Password_tf.Text;
+            string confirmPassword = ConfirmPassword_tf.Text;
+            string email = Email_tf.Text;
+            string confirmEmail = ConfirmEmail_tf.Text;
+
+            if (password != confirmPassword)
+            {
+                //TODO ErrorMessage
+                Logger.instance.logError("Passwords are not matching");
+                return;
+            }
+            else if (email != confirmEmail)
+            {
+                //TODO ErrorMessage
+                Logger.instance.logError("Emails are not matching");
+                return;
+            }
+
+            var multipartContent = new MultipartFormDataContent();
+            multipartContent.Add(new StringContent(username), "username");
+            multipartContent.Add(new StringContent(email), "email");
+            multipartContent.Add(new StringContent(password), "password");
+            try
+            {
+                var response = await AzureConnectionManager.client.PostAsync(AzureLinkStringStorage.REGISTER_USER_AZURE_STRING, multipartContent);
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    string username = Username_tf.Text;
-                    string password = Password_tf.Text;
-                    string confirmPassword = ConfirmPassword_tf.Text;
-                    string email = Email_tf.Text;
-                    string confirmEmail = ConfirmEmail_tf.Text;
-
-                    if (password != confirmPassword)
-                    {
-                        //TODO ErrorMessage
-                        Logger.instance.logError("Passwords are not matching");
-                        return;
-                    }
-                    else if (email != confirmEmail)
-                    {
-                        //TODO ErrorMessage
-                        Logger.instance.logError("Emails are not matching");
-                        return;
-                    }
-
-                    var multipartContent = new MultipartFormDataContent();
-                    multipartContent.Add(new StringContent(username), "username");
-                    multipartContent.Add(new StringContent(email), "email");
-                    multipartContent.Add(new StringContent(password), "password");
-                    var response = await AzureConnectionManager.client.PostAsync(AzureLinkStringStorage.REGISTER_USER_AZURE_STRING, multipartContent);
-                    var responseString = await response.Content.ReadAsStringAsync();
-
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        Output_tf.Text = responseString;
-                        FileManager.instance.containerName = responseString;
-                        ActiveUserStorage.instance.setActiveUser(username, responseString);
-                        this.Hide();
-                        GUIForm.instance.Visible = true;
-                    }
-
-                    Logger.instance.logInfo("RESPONSE:" + responseString);
+                    Output_tf.Text = responseString;
+                    FileManager.instance.containerName = responseString;
+                    ActiveUserStorage.instance.setActiveUser(username, responseString);
+                    this.Hide();
+                    GUIForm.instance.Visible = true;
+                    Logger.instance.logInfo("Registered successfully with following server message:" + responseString);
                 }
                 else
                 {
-                    Logger.instance.logError("Not all textfelds are filled out, the empty textfields are "
-                        + (String.IsNullOrWhiteSpace(Username_tf.Text) ? "Username " : "")
-                        + (String.IsNullOrWhiteSpace(Password_tf.Text) ? "Password " : "")
-                        + (String.IsNullOrWhiteSpace(Email_tf.Text) ? "Email " : "")
-                        );
-
-                    //TODO ErrorMessage
-                    hideRegisterFields();
-                    register = false;
-                    return;
+                    Logger.instance.logError("Could not register, server responded with: " + responseString);
                 }
             }
-            else
+            catch (HttpRequestException exc)
             {
-                showRegisterFields();
-                register = true;
+                Logger.instance.logError("Could not register on the server due to a network error");
+                Logger.instance.logError(exc.Message);
+                return;
             }
         }
 
@@ -166,6 +174,16 @@ namespace Cryptdrive
             ConfirmEmail_tf.Hide();
         }
 
+        private void toggleRegisterFields()
+        {
+            ConfirmPassword_tf.Visible = !ConfirmPassword_tf.Visible;
+            ConfirmPassword_label.Visible = !ConfirmPassword_label.Visible;
+            Email_label.Visible = !Email_label.Visible;
+            Email_tf.Visible = !Email_tf.Visible;
+            ConfirmEmail_label.Visible = !ConfirmEmail_label.Visible;
+            ConfirmEmail_tf.Visible = !ConfirmEmail_tf.Visible;
+        }
+
         private void Output_tf_TextChanged(object sender, EventArgs e)
         {
         }
@@ -178,6 +196,13 @@ namespace Cryptdrive
         {
             var response = await AzureConnectionManager.client.PostAsync(AzureLinkStringStorage.ResetDB, null);
             var responseString = await response.Content.ReadAsStringAsync();
+        }
+
+        private void skipLogin_Click(object sender, EventArgs e)
+        {
+            FileManager.instance.containerName = "testcontainer";
+            this.Hide();
+            GUIForm.instance.Visible = true;
         }
     }
 }

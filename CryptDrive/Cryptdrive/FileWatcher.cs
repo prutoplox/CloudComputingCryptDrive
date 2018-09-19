@@ -32,6 +32,7 @@ namespace Cryptdrive
                 catch (Exception e)
                 {
                     Logger.instance.logError("Could not load the folder mapping from the mapping file, will create a new mapping");
+                    Logger.instance.logError(e.Message);
                 }
             }
         }
