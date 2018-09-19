@@ -140,6 +140,7 @@ namespace Cryptdrive
                 writer.Close();
                 File.Delete(fileMappingFile);
                 File.Move("_" + fileMappingFile, fileMappingFile);
+                Logger.instance.logInfo("Saved an up to date file mapping on the client");
                 return true;
             }
             catch (Exception e)
@@ -151,7 +152,16 @@ namespace Cryptdrive
 
         public async Task<bool> saveMappingToCloud()
         {
-            return await FileManager.instance.uploadFileData(fileMappingFile, File.ReadAllBytes(fileMappingFile));
+            var wasUploaded = await FileManager.instance.uploadFileData(fileMappingFile, File.ReadAllBytes(fileMappingFile));
+            if (wasUploaded)
+            {
+                Logger.instance.logInfo("Saved an up to date file mapping to the cloud");
+            }
+            else
+            {
+                Logger.instance.logError("Unable to save an up to date file mapping to the cloud");
+            }
+            return wasUploaded;
         }
 
         public string hashPath(string path)
