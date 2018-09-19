@@ -81,7 +81,17 @@ namespace Cryptdrive
 
         public async Task<bool> renameFileHashedNames(string oldPath, string newPath)
         {
-            return await renameFileAsync(FileNameStorage.instance.hashPath(convertPathToCryptPath(oldPath)), FileNameStorage.instance.hashPath(convertPathToCryptPath(newPath)));
+            string cryptOld = convertPathToCryptPath(oldPath);
+            string hashOldCrypt = FileNameStorage.instance.hashPath(cryptOld);
+            string cryptNew = convertPathToCryptPath(newPath);
+            string hashNewCrypt = FileNameStorage.instance.hashPath(cryptNew);
+            bool result = await renameFileAsync(hashOldCrypt, hashNewCrypt);
+            if (result)
+            {
+                FileNameStorage.instance.removeMapping(cryptOld);
+                FileNameStorage.instance.AddToTracking(cryptNew, hashNewCrypt);
+            }
+            return result;
         }
 
         public async Task<bool> renameFileAsync(string oldPath, string newPath)
@@ -137,6 +147,7 @@ namespace Cryptdrive
                 var response = await AzureConnectionManager.client.PostAsync(fullURL, content);
                 var responseString = await response.Content.ReadAsStringAsync();
                 Logger.instance.logInfo("Deleted following file on the server:" + responseString);
+                FileNameStorage.instance.removeMappings(files);
                 return true;
             }
             catch (HttpRequestException e)
@@ -148,7 +159,7 @@ namespace Cryptdrive
 
         public async Task<bool> uploadFileDataHashedName(string path, byte[] data)
         {
-            string blobname = FileNameStorage.instance.hashPath(path);
+            string blobname = FileNameStorage.instance.hashPath(path, true);
             return await uploadFileData(blobname, data);
         }
 

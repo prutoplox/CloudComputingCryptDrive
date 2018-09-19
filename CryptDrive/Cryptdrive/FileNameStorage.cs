@@ -122,7 +122,7 @@ namespace Cryptdrive
 
             foreach (string item in filesNeedToBeTracked)
             {
-                hashPath(item);
+                hashPath(item, true);
             }
             SaveMappingToFile();
         }
@@ -181,17 +181,30 @@ namespace Cryptdrive
 
         public string hashPath(string path)
         {
+            return hashPath(path, false);
+        }
+
+        public string hashPath(string path, bool track)
+        {
             using (SHA256CryptoServiceProvider hashFunction = new SHA256CryptoServiceProvider())
             {
                 string hash = UrlBase64.Encode(hashFunction.ComputeHash(System.Text.Encoding.UTF8.GetBytes(path)));
-                string lookup = lookupHash(hash);
-
-                if (lookup == String.Empty)
+                if (track)
                 {
-                    pathDict.Add(hash, path);
+                    AddToTracking(path, hash);
                 }
 
                 return hash;
+            }
+        }
+
+        public void AddToTracking(string path, string hash)
+        {
+            string lookup = lookupHash(hash);
+
+            if (lookup == String.Empty)
+            {
+                pathDict.Add(hash, path);
             }
         }
 
@@ -208,19 +221,19 @@ namespace Cryptdrive
             }
         }
 
+        internal void removeMapping(string name)
+        {
+            if (pathDict.Values.Contains(name))
+            {
+                pathDict.Remove(hashPath(name));
+            }
+        }
+
         internal void removeMappings(IEnumerable<string> names)
         {
-            List<string> filesToRemove = new List<string>();
-            foreach (var file in pathDict)
+            foreach (string item in names)
             {
-                if (names.Contains(file.Value))
-                {
-                    filesToRemove.Add(file.Key);
-                }
-            }
-            foreach (var file in filesToRemove)
-            {
-                pathDict.Remove(file);
+                removeMapping(item);
             }
         }
 
