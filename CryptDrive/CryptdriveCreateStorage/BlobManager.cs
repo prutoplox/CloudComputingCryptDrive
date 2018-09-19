@@ -4,11 +4,14 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CryptdriveCloud
 {
     static class BlobManager
     {
+        public static readonly int maxSizeOfBlobForUser = 10000000; //10MB
+
         public static CloudBlobContainer getBlobContainer(string containerName)
         {
             // Retrieve storage account information from connection string
@@ -20,6 +23,30 @@ namespace CryptdriveCloud
             CloudBlobContainer container = blobClient.GetContainerReference(containerName);
 
             return container;
+        }
+
+        public static async Task<int> getSizeInBytes(string containerName)
+        {
+            CloudBlobContainer cloudBlobContainer = getBlobContainer(containerName);
+
+            BlobContinuationToken blobContinuationToken = null;
+            int totalSize = 0;
+            do
+            {
+                var results = await cloudBlobContainer.ListBlobsSegmentedAsync(null, blobContinuationToken);
+
+                // Get the value of the continuation token returned by the listing call.
+                blobContinuationToken = results.ContinuationToken;
+                foreach (IListBlobItem item in results.Results)
+                {
+                    if (item is CloudBlockBlob blob)
+                    {
+                        totalSize += (int)blob.Properties.Length;
+                    }
+                }
+            } while (blobContinuationToken != null); // Loop while the continuation token is not null.
+
+            return totalSize;
         }
 
         public static CloudStorageAccount getStorageAccount()

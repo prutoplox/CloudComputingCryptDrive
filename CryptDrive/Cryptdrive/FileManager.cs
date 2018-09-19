@@ -161,7 +161,20 @@ namespace Cryptdrive
                 string fullURL = AzureLinkStringStorage.BLOB_ADD_AZURE_STRING + AzureLinkStringStorage.LINKING_INITALCHARACTER + "username=" + username + "&filename=" + path;
                 var response = await AzureConnectionManager.client.PostAsync(fullURL, content);
                 var responseString = await response.Content.ReadAsStringAsync();
-                Logger.instance.logInfo("Uplaoded " + path + " with following answer from the server:" + responseString);
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.OK:
+                        Logger.instance.logInfo("Uplaoded " + path + " with following answer from the server:" + responseString);
+                        break;
+
+                    case HttpStatusCode.Unauthorized:
+                        Logger.instance.logError("Not enough free storage space in the cloud on this account to save/update the file");
+                        break;
+
+                    default:
+                        Logger.instance.logError("Uploading failed for some reason, the reason is:" + responseString);
+                        break;
+                }
                 return true;
             }
             catch (HttpRequestException e)

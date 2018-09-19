@@ -44,12 +44,25 @@ namespace CryptdriveCloud
                 }
                 else
                 {
-                    log.LogInformation("Uploading {req.ContentLength} bytes");
+                    log.LogInformation(@"Uploading {req.ContentLength} bytes");
                 }
 
                 if (req.ContentLength > int.MaxValue)
                 {
                     return new BadRequestObjectResult("Content to upload is too large");
+                }
+
+                int sizeOfBlobsInContainer = await BlobManager.getSizeInBytes(containerName);
+                int remainingSize = BlobManager.maxSizeOfBlobForUser - sizeOfBlobsInContainer;
+
+                if (req.ContentLength > remainingSize)
+                {
+                    log.LogError("User tried to upload too much into his container");
+                    return new UnauthorizedResult();
+                }
+                else
+                {
+                    log.LogInformation("User has enough free space");
                 }
 
                 byte[] data = new byte[(int)req.ContentLength];
