@@ -184,18 +184,24 @@ namespace Cryptdrive
             }
         }
 
+        public async Task<string> getURL(string blobname)
+        {
+            string fullURL = AzureLinkStringStorage.BLOB_GET_AZURE_STRING + AzureLinkStringStorage.LINKING_INITALCHARACTER + "containername=" + containerName + "&blobname=" + blobname;
+            var response = await AzureConnectionManager.client.PostAsync(fullURL, null);
+            var responseString = await response.Content.ReadAsStringAsync();
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                Logger.instance.logError("File " + blobname + " does not exist in Cloud");
+                return String.Empty;
+            }
+            return responseString;
+        }
+
         public async Task<bool> downloadFile(string blobname, string path)
         {
             try
             {
-                string fullURL = AzureLinkStringStorage.BLOB_GET_AZURE_STRING + AzureLinkStringStorage.LINKING_INITALCHARACTER + "containername=" + containerName + "&blobname=" + blobname;
-                var response = await AzureConnectionManager.client.PostAsync(fullURL, null);
-                var responseString = await response.Content.ReadAsStringAsync();
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    Logger.instance.logError("File " + blobname + " does not exist in Cloud");
-                    return false;
-                }
+                string responseString = await getURL(blobname);
 
                 try
                 {

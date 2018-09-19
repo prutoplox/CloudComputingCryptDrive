@@ -21,9 +21,24 @@ namespace Cryptdrive
         public static FileNameStorage instance = new FileNameStorage();
         private Dictionary<string, string> pathDict = new Dictionary<string, string>();
 
+        /// <summary>
+        /// Only updated after Init is called!
+        /// </summary>
         public IEnumerable<string> filePathsInCloudNotOnClientTracked;
+
+        /// <summary>
+        /// Only updated after Init is called!
+        /// </summary>
         public IEnumerable<string> filePathsOnClientNotInCloud;
+
+        /// <summary>
+        /// Only updated after Init is called!
+        /// </summary>
         public IEnumerable<string> cloudFilesNewserThenClientTimestamp;
+
+        /// <summary>
+        /// Only updated after Init is called!
+        /// </summary>
         public IEnumerable<string> clientFilesNewerThenCloudTimestamp;
 
         public async void Init()
@@ -207,6 +222,16 @@ namespace Cryptdrive
             {
                 pathDict.Remove(file);
             }
+        }
+
+        public bool isFileTracked(string cryptPath)
+        {
+            return pathDict.Values.Contains(cryptPath);
+        }
+
+        public async Task<bool> isFileUploaded(string cryptPath)
+        {
+            return await FileManager.instance.getURL(cryptPath) != String.Empty;
         }
 
         internal IEnumerable<string> getFilesWithPrefix(string v)
