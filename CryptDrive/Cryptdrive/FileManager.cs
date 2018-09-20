@@ -253,7 +253,6 @@ namespace Cryptdrive
                 string fullURL = AzureLinkStringStorage.BLOB_LIST_NEWER + AzureLinkStringStorage.LINKING_INITALCHARACTER + "containername=" + FileManager.instance.containerName + "&timestamp=" + timestamp;
                 var response = await AzureConnectionManager.client.PostAsync(fullURL, null);
                 var responseString = await response.Content.ReadAsStringAsync();
-                Logger.instance.logInfo("Loaded a list of files which are newer then " + timestamp);
 
                 if (responseString == String.Empty)
                 {
@@ -261,6 +260,7 @@ namespace Cryptdrive
                 }
                 else
                 {
+                    Logger.instance.logInfo("Loaded a list of files which are newer then " + timestamp);
                     return responseString.Split('>');
                 }
             }

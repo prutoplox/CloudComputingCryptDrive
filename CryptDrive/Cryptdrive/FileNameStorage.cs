@@ -14,12 +14,14 @@ namespace Cryptdrive
 
     class FileNameStorage
     {
-        private const string fileMappingFile = "filelist.txt";
-        private const string fileMappingFileCloudPrefix = "Cloud";
-        private const string fileMappingFileCloud = fileMappingFileCloudPrefix + fileMappingFile;
+        public const string fileMappingFile = "filelist.txt";
+        public const string fileMappingFileCloudPrefix = "Cloud";
+        public const string fileMappingFileCloud = fileMappingFileCloudPrefix + fileMappingFile;
 
         public static FileNameStorage instance = new FileNameStorage();
         private Dictionary<string, string> pathDict = new Dictionary<string, string>();
+
+        public DateTime lastSave { get; private set; }
 
         /// <summary>
         /// Only updated after Init is called!
@@ -135,18 +137,25 @@ namespace Cryptdrive
             trackedFiles = trackedFiles.Select(X => Codec.decrypt(X.Split('>')[1]));
         }
 
+        public static DateTime GetDateTimeFromFile(string filename)
+        {
+            string datetimeString = File.ReadLines(filename).First();
+            return DateTime.Parse(datetimeString);
+        }
+
         public async Task<bool> SaveMappingToFileAndCloud()
         {
+            lastSave = DateTime.Parse(DateTime.UtcNow.ToString()); //do some rounding, does not need to be fast
             return SaveMappingToFile() && await saveMappingToCloud();
         }
 
-        public bool SaveMappingToFile()
+        private bool SaveMappingToFile()
         {
             try
             {
                 StreamWriter writer = File.AppendText("_" + fileMappingFile);
 
-                writer.WriteLine(DateTime.UtcNow);
+                writer.WriteLine(lastSave);
                 foreach (var item in pathDict)
                 {
                     writer.WriteLine(item.Key + ">" + Codec.encrypt(item.Value));
@@ -165,7 +174,7 @@ namespace Cryptdrive
             }
         }
 
-        public async Task<bool> saveMappingToCloud()
+        private async Task<bool> saveMappingToCloud()
         {
             var wasUploaded = await FileManager.instance.uploadFileData(fileMappingFile, File.ReadAllBytes(fileMappingFile));
             if (wasUploaded)

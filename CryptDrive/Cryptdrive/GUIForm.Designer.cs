@@ -82,7 +82,7 @@
             this.output.ReadOnly = true;
             this.output.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.output.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.output.Size = new System.Drawing.Size(310, 126);
+            this.output.Size = new System.Drawing.Size(641, 126);
             this.output.TabIndex = 3;
             this.output.WordWrap = false;
             // 
@@ -135,7 +135,8 @@
             // 
             // FileWatcherSupportTimer
             // 
-            this.FileWatcherSupportTimer.Interval = 1000;
+            this.FileWatcherSupportTimer.Enabled = true;
+            this.FileWatcherSupportTimer.Interval = 5000;
             this.FileWatcherSupportTimer.Tick += new System.EventHandler(this.FileWatcherSupportTimer_Tick);
             // 
             // GUIForm
@@ -155,6 +156,7 @@
             this.Name = "GUIForm";
             this.Text = "7";
             this.Activated += new System.EventHandler(this.GUIForm_Activated);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GUIForm_FormClosed);
             this.Load += new System.EventHandler(this.GUIForm_Load);
             this.VisibleChanged += new System.EventHandler(this.GUIForm_VisibleChanged);
             this.ResumeLayout(false);

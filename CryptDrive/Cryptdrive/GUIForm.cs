@@ -150,7 +150,7 @@ namespace Cryptdrive
             Console.WriteLine(FileNameStorage.instance.filePathsInCloudNotOnClientTracked);
             Console.WriteLine(FileNameStorage.instance.filePathsOnClientNotInCloud);
 
-            FileNameStorage.instance.saveMappingToCloud();
+            FileNameStorage.instance.SaveMappingToFileAndCloud();
 
             //FileManager.instance.renameFileAsync("large", "newlarge");
         }
@@ -177,16 +177,61 @@ namespace Cryptdrive
             FileNameStorage.instance.Init();
         }
 
+        private bool isCheckingFileMappingFile = false;
+        private DateTime lastSuccessFullCheck = DateTime.Now;
+
         private void FileWatcherSupportTimer_Tick(object sender, EventArgs e)
         {
-            FileWatcherSupportTimer.Enabled = false;
-            foreach (var file in FileWatcher.instance.MonitoredFiles)
+            if (FileWatcher.instance.needsFileSystemCheck)
             {
-                if (!FileNameStorage.instance.isFileTracked(file))
+                FileWatcher.instance.needsFileSystemCheck = false;
+                foreach (var file in FileWatcher.instance.MonitoredFiles)
                 {
-                    FileManager.instance.syncCryptFile(file);
+                    if (!FileNameStorage.instance.isFileTracked(file))
+                    {
+                        FileManager.instance.syncCryptFile(file);
+                    }
                 }
             }
+
+            if (!isCheckingFileMappingFile)
+            {
+                isCheckingFileMappingFile = true;
+                checkForNewFileMappingFile(lastSuccessFullCheck);
+            }
+        }
+
+        private async void checkForNewFileMappingFile(DateTime checkStartTime)
+        {
+            Logger.instance.logDebug("Checking for new files in the cloud");
+            IEnumerable<string> newFiles = await FileManager.instance.ListNewerFiles((DateTime)checkStartTime - new TimeSpan(0, 0, FileWatcherSupportTimer.Interval / 1000));
+            if (newFiles.Any())
+            {
+                foreach (var item in newFiles)
+                {
+                    if (item == FileNameStorage.fileMappingFile)
+                    {
+                        string localTmpFile = "_tmp_" + FileNameStorage.fileMappingFile;
+                        await FileManager.instance.downloadFile(FileNameStorage.fileMappingFile, localTmpFile);
+                        DateTime remoteTimestamp = FileNameStorage.GetDateTimeFromFile(localTmpFile);
+                        File.Delete(localTmpFile);
+                        if (remoteTimestamp != FileNameStorage.instance.lastSave)
+                        {
+                            Logger.instance.logInfo("Remote has newer files, preparing to download updated files...");
+
+                            //TODO do stuff
+                        }
+                    }
+                }
+                Logger.instance.logDebug("A new file has been found");
+            }
+            lastSuccessFullCheck = DateTime.Now;
+            isCheckingFileMappingFile = false;
+        }
+
+        private void GUIForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

@@ -67,6 +67,8 @@ namespace Cryptdrive
             }
         }
 
+        public bool needsFileSystemCheck { get; set; }
+
         public IEnumerable<string> MonitoredFilesNewerThen(DateTime timestamp)
         {
             foreach (var folder in MonitoredFolders)
@@ -116,8 +118,8 @@ namespace Cryptdrive
 
         private void FileSystemWatcher_Error(object sender, ErrorEventArgs e)
         {
-            Logger.instance.logError("Too many changes at once, scheduling a full scan in 1minute to make sure no file was missed...");
-            GUIForm.instance.FileWatcherSupportTimer.Enabled = true;
+            Logger.instance.logError("Too many changes at once, scheduling a full scan to make sure no file was missed...");
+            needsFileSystemCheck = true;
         }
 
         private void FileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
