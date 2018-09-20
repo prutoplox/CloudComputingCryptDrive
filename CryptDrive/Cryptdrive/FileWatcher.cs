@@ -100,6 +100,7 @@ namespace Cryptdrive
             FileSystemWatcher fileSystemWatcher = new FileSystemWatcher();
             fileSystemWatcher.Path = path;
             fileSystemWatcher.IncludeSubdirectories = true;
+            fileSystemWatcher.Error += FileSystemWatcher_Error;
             fileSystemWatcher.Created += fileSystemWatcher_Created;
             fileSystemWatcher.Renamed += fileSystemWatcher_Renamed;
             fileSystemWatcher.Deleted += fileSystemWatcher_Deleted;
@@ -113,9 +114,14 @@ namespace Cryptdrive
             }
         }
 
+        private void FileSystemWatcher_Error(object sender, ErrorEventArgs e)
+        {
+            Logger.instance.logError("Too many changes at once, scheduling a full scan in 1minute to make sure no file was missed...");
+            GUIForm.instance.FileWatcherSupportTimer.Enabled = true;
+        }
+
         private void FileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
         {
-            //TODO make sure that  File.GetAttributes(e.FullPath) never causes an unhandeled exception, had some cases where it failed for some yet unknownn reason if it was a directory
             if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
             {
                 Logger.instance.logInfo("Folder changed: " + e.Name);

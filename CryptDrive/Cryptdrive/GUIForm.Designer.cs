@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.delete = new System.Windows.Forms.Button();
             this.searchFile = new System.Windows.Forms.Button();
@@ -38,6 +39,7 @@
             this.Logout_bt = new System.Windows.Forms.Button();
             this.Settings_btn = new System.Windows.Forms.Button();
             this.Debug_bt = new System.Windows.Forms.Button();
+            this.FileWatcherSupportTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // delete
@@ -131,6 +133,11 @@
             this.Debug_bt.UseVisualStyleBackColor = false;
             this.Debug_bt.Click += new System.EventHandler(this.Debug_bt_Click);
             // 
+            // FileWatcherSupportTimer
+            // 
+            this.FileWatcherSupportTimer.Interval = 1000;
+            this.FileWatcherSupportTimer.Tick += new System.EventHandler(this.FileWatcherSupportTimer_Tick);
+            // 
             // GUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -167,6 +174,7 @@
         private System.Windows.Forms.Button Logout_bt;
         private System.Windows.Forms.Button Settings_btn;
         private System.Windows.Forms.Button Debug_bt;
+        internal System.Windows.Forms.Timer FileWatcherSupportTimer;
     }
 }
 

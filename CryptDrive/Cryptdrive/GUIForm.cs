@@ -176,5 +176,17 @@ namespace Cryptdrive
             FileWatcher.instance.syncClientTreeNode();
             FileNameStorage.instance.Init();
         }
+
+        private void FileWatcherSupportTimer_Tick(object sender, EventArgs e)
+        {
+            FileWatcherSupportTimer.Enabled = false;
+            foreach (var file in FileWatcher.instance.MonitoredFiles)
+            {
+                if (!FileNameStorage.instance.isFileTracked(file))
+                {
+                    FileManager.instance.syncCryptFile(file);
+                }
+            }
+        }
     }
 }

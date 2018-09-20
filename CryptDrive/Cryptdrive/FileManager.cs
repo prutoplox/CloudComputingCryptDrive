@@ -57,6 +57,11 @@ namespace Cryptdrive
             return allUploaded;
         }
 
+        public async Task<bool> syncCryptFile(string path)
+        {
+            return await syncFile(FileManager.convertCryptPathToPath(path));
+        }
+
         public async Task<bool> syncFile(string path)
         {
             byte[] encrpytedAndCompressedByteArray = encryptAndCompressFile(path);
