@@ -219,6 +219,11 @@ namespace Cryptdrive
             {
                 string responseString = await getURL(blobname);
 
+                if (responseString == String.Empty)
+                {
+                    return false;
+                }
+
                 try
                 {
                     using (var client = new WebClient())
@@ -249,7 +254,15 @@ namespace Cryptdrive
                 var response = await AzureConnectionManager.client.PostAsync(fullURL, null);
                 var responseString = await response.Content.ReadAsStringAsync();
                 Logger.instance.logInfo("Loaded a list of files which are newer then " + timestamp);
-                return responseString.Split('>');
+
+                if (responseString == String.Empty)
+                {
+                    return Enumerable.Empty<string>();
+                }
+                else
+                {
+                    return responseString.Split('>');
+                }
             }
             catch (HttpRequestException e)
             {
