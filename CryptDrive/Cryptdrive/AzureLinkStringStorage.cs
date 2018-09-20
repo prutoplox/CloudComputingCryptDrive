@@ -8,20 +8,22 @@ namespace Cryptdrive
 {
     public class AzureLinkStringStorage
     {
-        public const string BLOB_ADD_AZURE_STRING = "http://localhost:7071/api/BlobAdd";
-        public const string DELETE_AZURE_STRING = "http://localhost:7071/api/BlobDelete";
-        public const string BLOB_GET_AZURE_STRING = "http://localhost:7071/api/BlobGet";
-        public const string DBTESTFUNCTION_AZURE_STRING = "http://localhost:7071/api/DBTestFunction";
-        public const string REGISTER_USER_AZURE_STRING = "http://localhost:7071/api/RegisterUser";
-        public const string STORAGE_CREATE_AZURE_STRING = "http://localhost:7071/api/StorageCreate";
-        public const string STORAGE_DELETE_AZURE_STRING = "http://localhost:7071/api/StorageDelete";
-        public const string BLOB_RENAME_AZURE_STRING = "http://localhost:7071/api/BlobRename";
-        public const string SYNC_BLOB_AZURE_STRING = "http://localhost:7071/api/SyncBlob";
-        public const string LOGIN_AZURE_STRING = "http://localhost:7071/api/Login";
-        public const string CONFIRM_EMAIL_AZURE_STRING = "http://localhost:7071/api/ConfirmEmail";
-        public const string BLOB_LIST_NEWER = "http://localhost:7071/api/BlobListNewer";
-        public const string ResetDB = "http://localhost:7071/api/ResetDB";
         public const string STORAGE_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=devstoragemarius;AccountKey=Z0+9qcUyTzgovwkCCsLWH0RZUkih8/tltiabksN3QfB7SthB3c7TYdJBgA7KuTi6B40CMqF1BRAQk5cL6tMfSQ==;EndpointSuffix=core.windows.net";
+        public const string BASE_URL = "http://localhost:7071/api/";
+
+        public const string BLOB_ADD_AZURE_STRING = BASE_URL + "BlobAdd";
+        public const string DELETE_AZURE_STRING = BASE_URL + "BlobDelete";
+        public const string BLOB_GET_AZURE_STRING = BASE_URL + "BlobGet";
+        public const string DBTESTFUNCTION_AZURE_STRING = BASE_URL + "DBTestFunction";
+        public const string REGISTER_USER_AZURE_STRING = BASE_URL + "RegisterUser";
+        public const string STORAGE_CREATE_AZURE_STRING = BASE_URL + "StorageCreate";
+        public const string STORAGE_DELETE_AZURE_STRING = BASE_URL + "StorageDelete";
+        public const string BLOB_RENAME_AZURE_STRING = BASE_URL + "BlobRename";
+        public const string SYNC_BLOB_AZURE_STRING = BASE_URL + "SyncBlob";
+        public const string LOGIN_AZURE_STRING = BASE_URL + "Login";
+        public const string CONFIRM_EMAIL_AZURE_STRING = BASE_URL + "ConfirmEmail";
+        public const string BLOB_LIST_NEWER = BASE_URL + "BlobListNewer";
+        public const string ResetDB = BASE_URL + "ResetDB";
         public const string LINKING_INITALCHARACTER = "?";
         public const string DB_DATASOURCE = "cryptdriveruserdb.database.windows.net";
         public const string DB_USERID = "cryptAdmin";
