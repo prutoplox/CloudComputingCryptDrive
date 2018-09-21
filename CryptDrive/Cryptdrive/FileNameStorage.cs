@@ -46,7 +46,7 @@ namespace Cryptdrive
         public async void Init()
         {
             //Read the filelist.txt from the local folder
-            IEnumerable<string> trackedClientFiles = null;
+            IEnumerable<string> trackedClientFiles = Enumerable.Empty<string>(); //avoid null reference
             DateTime? timeStampClient = null;
             if (File.Exists(fileMappingFile))
             {
@@ -97,6 +97,7 @@ namespace Cryptdrive
             //both null -> not yet tracked => make new with all files in folder
             else if (timeStampCloud == null && timeStampClient == null)
             {
+                lastSave = DateTime.UtcNow;
                 filesNeedToBeTracked = filesOnClient;
                 filePathsInCloudNotOnClientTracked = Enumerable.Empty<string>();
                 filePathsOnClientNotInCloud = filesOnClient; //ok
@@ -113,6 +114,7 @@ namespace Cryptdrive
             //client null -> client is a new computer => download files and merge files on computer into it
             else if (timeStampCloud != null && timeStampClient == null)
             {
+                lastSave = DateTime.UtcNow;
                 filesNeedToBeTracked = filesOnClient.Except(trackedClientFiles);
                 filePathsOnClientNotInCloud = filesOnClient.Except(trackedCloudFiles);
                 filePathsInCloudNotOnClientTracked = trackedCloudFiles.Except(trackedClientFiles);

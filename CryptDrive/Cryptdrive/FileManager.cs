@@ -95,6 +95,7 @@ namespace Cryptdrive
             {
                 FileNameStorage.instance.removeMapping(cryptOld);
                 FileNameStorage.instance.AddToTracking(cryptNew, hashNewCrypt);
+                await FileNameStorage.instance.SaveMappingToFileAndCloud();
             }
             return result;
         }
@@ -153,6 +154,7 @@ namespace Cryptdrive
                 var responseString = await response.Content.ReadAsStringAsync();
                 Logger.instance.logInfo("Deleted following file on the server:" + responseString);
                 FileNameStorage.instance.removeMappings(files);
+                await FileNameStorage.instance.SaveMappingToFileAndCloud();
                 return true;
             }
             catch (HttpRequestException e)
@@ -165,7 +167,9 @@ namespace Cryptdrive
         public async Task<bool> uploadFileDataHashedName(string path, byte[] data)
         {
             string blobname = FileNameStorage.instance.hashPath(path, true);
-            return await uploadFileData(blobname, data);
+            bool returnValue = await uploadFileData(blobname, data);
+            await FileNameStorage.instance.SaveMappingToFileAndCloud();
+            return returnValue;
         }
 
         public async Task<bool> uploadFileData(string path, byte[] data)
