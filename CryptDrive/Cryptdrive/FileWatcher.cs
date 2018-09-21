@@ -69,7 +69,7 @@ namespace Cryptdrive
 
         public bool needsFileSystemCheck { get; set; }
 
-        public IEnumerable<string> MonitoredFilesNewerThen(DateTime timestamp)
+        public IEnumerable<string> MonitoredFilesNewerThen(DateTimeOffset timestamp)
         {
             foreach (var folder in MonitoredFolders)
             {

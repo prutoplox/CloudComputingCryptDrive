@@ -19,9 +19,11 @@ namespace Cryptdrive
         public const string fileMappingFileCloud = fileMappingFileCloudPrefix + fileMappingFile;
 
         public static FileNameStorage instance = new FileNameStorage();
-        private Dictionary<string, string> pathDict = new Dictionary<string, string>();
+        private Dictionary<string, string> pathDict;
 
-        public DateTime lastSave { get; private set; }
+        public DateTimeOffset lastSave { get; private set; }
+
+        public bool updateCloudFile { get; set; }
 
         /// <summary>
         /// Only updated after Init is called!
@@ -45,9 +47,11 @@ namespace Cryptdrive
 
         public async void Init()
         {
+            pathDict = new Dictionary<string, string>();
+
             //Read the filelist.txt from the local folder
             IEnumerable<string> trackedClientFiles = Enumerable.Empty<string>(); //avoid null reference
-            DateTime? timeStampClient = null;
+            DateTimeOffset? timeStampClient = null;
             if (File.Exists(fileMappingFile))
             {
                 ParseFile(fileMappingFile, out trackedClientFiles, out timeStampClient);
@@ -60,7 +64,7 @@ namespace Cryptdrive
 
             //Download the filelist from the cloud
             IEnumerable<string> trackedCloudFiles = Enumerable.Empty<string>(); //avoid null reference
-            DateTime? timeStampCloud = null;
+            DateTimeOffset? timeStampCloud = null;
             await FileManager.instance.downloadFile(fileMappingFile, fileMappingFileCloud);
             if (File.Exists(fileMappingFileCloud))
             {
@@ -80,9 +84,10 @@ namespace Cryptdrive
             //client & cloud are there, => use newer tracking and merge file on client into it(just as one of them is null)
             if (timeStampCloud != null && timeStampClient != null)
             {
-                Task<IEnumerable<string>> cloudFilesNewserThenClientTimestampTask = FileManager.instance.ListNewerFiles((DateTime)timeStampClient);
+                lastSave = (DateTimeOffset)timeStampClient;
+                Task<IEnumerable<string>> cloudFilesNewserThenClientTimestampTask = FileManager.instance.ListNewerFiles((DateTimeOffset)timeStampClient);
 
-                clientFilesNewerThenCloudTimestamp = FileWatcher.instance.MonitoredFilesNewerThen((DateTime)timeStampCloud);
+                clientFilesNewerThenCloudTimestamp = FileWatcher.instance.MonitoredFilesNewerThen((DateTimeOffset)timeStampCloud);
 
                 await cloudFilesNewserThenClientTimestampTask;
                 cloudFilesNewserThenClientTimestamp = cloudFilesNewserThenClientTimestampTask.Result;
@@ -97,7 +102,7 @@ namespace Cryptdrive
             //both null -> not yet tracked => make new with all files in folder
             else if (timeStampCloud == null && timeStampClient == null)
             {
-                lastSave = DateTime.UtcNow;
+                lastSave = DateTimeOffset.UtcNow;
                 filesNeedToBeTracked = filesOnClient;
                 filePathsInCloudNotOnClientTracked = Enumerable.Empty<string>();
                 filePathsOnClientNotInCloud = filesOnClient; //ok
@@ -106,6 +111,7 @@ namespace Cryptdrive
             //cloud null -> local tracked => check if some new files appeared and remove not existant files from tracking and upload new tracking to cloud
             else if (timeStampCloud == null && timeStampClient != null)
             {
+                lastSave = (DateTimeOffset)timeStampClient;
                 filesNeedToBeTracked = filesOnClient.Except(trackedClientFiles);
                 filePathsOnClientNotInCloud = filesOnClient;
                 filePathsInCloudNotOnClientTracked = Enumerable.Empty<string>(); //ok
@@ -114,7 +120,7 @@ namespace Cryptdrive
             //client null -> client is a new computer => download files and merge files on computer into it
             else if (timeStampCloud != null && timeStampClient == null)
             {
-                lastSave = DateTime.UtcNow;
+                lastSave = DateTimeOffset.UtcNow;
                 filesNeedToBeTracked = filesOnClient.Except(trackedClientFiles);
                 filePathsOnClientNotInCloud = filesOnClient.Except(trackedCloudFiles);
                 filePathsInCloudNotOnClientTracked = trackedCloudFiles.Except(trackedClientFiles);
@@ -131,23 +137,28 @@ namespace Cryptdrive
             SaveMappingToFile();
         }
 
-        private static void ParseFile(string filename, out IEnumerable<string> trackedFiles, out DateTime? timestampFile)
+        public static void ParseFile(string filename, out IEnumerable<string> trackedFiles, out DateTimeOffset? timestampFile)
         {
             trackedFiles = File.ReadAllLines(filename);
-            timestampFile = DateTime.Parse(trackedFiles.First());
+            timestampFile = DateTimeOffset.Parse(trackedFiles.First());
             trackedFiles = trackedFiles.Skip(1);
             trackedFiles = trackedFiles.Select(X => Codec.decrypt(X.Split('>')[1]));
         }
 
-        public static DateTime GetDateTimeFromFile(string filename)
+        public static DateTimeOffset GetDateTimeFromFile(string filename)
         {
             string datetimeString = File.ReadLines(filename).First();
-            return DateTime.Parse(datetimeString);
+            return DateTimeOffset.Parse(datetimeString);
+        }
+
+        public void ScheduleUpdate()
+        {
+            updateCloudFile = true;
         }
 
         public async Task<bool> SaveMappingToFileAndCloud()
         {
-            lastSave = DateTime.Parse(DateTime.UtcNow.ToString()); //do some rounding, does not need to be fast
+            lastSave = DateTimeOffset.Parse(DateTimeOffset.UtcNow.ToString()); //do some rounding, does not need to be fast
             return SaveMappingToFile() && await saveMappingToCloud();
         }
 

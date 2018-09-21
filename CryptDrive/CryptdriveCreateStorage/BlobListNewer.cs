@@ -41,7 +41,7 @@ namespace CryptdriveCloud
                     return new BadRequestObjectResult(errorMessage);
                 }
 
-                bool parsedTimestamp = DateTime.TryParse(timestampString, out DateTime timestamp);
+                bool parsedTimestamp = DateTimeOffset.TryParse(timestampString, out DateTimeOffset timestamp);
                 if (!parsedTimestamp)
                 {
                     string errorMessage = "No valid timestamp name given!";

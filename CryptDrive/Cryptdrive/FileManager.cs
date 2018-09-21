@@ -95,7 +95,7 @@ namespace Cryptdrive
             {
                 FileNameStorage.instance.removeMapping(cryptOld);
                 FileNameStorage.instance.AddToTracking(cryptNew, hashNewCrypt);
-                await FileNameStorage.instance.SaveMappingToFileAndCloud();
+                FileNameStorage.instance.ScheduleUpdate();
             }
             return result;
         }
@@ -154,7 +154,7 @@ namespace Cryptdrive
                 var responseString = await response.Content.ReadAsStringAsync();
                 Logger.instance.logInfo("Deleted following file on the server:" + responseString);
                 FileNameStorage.instance.removeMappings(files);
-                await FileNameStorage.instance.SaveMappingToFileAndCloud();
+                FileNameStorage.instance.ScheduleUpdate();
                 return true;
             }
             catch (HttpRequestException e)
@@ -168,7 +168,7 @@ namespace Cryptdrive
         {
             string blobname = FileNameStorage.instance.hashPath(path, true);
             bool returnValue = await uploadFileData(blobname, data);
-            await FileNameStorage.instance.SaveMappingToFileAndCloud();
+            FileNameStorage.instance.ScheduleUpdate();
             return returnValue;
         }
 
@@ -250,11 +250,11 @@ namespace Cryptdrive
             }
         }
 
-        public async Task<IEnumerable<string>> ListNewerFiles(DateTime timestamp)
+        public async Task<IEnumerable<string>> ListNewerFiles(DateTimeOffset timestamp)
         {
             try
             {
-                string fullURL = AzureLinkStringStorage.BLOB_LIST_NEWER + AzureLinkStringStorage.LINKING_INITALCHARACTER + "containername=" + FileManager.instance.containerName + "&timestamp=" + timestamp;
+                string fullURL = AzureLinkStringStorage.BLOB_LIST_NEWER + AzureLinkStringStorage.LINKING_INITALCHARACTER + "containername=" + FileManager.instance.containerName + "&timestamp=" + timestamp.ToString("u");
                 var response = await AzureConnectionManager.client.PostAsync(fullURL, null);
                 var responseString = await response.Content.ReadAsStringAsync();
 
