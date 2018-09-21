@@ -13,6 +13,8 @@ namespace Cryptdrive
         public static FileWatcher instance = new FileWatcher();
         private Dictionary<string, FileSystemWatcher> fileSystemWatchers = new Dictionary<string, FileSystemWatcher>();
 
+        public IEnumerable<string> ignoredFiles { get; set; } = Enumerable.Empty<string>();
+
         private FileWatcher()
         {
             if (File.Exists(folderMappingFile))
@@ -124,6 +126,19 @@ namespace Cryptdrive
 
         private void FileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
         {
+            if (ignoredFiles.Contains(e.FullPath))
+            {
+                Logger.instance.logInfo("Ignoring " + e.FullPath + " since it's being synced from the cloud");
+                return;
+            }
+
+            if (!File.Exists(e.FullPath))
+            {
+                //Deletion sometimes calls the file change event for some yet unknown reason...
+                fileSystemWatcher_Deleted(sender, e);
+                return;
+            }
+
             if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
             {
                 Logger.instance.logInfo("Folder changed: " + e.Name);
@@ -141,6 +156,12 @@ namespace Cryptdrive
 
         private void fileSystemWatcher_Created(object sender, FileSystemEventArgs e)
         {
+            if (ignoredFiles.Contains(e.FullPath))
+            {
+                Logger.instance.logInfo("Ignoring " + e.FullPath + " since it's being synced from the cloud");
+                return;
+            }
+
             if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
             {
                 Logger.instance.logInfo("Folder created: " + e.Name);
@@ -159,6 +180,12 @@ namespace Cryptdrive
 
         private void fileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
         {
+            if (ignoredFiles.Contains(e.FullPath))
+            {
+                Logger.instance.logInfo("Ignoring " + e.FullPath + " since it's being synced from the cloud");
+                return;
+            }
+
             if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
             {
                 Logger.instance.logInfo("Folder " + e.OldFullPath + " was renamed to " + e.FullPath);
@@ -180,6 +207,12 @@ namespace Cryptdrive
 
         private void fileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
         {
+            if (ignoredFiles.Contains(e.FullPath))
+            {
+                Logger.instance.logInfo("Ignoring " + e.FullPath + " since it's being synced from the cloud");
+                return;
+            }
+
             Logger.instance.logInfo("File or Folder deleted: " + e.Name);
             IEnumerable<string> names = FileNameStorage.instance.getFilesWithPrefix(FileManager.convertPathToCryptPath(e.FullPath));
             FileManager.instance.deleteFiles(names);

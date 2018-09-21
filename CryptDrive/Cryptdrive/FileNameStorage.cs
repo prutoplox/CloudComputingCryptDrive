@@ -19,6 +19,10 @@ namespace Cryptdrive
         public const string fileMappingFileCloud = fileMappingFileCloudPrefix + fileMappingFile;
 
         public static FileNameStorage instance = new FileNameStorage();
+
+        /// <summary>
+        /// [hash] = cryptpath
+        /// </summary>
         private Dictionary<string, string> pathDict;
 
         public DateTimeOffset lastSave { get; private set; }
@@ -130,11 +134,39 @@ namespace Cryptdrive
                 throw new Exception("Unreachable statement got reached!");
             }
 
-            foreach (string item in filesNeedToBeTracked)
+            foreach (string item in filesOnClient.Union(trackedClientFiles))
             {
                 hashPath(item, true);
             }
             SaveMappingToFile();
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="trackedCloud">Lines which hold the encrypted filename and the hash of the filename</param>
+        /// <param name="changedFiles">hashes of filenames which changed </param>
+        public void AddCloudTrackingFiles(IEnumerable<string> trackedCloud, IEnumerable<string> changedFiles)
+        {
+            List<string> filesInCloud = new List<string>();
+
+            //Add all cloud files to the tracking
+            foreach (var line in trackedCloud)
+            {
+                string[] parths = line.Split('>');
+                string cryptPath = Codec.decrypt(parths[1]);
+                filesInCloud.Add(cryptPath);
+            }
+            filePathsOnClientNotInCloud = pathDict.Values.Except(filesInCloud);
+            filePathsInCloudNotOnClientTracked = filesInCloud.Except(pathDict.Values);
+
+            //Make a lookupa aviable for looking which file changed
+            foreach (var file in filesInCloud)
+            {
+                hashPath(file, true);
+            }
+
+            cloudFilesNewserThenClientTimestamp = changedFiles.Select(X => lookupHash(X));
         }
 
         public static void ParseFile(string filename, out IEnumerable<string> trackedFiles, out DateTimeOffset? timestampFile)
@@ -158,7 +190,7 @@ namespace Cryptdrive
 
         public async Task<bool> SaveMappingToFileAndCloud()
         {
-            lastSave = DateTimeOffset.Parse(DateTimeOffset.UtcNow.ToString()); //do some rounding, does not need to be fast
+            lastSave = DateTimeOffset.Parse(DateTimeOffset.UtcNow.ToString("u")); //do some rounding, does not need to be fast
             return SaveMappingToFile() && await saveMappingToCloud();
         }
 

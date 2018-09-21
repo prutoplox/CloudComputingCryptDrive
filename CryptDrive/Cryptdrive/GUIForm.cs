@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Cryptdrive
 {
@@ -215,7 +216,6 @@ namespace Cryptdrive
             bool downloadNewFiles = false;
             if (newFiles.Any())
             {
-                bool GotNewFiles = false;
                 foreach (var item in newFiles)
                 {
                     if (item == FileNameStorage.fileMappingFile)
@@ -228,26 +228,21 @@ namespace Cryptdrive
                         if (remoteTimestamp > FileNameStorage.instance.lastSave)
                         {
                             Logger.instance.logInfo("Remote has newer files, preparing to download updated files...");
-                            File.Delete(FileNameStorage.fileMappingFile);
-                            File.Move(localTmpFile, FileNameStorage.fileMappingFile);
-                            FileNameStorage.instance.Init();
+                            FileNameStorage.instance.AddCloudTrackingFiles(File.ReadLines(localTmpFile).Skip(1), newFiles.Where(X => X != localTmpFile));
                             downloadNewFiles = true;
                         }
-                        else
-                        {
-                            File.Delete(localTmpFile);
-                        }
+                        File.Delete(localTmpFile);
                     }
                 }
 
                 if (downloadNewFiles)
                 {
-                    foreach (var file in newFiles)
-                    {
-                        string cryptfilePath = FileNameStorage.instance.lookupHash(file);
-                        string realfilePath = FileManager.convertCryptPathToPath(cryptfilePath);
-                        FileManager.instance.downloadFile(file, realfilePath);
-                    }
+                    FileWatcher.instance.ignoredFiles = newFiles.Where(X => X != FileNameStorage.fileMappingFile).Select(X => FileManager.convertCryptPathToPath(FileNameStorage.instance.lookupHash(X)));
+                    await Task.WhenAll(newFiles.Where(                                                                                                  //Wait till all files...
+                        X => X != FileNameStorage.fileMappingFile).Select(                                                                              //...except the mapping gile...
+                            X => FileManager.instance.downloadFile(X,                                                                                   //...have been downloaded ...
+                                FileManager.convertCryptPathToPath(FileNameStorage.instance.lookupHash(X)))));                                          //...with the right name
+                    FileWatcher.instance.ignoredFiles = Enumerable.Empty<string>();
                 }
             }
             isCheckingFileMappingFile = false;
