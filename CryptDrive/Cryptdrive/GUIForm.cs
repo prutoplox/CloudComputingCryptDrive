@@ -212,7 +212,7 @@ namespace Cryptdrive
         {
             Logger.instance.logDebug("Checking for new files in the cloud");
             DateTime checkStart = DateTime.Now;
-            IEnumerable<string> newFiles = await FileManager.instance.ListNewerFiles(FileNameStorage.instance.lastSave);
+            IEnumerable<string> newFiles = await FileManager.instance.ListNewerFiles(FileNameStorage.instance.lastCloudSync);
             bool downloadNewFiles = false;
             if (newFiles.Any())
             {
@@ -237,12 +237,16 @@ namespace Cryptdrive
 
                 if (downloadNewFiles)
                 {
-                    FileWatcher.instance.ignoredFiles = newFiles.Where(X => X != FileNameStorage.fileMappingFile).Select(X => FileManager.convertCryptPathToPath(FileNameStorage.instance.lookupHash(X)));
-                    await Task.WhenAll(newFiles.Where(                                                                                                  //Wait till all files...
-                        X => X != FileNameStorage.fileMappingFile).Select(                                                                              //...except the mapping gile...
-                            X => FileManager.instance.downloadFile(X,                                                                                   //...have been downloaded ...
+                    //FileWatcher.instance.ignoredFiles = newFiles.Where(X => X != FileNameStorage.fileMappingFile).Select(X => FileManager.convertCryptPathToPath(FileNameStorage.instance.lookupHash(X))).Select(X => X.Replace("/", ""));
+                    FileWatcher.instance.allEnabled = false;
+                    await Task.WhenAll(newFiles                                                                                                  //Wait till all files...
+                        .Where(X => X != FileNameStorage.fileMappingFile)                                                                             //...except the mapping gile...
+                        .Where(X => FileNameStorage.instance.lookupHash(X) != String.Empty)
+                            .Select(X => FileManager.instance.downloadFile(X,                                                                                   //...have been downloaded ...
                                 FileManager.convertCryptPathToPath(FileNameStorage.instance.lookupHash(X)))));                                          //...with the right name
-                    FileWatcher.instance.ignoredFiles = Enumerable.Empty<string>();
+                    FileWatcher.instance.allEnabled = true;
+
+                    //FileWatcher.instance.ignoredFiles = Enumerable.Empty<string>();
                 }
             }
             isCheckingFileMappingFile = false;

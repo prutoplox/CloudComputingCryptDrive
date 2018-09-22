@@ -27,6 +27,8 @@ namespace Cryptdrive
 
         public DateTimeOffset lastSave { get; private set; }
 
+        public DateTimeOffset lastCloudSync { get; private set; }
+
         public bool updateCloudFile { get; set; }
 
         /// <summary>
@@ -139,6 +141,7 @@ namespace Cryptdrive
                 hashPath(item, true);
             }
             SaveMappingToFile();
+            lastCloudSync = lastSave;
         }
 
         /// <summary>
@@ -224,6 +227,7 @@ namespace Cryptdrive
             var wasUploaded = await FileManager.instance.uploadFileData(fileMappingFile, File.ReadAllBytes(fileMappingFile));
             if (wasUploaded)
             {
+                lastCloudSync = DateTimeOffset.UtcNow;
                 Logger.instance.logInfo("Saved an up to date file mapping to the cloud");
             }
             else

@@ -71,6 +71,17 @@ namespace Cryptdrive
 
         public bool needsFileSystemCheck { get; set; }
 
+        public bool allEnabled
+        {
+            set
+            {
+                foreach (var item in fileSystemWatchers)
+                {
+                    item.Value.EnableRaisingEvents = value;
+                }
+            }
+        }
+
         public IEnumerable<string> MonitoredFilesNewerThen(DateTimeOffset timestamp)
         {
             foreach (var folder in MonitoredFolders)
