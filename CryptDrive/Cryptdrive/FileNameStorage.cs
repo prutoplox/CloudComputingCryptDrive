@@ -20,12 +20,10 @@ namespace Cryptdrive
 
         public static FileNameStorage instance = new FileNameStorage();
 
-        public Dictionary<string, string> pathDict = new Dictionary<string, string>();
-
         /// <summary>
         /// [hash] = cryptpath
         /// </summary>
-        private Dictionary<string, string> pathDict;
+        public Dictionary<string, string> pathDict;
 
         public DateTimeOffset lastSave { get; private set; }
 
