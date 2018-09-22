@@ -259,12 +259,35 @@ namespace Cryptdrive
         /// <param name="DownloadFolderPath"> Local folder path where we want to download file</param>
         /// <param name="DownloadFileName">File name to download Dropbox files in local drive</param>
         /// <returns></returns>
-        public bool Download(string DropboxFolderPath, string DropboxFileName, string DownloadFolderPath, string DownloadFileName)
+        public bool Download(string DropboxFolderPath, string DropboxFileName, string DownloadPath)
         {
             try
             {
-                var response = DBClient.Files.DownloadAsync(DropboxFolderPath + "/" + DropboxFileName);
+                var response = DBClient.Files.DownloadAsync(DownloadPath);
                 var result = response.Result.GetContentAsStreamAsync(); //Added to wait for the result from Async method
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Method to Rename a file in the Dropbox without downloading it
+        /// </summary>
+        /// <param name="DropboxFolderPath">Dropbox folder path which we want to download</param>
+        /// <param name="DropboxFileName"> Dropbox File name availalbe in DropboxFolderPath to download</param>
+        /// <param name="DownloadFolderPath"> Local folder path where we want to download file</param>
+        /// <param name="DownloadFileName">File name to download Dropbox files in local drive</param>
+        /// <returns></returns>
+        public bool Rename(string DropboxPathOld, string DropboxPathNew)
+        {
+            try
+            {
+                var response = DBClient.Files.MoveAsync(DropboxPathOld, DropboxPathNew);
+                var result = response.Result; //Added to wait for the result from Async method
 
                 return true;
             }

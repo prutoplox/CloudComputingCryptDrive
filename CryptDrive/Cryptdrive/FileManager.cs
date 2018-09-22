@@ -23,18 +23,10 @@ namespace Cryptdrive
 
         public string containerName { get; set; }
         public static FileManager instance = new FileManager();
-        List<String> clientFiles;
-        List<String> cloudFiles;
 
-        public List<String> getClientFiles()
-        {
-            throw new NotImplementedException();
-        }
+        public bool syncFilesAutomatically { get; set; }
 
-        public List<String> getCloudFiles()
-        {
-            throw new NotImplementedException();
-        }
+        public bool deleteFilesAutomatically { get; set; }
 
         public async Task<bool> addFiles(IEnumerable<string> files)
         {
@@ -106,6 +98,10 @@ namespace Cryptdrive
             {
                 string fullURL = AzureLinkStringStorage.BLOB_RENAME_AZURE_STRING + AzureLinkStringStorage.LINKING_INITALCHARACTER +
                     "container=" + containerName + "&filenameOld=" + oldPath + "&filenameNew=" + newPath;
+                if (!syncFilesAutomatically)
+                {
+                    return false;
+                }
                 var response = await AzureConnectionManager.client.PostAsync(fullURL, null);
                 var responseString = await response.Content.ReadAsStringAsync();
                 Logger.instance.logInfo("Renamed the file " + oldPath + " to " + newPath + " in the cloud");
@@ -150,6 +146,10 @@ namespace Cryptdrive
                     var stringContent = new StringContent(FileNameStorage.instance.hashPath(path));
                     content.Add(stringContent, i++.ToString());
                 }
+                if (!deleteFilesAutomatically)
+                {
+                    return false;
+                }
                 var response = await AzureConnectionManager.client.PostAsync(fullURL, content);
                 var responseString = await response.Content.ReadAsStringAsync();
                 Logger.instance.logInfo("Deleted following file on the server:" + responseString);
@@ -179,6 +179,10 @@ namespace Cryptdrive
                 var content = new ByteArrayContent(data);
                 string username = containerName;
                 string fullURL = AzureLinkStringStorage.BLOB_ADD_AZURE_STRING + AzureLinkStringStorage.LINKING_INITALCHARACTER + "username=" + username + "&filename=" + path;
+                if (!syncFilesAutomatically)
+                {
+                    return false;
+                }
                 var response = await AzureConnectionManager.client.PostAsync(fullURL, content);
                 var responseString = await response.Content.ReadAsStringAsync();
                 switch (response.StatusCode)

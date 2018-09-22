@@ -16,17 +16,29 @@ namespace Cryptdrive
         private bool login = false;
         public static GUIForm instance = new GUIForm();
 
-        //dropbox Variables
-
-        private string strAccessToken = string.Empty;
-        private string strAuthenticationURL = string.Empty;
-        private DropBoxBase DBB;
-
         public int LeftPadding { get; set; }
 
         public GUIForm()
         {
             InitializeComponent();
+
+            // Create the ToolTip and associate with the Form container.
+            ToolTip toolTip1 = new ToolTip();
+
+            // Set up the delays for the ToolTip.
+            toolTip1.AutoPopDelay = 5000;
+            toolTip1.InitialDelay = 1000;
+            toolTip1.ReshowDelay = 500;
+
+            // Force the ToolTip text to be displayed whether or not the form is active.
+            toolTip1.ShowAlways = true;
+
+            // Set up the ToolTip text for the Button and Checkbox.
+            toolTip1.SetToolTip(this.cd_del, "Automatically remove files on the cloud");
+            toolTip1.SetToolTip(this.cd_sync, "Automatically sync files on the cloud");
+            toolTip1.SetToolTip(this.db_del, "Automatically remove files on DropBox");
+            toolTip1.SetToolTip(this.db_sync, "Automatically sync files on DropBox");
+
             this.Visible = false;
             if (instance == null)
             {
@@ -275,7 +287,7 @@ namespace Cryptdrive
         {
             Application.Exit();
         }
-        
+
         public IEnumerable<Control> GetAll(Control control, Type type)
         {
             var controls = control.Controls.Cast<Control>();
@@ -288,75 +300,39 @@ namespace Cryptdrive
         private void dropbox_btn_Click(object sender, EventArgs e)
         {
             AuthenticateDropBox();
-            createFolder();
-        }
-
-        private void createFolder()
-        {
-            try
-            {
-                if (DBB != null)
-                {
-                    if (strAccessToken != null && strAuthenticationURL != null)
-                    {
-                        if (DBB.FolderExists(getDropboxCryptDriveContainerNamePath()) == false)
-                        {
-                            DBB.CreateFolder(getDropboxCryptDriveContainerNamePath());
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ex = ex.InnerException ?? ex;
-            }
-        }
-
-        private string getDropboxCryptDriveContainerNamePath()
-        {
-            return "/Dropbox/CryptDriveSS2018/" + FileManager.instance.containerName;
+            FileManagerDropbox.instance.createFolder();
         }
 
         private void btnDownload_Click()
         {
-            try
-            {
-                if (DBB != null)
-                {
-                    if (strAccessToken != null && strAuthenticationURL != null)
-                    {
-                        DBB.Download(getDropboxCryptDriveContainerNamePath(), "Sample-test.jpg", @"D:\", "capture4_dwnld.png");
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
         }
 
         public void AuthenticateDropBox()
         {
             try
             {
-                if (string.IsNullOrEmpty("q4ela0mxhrm7eti"))
+                string somethingsomething = "q4ela0mxhrm7eti";
+                if (string.IsNullOrEmpty(somethingsomething))
                 {
                     MessageBox.Show("Please enter valid App Key !");
                     return;
                 }
+                var DBB = FileManagerDropbox.instance.DBB;
                 if (DBB == null)
                 {
-                    DBB = new DropBoxBase("q4ela0mxhrm7eti", "CryptDriveSS2018");
+                    DBB = new DropBoxBase(somethingsomething, "CryptDriveSS2018");
 
-                    strAuthenticationURL = DBB.GeneratedAuthenticationURL(); // This method must be executed before generating Access Token.
-                    strAccessToken = DBB.GenerateAccessToken();
+                    FileManagerDropbox.instance.strAuthenticationURL = DBB.GeneratedAuthenticationURL(); // This method must be executed before generating Access Token.
+                    FileManagerDropbox.instance.strAccessToken = DBB.GenerateAccessToken();
                     dropboxsync_btn.Enabled = true;
                     dropbox_image.Visible = true;
+                    dropboxdelete_bt.Enabled = true;
                 }
                 else
                 {
                     dropboxsync_btn.Enabled = false;
                     dropbox_image.Visible = false;
+                    dropboxdelete_bt.Enabled = false;
                 }
             }
             catch (Exception)
@@ -367,12 +343,12 @@ namespace Cryptdrive
 
         private void dropboxsync_btn_Click(object sender, EventArgs e)
         {
-            dropBoxSync(getAllDropBoxSyncPaths());
+            FileManagerDropbox.instance.syncFiles(getAllDropBoxSyncPaths());
         }
 
         public IEnumerable<string> getAllDropBoxSyncPaths()
         {
-            foreach (CheckBoxHelper item in getAllChildren())
+            foreach (CheckBoxHelper item in getAllTreeChildren())
             {
                 //DropBox Sync
                 if (item.DropBoxSync)
@@ -384,7 +360,7 @@ namespace Cryptdrive
 
         public IEnumerable<string> getAllDropBoxDeletePaths()
         {
-            foreach (CheckBoxHelper item in getAllChildren())
+            foreach (CheckBoxHelper item in getAllTreeChildren())
             {
                 if (item.DropBoxDelete)
                 {
@@ -395,7 +371,7 @@ namespace Cryptdrive
 
         public IEnumerable<string> getAllCryptDriveDeletePaths()
         {
-            foreach (CheckBoxHelper item in getAllChildren())
+            foreach (CheckBoxHelper item in getAllTreeChildren())
             {
                 if (item.CryptDriveDelete)
                 {
@@ -406,7 +382,7 @@ namespace Cryptdrive
 
         public IEnumerable<string> getAllCryptDriveSyncPaths()
         {
-            foreach (CheckBoxHelper item in getAllChildren())
+            foreach (CheckBoxHelper item in getAllTreeChildren())
             {
                 if (item.CryptDriveSync)
                 {
@@ -415,74 +391,64 @@ namespace Cryptdrive
             }
         }
 
-        IEnumerable<System.Windows.Forms.TreeNode> Collect(System.Windows.Forms.TreeNodeCollection nodes)
+        IEnumerable<System.Windows.Forms.TreeNode> CollectAllTreeNodes(System.Windows.Forms.TreeNodeCollection nodes)
         {
             foreach (System.Windows.Forms.TreeNode node in nodes)
             {
                 yield return node;
 
-                foreach (var child in Collect(node.Nodes))
+                foreach (var child in CollectAllTreeNodes(node.Nodes))
                     yield return child;
             }
         }
 
-        public IEnumerable<CheckBoxHelper> getAllChildren()
+        public IEnumerable<CheckBoxHelper> getAllTreeChildren()
         {
-            foreach (CheckBoxHelper item in Collect(ucTreeView1.Nodes))
+            foreach (CheckBoxHelper item in CollectAllTreeNodes(ucTreeView1.Nodes))
             {
                 yield return item;
             }
         }
 
-        private void dropBoxSync(IEnumerable<String> cryptpaths)
-        {
-            try
-            {
-                foreach (string cryptpath in cryptpaths)
-                {
-                    string realpath = FileManager.convertCryptPathToPath(cryptpath);
-                    string hashpath = FileNameStorage.instance.hashPath(cryptpath);
-
-                    if (DBB != null)
-                    {
-                        if (strAccessToken != null && strAuthenticationURL != null)
-                        {
-                            DBB.Upload(getDropboxCryptDriveContainerNamePath(), hashpath, realpath);
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        private void dropBoxDelete(IEnumerable<String> cryptpaths)
-        {
-            try
-            {
-                foreach (string cryptpath in cryptpaths)
-                {
-                    if (DBB != null)
-                    {
-                        if (strAccessToken != null && strAuthenticationURL != null)
-                        {
-                            string hashpath = FileNameStorage.instance.hashPath(cryptpath);
-                            DBB.Delete(getDropboxCryptDriveContainerNamePath() + "/" + hashpath);
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
         private void dropboxdelete_bt_Click(object sender, EventArgs e)
         {
-            dropBoxDelete(getAllDropBoxDeletePaths());
+            FileManagerDropbox.instance.deleteFiles(getAllDropBoxDeletePaths());
+        }
+
+        private void sync_bt_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void cd_sync_CheckedChanged(object sender, EventArgs e)
+        {
+            if (sender is System.Windows.Forms.CheckBox box)
+            {
+                FileManager.instance.syncFilesAutomatically = box.Checked;
+            }
+        }
+
+        private void cd_del_CheckedChanged(object sender, EventArgs e)
+        {
+            if (sender is System.Windows.Forms.CheckBox box)
+            {
+                FileManager.instance.deleteFilesAutomatically = box.Checked;
+            }
+        }
+
+        private void db_sync_CheckedChanged(object sender, EventArgs e)
+        {
+            if (sender is System.Windows.Forms.CheckBox box)
+            {
+                FileManagerDropbox.instance.syncFilesAutomatically = box.Checked;
+            }
+        }
+
+        private void db_del_CheckedChanged(object sender, EventArgs e)
+        {
+            if (sender is System.Windows.Forms.CheckBox box)
+            {
+                FileManagerDropbox.instance.deleteFilesAutomatically = box.Checked;
+            }
         }
     }
 }
