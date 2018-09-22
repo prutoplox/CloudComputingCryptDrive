@@ -194,7 +194,7 @@ namespace Cryptdrive
 
         private async void ResetDB_Click(object sender, EventArgs e)
         {
-            var response = await AzureConnectionManager.client.PostAsync(AzureLinkStringStorage.ResetDB, null);
+            var response = await AzureConnectionManager.client.PostAsync(AzureLinkStringStorage.RESET_DB, null);
             var responseString = await response.Content.ReadAsStringAsync();
         }
 
@@ -203,6 +203,47 @@ namespace Cryptdrive
             FileManager.instance.containerName = "testcontainer";
             this.Hide();
             GUIForm.instance.Visible = true;
+        }
+
+        private async void initAll_Click(object sender, EventArgs e)
+        {
+            var response = await AzureConnectionManager.client.PostAsync(AzureLinkStringStorage.INIT_ALL, null);
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void ConfirmPassword_tf_TextChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void Email_tf_TextChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void ConfirmEmail_tf_TextChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void ConfirmEmail_label_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void Email_label_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void ConfirmPassword_label_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void Password_label_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
         }
     }
 }
