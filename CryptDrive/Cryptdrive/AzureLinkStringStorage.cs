@@ -8,11 +8,11 @@ namespace Cryptdrive
 {
     public class AzureLinkStringStorage
     {
-        public const string RESET_DB = "http://localhost:7071/api/ResetDB";
-        public const string INIT_ALL = "http://localhost:7071/api/InitAll";
         public const string STORAGE_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=devstoragemarius;AccountKey=Z0+9qcUyTzgovwkCCsLWH0RZUkih8/tltiabksN3QfB7SthB3c7TYdJBgA7KuTi6B40CMqF1BRAQk5cL6tMfSQ==;EndpointSuffix=core.windows.net";
         public const string BASE_URL = "http://localhost:7071/api/";
 
+        public const string RESET_DB = BASE_URL + "ResetDB";
+        public const string INIT_ALL = BASE_URL + "InitAll";
         public const string BLOB_ADD_AZURE_STRING = BASE_URL + "BlobAdd";
         public const string DELETE_AZURE_STRING = BASE_URL + "BlobDelete";
         public const string BLOB_GET_AZURE_STRING = BASE_URL + "BlobGet";
