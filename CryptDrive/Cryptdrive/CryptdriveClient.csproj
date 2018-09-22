@@ -32,11 +32,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dropbox.Api, Version=4.0.0.0, Culture=neutral, PublicKeyToken=310f0e82fbb45d01, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dropbox.Api.4.9.0\lib\net45\Dropbox.Api.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=3.19.8.16603, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.19.8\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory.Platform, Version=3.19.8.16603, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.19.8\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=106.3.1.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.106.3.1\lib\net452\RestSharp.dll</HintPath>
@@ -64,6 +70,13 @@
     <Compile Include="AzureLinkStringStorage.cs" />
     <Compile Include="CheckBoxHelper.cs" />
     <Compile Include="Compressor.cs" />
+    <Compile Include="DropBoxBase.cs" />
+    <Compile Include="DropBoxLoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DropBoxLoginForm.Designer.cs">
+      <DependentUpon>DropBoxLoginForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="FileNameStorage.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="FileWatcher.cs" />
@@ -87,6 +100,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UserStorage.cs" />
+    <EmbeddedResource Include="DropBoxLoginForm.resx">
+      <DependentUpon>DropBoxLoginForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUIForm.resx">
       <DependentUpon>GUIForm.cs</DependentUpon>
     </EmbeddedResource>

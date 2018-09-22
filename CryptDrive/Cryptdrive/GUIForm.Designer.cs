@@ -28,22 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Knoten4");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Knoten5");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Knoten1", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2});
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Knoten6");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Knoten7");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Knoten8");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Knoten0", new System.Windows.Forms.TreeNode[] {
-            treeNode3,
-            treeNode4,
-            treeNode5,
-            treeNode6});
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Knoten2");
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Knoten3");
+            System.Windows.Forms.TreeNode treeNode82 = new System.Windows.Forms.TreeNode("Knoten4");
+            System.Windows.Forms.TreeNode treeNode83 = new System.Windows.Forms.TreeNode("Knoten5");
+            System.Windows.Forms.TreeNode treeNode84 = new System.Windows.Forms.TreeNode("Knoten1", new System.Windows.Forms.TreeNode[] {
+            treeNode82,
+            treeNode83});
+            System.Windows.Forms.TreeNode treeNode85 = new System.Windows.Forms.TreeNode("Knoten6");
+            System.Windows.Forms.TreeNode treeNode86 = new System.Windows.Forms.TreeNode("Knoten7");
+            System.Windows.Forms.TreeNode treeNode87 = new System.Windows.Forms.TreeNode("Knoten8");
+            System.Windows.Forms.TreeNode treeNode88 = new System.Windows.Forms.TreeNode("Knoten0", new System.Windows.Forms.TreeNode[] {
+            treeNode84,
+            treeNode85,
+            treeNode86,
+            treeNode87});
+            System.Windows.Forms.TreeNode treeNode89 = new System.Windows.Forms.TreeNode("Knoten2");
+            System.Windows.Forms.TreeNode treeNode90 = new System.Windows.Forms.TreeNode("Knoten3");
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.delete = new System.Windows.Forms.Button();
             this.help_bt = new System.Windows.Forms.Button();
@@ -51,21 +50,19 @@
             this.output = new System.Windows.Forms.TextBox();
             this.pathTextField = new System.Windows.Forms.TextBox();
             this.Logout_bt = new System.Windows.Forms.Button();
-            this.Settings_btn = new System.Windows.Forms.Button();
-            this.Debug_bt = new System.Windows.Forms.Button();
-            this.FileWatcherSupportTimer = new System.Windows.Forms.Timer(this.components);
             this.dropbox_btn = new System.Windows.Forms.Button();
             this.sync_bt = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.dropboxsync_btn = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.dropbox_image = new System.Windows.Forms.PictureBox();
             this.control_panel = new System.Windows.Forms.Panel();
             this.help_panel = new System.Windows.Forms.Panel();
-            this.dropbox_panel = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.ucTreeView1 = new UcTreeView();
+            this.dropboxdelete_bt = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dropbox_image)).BeginInit();
             this.control_panel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -75,9 +72,9 @@
             this.delete.BackgroundImage = global::Cryptdrive.Properties.Resources.button3;
             this.delete.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.delete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.delete.Location = new System.Drawing.Point(232, 363);
+            this.delete.Location = new System.Drawing.Point(313, 385);
             this.delete.Name = "delete";
-            this.delete.Size = new System.Drawing.Size(75, 45);
+            this.delete.Size = new System.Drawing.Size(75, 23);
             this.delete.TabIndex = 0;
             this.delete.Text = "Delete";
             this.delete.UseVisualStyleBackColor = false;
@@ -104,11 +101,11 @@
             this.searchFilePath.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.searchFilePath.Enabled = false;
             this.searchFilePath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.searchFilePath.Location = new System.Drawing.Point(351, 425);
+            this.searchFilePath.Location = new System.Drawing.Point(313, 412);
             this.searchFilePath.Name = "searchFilePath";
             this.searchFilePath.Size = new System.Drawing.Size(75, 23);
             this.searchFilePath.TabIndex = 2;
-            this.searchFilePath.Text = "searchFilePath";
+            this.searchFilePath.Text = "search File";
             this.searchFilePath.UseVisualStyleBackColor = false;
             this.searchFilePath.Click += new System.EventHandler(this.searchFilePath_Click);
             // 
@@ -127,9 +124,9 @@
             // 
             // pathTextField
             // 
-            this.pathTextField.Location = new System.Drawing.Point(41, 425);
+            this.pathTextField.Location = new System.Drawing.Point(50, 425);
             this.pathTextField.Name = "pathTextField";
-            this.pathTextField.Size = new System.Drawing.Size(304, 20);
+            this.pathTextField.Size = new System.Drawing.Size(284, 20);
             this.pathTextField.TabIndex = 4;
             this.pathTextField.TextChanged += new System.EventHandler(this.pathTextField_TextChanged);
             // 
@@ -159,6 +156,7 @@
             this.dropbox_btn.TabIndex = 7;
             this.dropbox_btn.Text = "DropBox";
             this.dropbox_btn.UseVisualStyleBackColor = false;
+            this.dropbox_btn.Click += new System.EventHandler(this.dropbox_btn_Click);
             // 
             // sync_bt
             // 
@@ -166,50 +164,56 @@
             this.sync_bt.BackgroundImage = global::Cryptdrive.Properties.Resources.button3;
             this.sync_bt.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.sync_bt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.sync_bt.Location = new System.Drawing.Point(313, 363);
+            this.sync_bt.Location = new System.Drawing.Point(313, 356);
             this.sync_bt.Name = "sync_bt";
-            this.sync_bt.Size = new System.Drawing.Size(75, 45);
+            this.sync_bt.Size = new System.Drawing.Size(75, 22);
             this.sync_bt.TabIndex = 10;
             this.sync_bt.Text = "Sync";
             this.sync_bt.UseVisualStyleBackColor = false;
             // 
-            // button1
+            // dropboxsync_btn
             // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(228)))), ((int)(((byte)(249)))));
-            this.button1.BackgroundImage = global::Cryptdrive.Properties.Resources.button3;
-            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Location = new System.Drawing.Point(77, 363);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(76, 45);
-            this.button1.TabIndex = 11;
-            this.button1.Text = "- Sync";
-            this.button1.UseVisualStyleBackColor = false;
+            this.dropboxsync_btn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(228)))), ((int)(((byte)(249)))));
+            this.dropboxsync_btn.BackgroundImage = global::Cryptdrive.Properties.Resources.button3;
+            this.dropboxsync_btn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.dropboxsync_btn.Enabled = false;
+            this.dropboxsync_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.dropboxsync_btn.Location = new System.Drawing.Point(77, 357);
+            this.dropboxsync_btn.Name = "dropboxsync_btn";
+            this.dropboxsync_btn.Size = new System.Drawing.Size(75, 21);
+            this.dropboxsync_btn.TabIndex = 11;
+            this.dropboxsync_btn.Text = "- Sync";
+            this.dropboxsync_btn.UseVisualStyleBackColor = false;
+            this.dropboxsync_btn.Click += new System.EventHandler(this.dropboxsync_btn_Click);
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Transparent;
             this.panel1.BackgroundImage = global::Cryptdrive.Properties.Resources.borderagain;
             this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.dropboxdelete_bt);
             this.panel1.Controls.Add(this.sync_bt);
-            this.panel1.Controls.Add(this.pictureBox1);
-            this.panel1.Controls.Add(this.button1);
+            this.panel1.Controls.Add(this.searchFilePath);
+            this.panel1.Controls.Add(this.dropbox_image);
+            this.panel1.Controls.Add(this.dropboxsync_btn);
             this.panel1.Controls.Add(this.delete);
             this.panel1.Location = new System.Drawing.Point(27, 11);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(410, 452);
             this.panel1.TabIndex = 12;
             // 
-            // pictureBox1
+            // dropbox_image
             // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox1.BackgroundImage = global::Cryptdrive.Properties.Resources.dropbox_logo;
-            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox1.Location = new System.Drawing.Point(23, 363);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(48, 45);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
+            this.dropbox_image.BackColor = System.Drawing.Color.Transparent;
+            this.dropbox_image.BackgroundImage = global::Cryptdrive.Properties.Resources.dropbox_logo;
+            this.dropbox_image.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.dropbox_image.Enabled = false;
+            this.dropbox_image.Location = new System.Drawing.Point(23, 357);
+            this.dropbox_image.Name = "dropbox_image";
+            this.dropbox_image.Size = new System.Drawing.Size(48, 51);
+            this.dropbox_image.TabIndex = 0;
+            this.dropbox_image.TabStop = false;
             // 
             // control_panel
             // 
@@ -217,7 +221,6 @@
             this.control_panel.BackgroundImage = global::Cryptdrive.Properties.Resources.borderagain;
             this.control_panel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.control_panel.Controls.Add(this.help_panel);
-            this.control_panel.Controls.Add(this.dropbox_panel);
             this.control_panel.Controls.Add(this.help_bt);
             this.control_panel.Controls.Add(this.dropbox_btn);
             this.control_panel.Controls.Add(this.Logout_bt);
@@ -230,19 +233,10 @@
             // 
             this.help_panel.BackgroundImage = global::Cryptdrive.Properties.Resources.borderagain;
             this.help_panel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.help_panel.Location = new System.Drawing.Point(28, 38);
+            this.help_panel.Location = new System.Drawing.Point(28, 37);
             this.help_panel.Name = "help_panel";
-            this.help_panel.Size = new System.Drawing.Size(385, 201);
+            this.help_panel.Size = new System.Drawing.Size(385, 202);
             this.help_panel.TabIndex = 10;
-            // 
-            // dropbox_panel
-            // 
-            this.dropbox_panel.BackgroundImage = global::Cryptdrive.Properties.Resources.borderagain;
-            this.dropbox_panel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.dropbox_panel.Location = new System.Drawing.Point(28, 48);
-            this.dropbox_panel.Name = "dropbox_panel";
-            this.dropbox_panel.Size = new System.Drawing.Size(385, 191);
-            this.dropbox_panel.TabIndex = 9;
             // 
             // panel3
             // 
@@ -261,37 +255,55 @@
             this.ucTreeView1.LeftPadding = 7;
             this.ucTreeView1.Location = new System.Drawing.Point(50, 26);
             this.ucTreeView1.Name = "ucTreeView1";
-            treeNode1.Name = "Knoten4";
-            treeNode1.Text = "Knoten4";
-            treeNode2.Name = "Knoten5";
-            treeNode2.Text = "Knoten5";
-            treeNode3.Name = "Knoten1";
-            treeNode3.Text = "Knoten1";
-            treeNode4.Name = "Knoten6";
-            treeNode4.Text = "Knoten6";
-            treeNode5.Name = "Knoten7";
-            treeNode5.Text = "Knoten7";
-            treeNode6.Name = "Knoten8";
-            treeNode6.Text = "Knoten8";
-            treeNode7.Name = "Knoten0";
-            treeNode7.Text = "Knoten0";
-            treeNode8.Name = "Knoten2";
-            treeNode8.Text = "Knoten2";
-            treeNode9.Name = "Knoten3";
-            treeNode9.Text = "Knoten3";
+            treeNode82.Name = "Knoten4";
+            treeNode82.Text = "Knoten4";
+            treeNode83.Name = "Knoten5";
+            treeNode83.Text = "Knoten5";
+            treeNode84.Name = "Knoten1";
+            treeNode84.Text = "Knoten1";
+            treeNode85.Name = "Knoten6";
+            treeNode85.Text = "Knoten6";
+            treeNode86.Name = "Knoten7";
+            treeNode86.Text = "Knoten7";
+            treeNode87.Name = "Knoten8";
+            treeNode87.Text = "Knoten8";
+            treeNode88.Name = "Knoten0";
+            treeNode88.Text = "Knoten0";
+            treeNode89.Name = "Knoten2";
+            treeNode89.Text = "Knoten2";
+            treeNode90.Name = "Knoten3";
+            treeNode90.Text = "Knoten3";
             this.ucTreeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode7,
-            treeNode8,
-            treeNode9});
+            treeNode88,
+            treeNode89,
+            treeNode90});
             this.ucTreeView1.Size = new System.Drawing.Size(365, 336);
             this.ucTreeView1.Spacing = 4;
             this.ucTreeView1.TabIndex = 9;
             // 
-            // FileWatcherSupportTimer
+            // dropboxdelete_bt
             // 
-            this.FileWatcherSupportTimer.Enabled = true;
-            this.FileWatcherSupportTimer.Interval = 5000;
-            this.FileWatcherSupportTimer.Tick += new System.EventHandler(this.FileWatcherSupportTimer_Tick);
+            this.dropboxdelete_bt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(4)))), ((int)(((byte)(4)))), ((int)(((byte)(255)))));
+            this.dropboxdelete_bt.BackgroundImage = global::Cryptdrive.Properties.Resources.button3;
+            this.dropboxdelete_bt.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.dropboxdelete_bt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.dropboxdelete_bt.Location = new System.Drawing.Point(77, 385);
+            this.dropboxdelete_bt.Name = "dropboxdelete_bt";
+            this.dropboxdelete_bt.Size = new System.Drawing.Size(75, 23);
+            this.dropboxdelete_bt.TabIndex = 12;
+            this.dropboxdelete_bt.Text = "- Delete";
+            this.dropboxdelete_bt.UseVisualStyleBackColor = false;
+            this.dropboxdelete_bt.Click += new System.EventHandler(this.dropboxdelete_bt_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(237, 376);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(70, 13);
+            this.label1.TabIndex = 13;
+            this.label1.Text = "Crypt Drive";
             // 
             // GUIForm
             // 
@@ -303,7 +315,6 @@
             this.Controls.Add(this.ucTreeView1);
             this.Controls.Add(this.pathTextField);
             this.Controls.Add(this.output);
-            this.Controls.Add(this.searchFilePath);
             this.Controls.Add(this.control_panel);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel1);
@@ -312,11 +323,11 @@
             this.Name = "GUIForm";
             this.Text = "Crypt Drive";
             this.Activated += new System.EventHandler(this.GUIForm_Activated);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GUIForm_FormClosed);
             this.Load += new System.EventHandler(this.GUIForm_Load);
             this.VisibleChanged += new System.EventHandler(this.GUIForm_VisibleChanged);
             this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dropbox_image)).EndInit();
             this.control_panel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -332,19 +343,17 @@
         private System.Windows.Forms.TextBox output;
         private System.Windows.Forms.TextBox pathTextField;
         private System.Windows.Forms.Button Logout_bt;
-        private System.Windows.Forms.Button Settings_btn;
-        private System.Windows.Forms.Button Debug_bt;
-        internal System.Windows.Forms.Timer FileWatcherSupportTimer;
         private System.Windows.Forms.Button dropbox_btn;
         private UcTreeView ucTreeView1;
         private System.Windows.Forms.Button sync_bt;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button dropboxsync_btn;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel control_panel;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Panel dropbox_panel;
+        private System.Windows.Forms.PictureBox dropbox_image;
         private System.Windows.Forms.Panel help_panel;
+        private System.Windows.Forms.Button dropboxdelete_bt;
+        private System.Windows.Forms.Label label1;
     }
 }
 

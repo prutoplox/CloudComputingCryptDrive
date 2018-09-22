@@ -11,11 +11,13 @@ namespace Cryptdrive
     {
         public string Label { get; set; }
 
-        public bool Check1 { get; set; }
+        public bool DropBoxSync { get; set; }
 
-        public bool Check2 { get; set; }
+        public bool DropBoxDelete { get; set; }
 
-        public bool Check3 { get; set; }
+        public bool CryptDriveSync { get; set; }
+
+        public bool CryptDriveDelete { get; set; }
 
         /*
         public new string Text
@@ -33,9 +35,9 @@ namespace Cryptdrive
             Label = text;
         }
 
-        public CheckBoxHelper(string text, bool check1, bool check2, bool check3) : this(text)
+        public CheckBoxHelper(string text, bool check1, bool check2, bool check3, bool check4) : this(text)
         {
-            Check1 = check1; Check2 = check2; Check3 = check3;
+            DropBoxSync = check1; DropBoxDelete = check2; CryptDriveSync = check3; CryptDriveDelete = check4;
         }
 
         public CheckBoxHelper(string text, CheckBoxHelper[] children)

@@ -16,6 +16,12 @@ namespace Cryptdrive
         private bool login = false;
         public static GUIForm instance = new GUIForm();
 
+        //dropbox Variables
+
+        private string strAccessToken = string.Empty;
+        private string strAuthenticationURL = string.Empty;
+        private DropBoxBase DBB;
+
         public int LeftPadding { get; set; }
 
         public GUIForm()
@@ -83,13 +89,13 @@ namespace Cryptdrive
                     this.Invoke(new MethodInvoker(delegate ()
                     {
                         //Muss = Else Block sein!
-                        ucTreeView1.Nodes.Add(createDirectoryNode(rootDirectoryInfo));
+                        ucTreeView1.Nodes.Add(createDirectoryNode(rootDirectoryInfo, FileWatcher.instance.getMonitoredCryptFolderName(path) + ">"));
                     }));
                 }
                 else
                 {
                     //Muss = If Block sein!
-                    ucTreeView1.Nodes.Add(createDirectoryNode(rootDirectoryInfo)); ;
+                    ucTreeView1.Nodes.Add(createDirectoryNode(rootDirectoryInfo, FileWatcher.instance.getMonitoredCryptFolderName(path) + ">")); ;
                 }
 
                 /*
@@ -99,22 +105,23 @@ namespace Cryptdrive
             }
         }
 
-        private static CheckBoxHelper createDirectoryNode(DirectoryInfo directoryInfo)
+        private static CheckBoxHelper createDirectoryNode(DirectoryInfo directoryInfo, string naming)
         {
-            CheckBoxHelper directoryNode = new CheckBoxHelper(directoryInfo.Name, false, false, false);
-            directoryNode.Name = directoryInfo.Name;
-            directoryNode.Text = directoryInfo.Name;
+            string nodeName = naming != String.Empty ? naming : directoryInfo.Name;
+            CheckBoxHelper directoryNode = new CheckBoxHelper(nodeName, false, false, false, false);
+            directoryNode.Name = nodeName;
+            directoryNode.Text = nodeName;
 
             // var directoryNode = new TreeNode(directoryInfo.Name);
 
             foreach (var directory in directoryInfo.GetDirectories())
             {
-                directoryNode.Nodes.Add(createDirectoryNode(directory));
+                directoryNode.Nodes.Add(createDirectoryNode(directory, String.Empty));
             }
             foreach (var file in directoryInfo.GetFiles())
             {
                 // directoryNode.Nodes.Add(new TreeNode(file.Name));
-                CheckBoxHelper helper = new CheckBoxHelper(file.Name, false, false, false);
+                CheckBoxHelper helper = new CheckBoxHelper(file.Name, false, false, false, false);
                 helper.Name = file.Name;
                 helper.Text = file.Name;
                 directoryNode.Nodes.Add(helper);
@@ -276,6 +283,206 @@ namespace Cryptdrive
             return controls.SelectMany(ctrl => GetAll(ctrl, type))
                                       .Concat(controls)
                                       .Where(c => c.GetType() == type);
+        }
+
+        private void dropbox_btn_Click(object sender, EventArgs e)
+        {
+            AuthenticateDropBox();
+            createFolder();
+        }
+
+        private void createFolder()
+        {
+            try
+            {
+                if (DBB != null)
+                {
+                    if (strAccessToken != null && strAuthenticationURL != null)
+                    {
+                        if (DBB.FolderExists(getDropboxCryptDriveContainerNamePath()) == false)
+                        {
+                            DBB.CreateFolder(getDropboxCryptDriveContainerNamePath());
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ex = ex.InnerException ?? ex;
+            }
+        }
+
+        private string getDropboxCryptDriveContainerNamePath()
+        {
+            return "/Dropbox/CryptDriveSS2018/" + FileManager.instance.containerName;
+        }
+
+        private void btnDownload_Click()
+        {
+            try
+            {
+                if (DBB != null)
+                {
+                    if (strAccessToken != null && strAuthenticationURL != null)
+                    {
+                        DBB.Download(getDropboxCryptDriveContainerNamePath(), "Sample-test.jpg", @"D:\", "capture4_dwnld.png");
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void AuthenticateDropBox()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty("q4ela0mxhrm7eti"))
+                {
+                    MessageBox.Show("Please enter valid App Key !");
+                    return;
+                }
+                if (DBB == null)
+                {
+                    DBB = new DropBoxBase("q4ela0mxhrm7eti", "CryptDriveSS2018");
+
+                    strAuthenticationURL = DBB.GeneratedAuthenticationURL(); // This method must be executed before generating Access Token.
+                    strAccessToken = DBB.GenerateAccessToken();
+                    dropboxsync_btn.Enabled = true;
+                    dropbox_image.Visible = true;
+                }
+                else
+                {
+                    dropboxsync_btn.Enabled = false;
+                    dropbox_image.Visible = false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private void dropboxsync_btn_Click(object sender, EventArgs e)
+        {
+            dropBoxSync(getAllDropBoxSyncPaths());
+        }
+
+        public IEnumerable<string> getAllDropBoxSyncPaths()
+        {
+            foreach (CheckBoxHelper item in getAllChildren())
+            {
+                //DropBox Sync
+                if (item.DropBoxSync)
+                {
+                    yield return item.FullPath;
+                }
+            }
+        }
+
+        public IEnumerable<string> getAllDropBoxDeletePaths()
+        {
+            foreach (CheckBoxHelper item in getAllChildren())
+            {
+                if (item.DropBoxDelete)
+                {
+                    yield return item.FullPath;
+                }
+            }
+        }
+
+        public IEnumerable<string> getAllCryptDriveDeletePaths()
+        {
+            foreach (CheckBoxHelper item in getAllChildren())
+            {
+                if (item.CryptDriveDelete)
+                {
+                    yield return item.FullPath;
+                }
+            }
+        }
+
+        public IEnumerable<string> getAllCryptDriveSyncPaths()
+        {
+            foreach (CheckBoxHelper item in getAllChildren())
+            {
+                if (item.CryptDriveSync)
+                {
+                    yield return item.FullPath;
+                }
+            }
+        }
+
+        IEnumerable<System.Windows.Forms.TreeNode> Collect(System.Windows.Forms.TreeNodeCollection nodes)
+        {
+            foreach (System.Windows.Forms.TreeNode node in nodes)
+            {
+                yield return node;
+
+                foreach (var child in Collect(node.Nodes))
+                    yield return child;
+            }
+        }
+
+        public IEnumerable<CheckBoxHelper> getAllChildren()
+        {
+            foreach (CheckBoxHelper item in Collect(ucTreeView1.Nodes))
+            {
+                yield return item;
+            }
+        }
+
+        private void dropBoxSync(IEnumerable<String> cryptpaths)
+        {
+            try
+            {
+                foreach (string cryptpath in cryptpaths)
+                {
+                    string realpath = FileManager.convertCryptPathToPath(cryptpath);
+                    string hashpath = FileNameStorage.instance.hashPath(cryptpath);
+
+                    if (DBB != null)
+                    {
+                        if (strAccessToken != null && strAuthenticationURL != null)
+                        {
+                            DBB.Upload(getDropboxCryptDriveContainerNamePath(), hashpath, realpath);
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private void dropBoxDelete(IEnumerable<String> cryptpaths)
+        {
+            try
+            {
+                foreach (string cryptpath in cryptpaths)
+                {
+                    if (DBB != null)
+                    {
+                        if (strAccessToken != null && strAuthenticationURL != null)
+                        {
+                            string hashpath = FileNameStorage.instance.hashPath(cryptpath);
+                            DBB.Delete(getDropboxCryptDriveContainerNamePath() + "/" + hashpath);
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private void dropboxdelete_bt_Click(object sender, EventArgs e)
+        {
+            dropBoxDelete(getAllDropBoxDeletePaths());
         }
     }
 }
