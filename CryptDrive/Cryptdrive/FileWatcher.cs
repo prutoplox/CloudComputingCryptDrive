@@ -116,7 +116,7 @@ namespace Cryptdrive
         private void FileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             //TODO make sure that  File.GetAttributes(e.FullPath) never causes an unhandeled exception, had some cases where it failed for some yet unknownn reason if it was a directory
-            if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
+            if (File.Exists(e.FullPath) && File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
             {
                 Logger.instance.logInfo("Folder changed: " + e.Name);
 
@@ -151,7 +151,7 @@ namespace Cryptdrive
 
         private void fileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
         {
-            if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
+            if (File.Exists(e.FullPath) && File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
             {
                 Logger.instance.logInfo("Folder " + e.OldFullPath + " was renamed to " + e.FullPath);
 

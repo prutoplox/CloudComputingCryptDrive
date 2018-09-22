@@ -19,7 +19,7 @@ namespace Cryptdrive
         private const string fileMappingFileCloud = fileMappingFileCloudPrefix + fileMappingFile;
 
         public static FileNameStorage instance = new FileNameStorage();
-        private Dictionary<string, string> pathDict = new Dictionary<string, string>();
+        public Dictionary<string, string> pathDict = new Dictionary<string, string>();
 
         public IEnumerable<string> filePathsInCloudNotOnClientTracked;
         public IEnumerable<string> filePathsOnClientNotInCloud;
