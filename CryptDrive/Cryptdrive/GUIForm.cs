@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using System.Linq;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms.VisualStyles;
+using System.Web.UI.WebControls;
 
 namespace Cryptdrive
 {
@@ -10,6 +14,8 @@ namespace Cryptdrive
     {
         private bool login = false;
         public static GUIForm instance = new GUIForm();
+
+        public int LeftPadding { get; set; }
 
         public GUIForm()
         {
@@ -53,20 +59,18 @@ namespace Cryptdrive
 
         public void listDirectory(List<string> paths)
         {
-            TreeView treeView = treeView1;
-
             if (this.InvokeRequired)
             {
                 this.Invoke(new MethodInvoker(delegate ()
                 {
                     //Muss = Else Block sein
-                    treeView.Nodes.Clear();
+                    ucTreeView1.Nodes.Clear();
                 }));
             }
             else
             {
                 //Muss = If Block sein!
-                treeView.Nodes.Clear();
+                ucTreeView1.Nodes.Clear();
             }
 
             foreach (string path in paths)
@@ -78,19 +82,13 @@ namespace Cryptdrive
                     this.Invoke(new MethodInvoker(delegate ()
                     {
                         //Muss = Else Block sein!
-                        treeView.CheckBoxes = true;
-
-                        //TODO https://stackoverflow.com/questions/28644011/how-to-show-multiple-check-boxes-in-a-treeview-in-c
-                        treeView.Nodes.Add(createDirectoryNode(rootDirectoryInfo));
+                        ucTreeView1.Nodes.Add(createDirectoryNode(rootDirectoryInfo));
                     }));
                 }
                 else
                 {
                     //Muss = If Block sein!
-                    treeView.CheckBoxes = true;
-
-                    //TODO https://stackoverflow.com/questions/28644011/how-to-show-multiple-check-boxes-in-a-treeview-in-c
-                    treeView.Nodes.Add(createDirectoryNode(rootDirectoryInfo)); ;
+                    ucTreeView1.Nodes.Add(createDirectoryNode(rootDirectoryInfo)); ;
                 }
 
                 /*
@@ -100,13 +98,27 @@ namespace Cryptdrive
             }
         }
 
-        private static TreeNode createDirectoryNode(DirectoryInfo directoryInfo)
+        private static CheckBoxHelper createDirectoryNode(DirectoryInfo directoryInfo)
         {
-            var directoryNode = new TreeNode(directoryInfo.Name);
+            CheckBoxHelper directoryNode = new CheckBoxHelper(directoryInfo.Name, false, false, false);
+            directoryNode.Name = directoryInfo.Name;
+            directoryNode.Text = directoryInfo.Name;
+
+            // var directoryNode = new TreeNode(directoryInfo.Name);
+
             foreach (var directory in directoryInfo.GetDirectories())
+            {
                 directoryNode.Nodes.Add(createDirectoryNode(directory));
+            }
             foreach (var file in directoryInfo.GetFiles())
-                directoryNode.Nodes.Add(new TreeNode(file.Name));
+            {
+                // directoryNode.Nodes.Add(new TreeNode(file.Name));
+                CheckBoxHelper helper = new CheckBoxHelper(file.Name, false, false, false);
+                helper.Name = file.Name;
+                helper.Text = file.Name;
+                directoryNode.Nodes.Add(helper);
+            }
+
             return directoryNode;
         }
 
@@ -175,6 +187,15 @@ namespace Cryptdrive
             System.Diagnostics.Process.Start("explorer.exe", @"testFolder");
             FileWatcher.instance.syncClientTreeNode();
             FileNameStorage.instance.Init();
+        }
+
+        public IEnumerable<Control> GetAll(Control control, Type type)
+        {
+            var controls = control.Controls.Cast<Control>();
+
+            return controls.SelectMany(ctrl => GetAll(ctrl, type))
+                                      .Concat(controls)
+                                      .Where(c => c.GetType() == type);
         }
     }
 }
