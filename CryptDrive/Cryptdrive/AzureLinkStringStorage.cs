@@ -25,6 +25,7 @@ namespace Cryptdrive
         public const string LOGIN_AZURE_STRING = BASE_URL + "Login";
         public const string CONFIRM_EMAIL_AZURE_STRING = BASE_URL + "ConfirmEmail";
         public const string BLOB_LIST_NEWER = BASE_URL + "BlobListNewer";
+        public const string BLOB_LIST = BASE_URL + "BlobList";
         public const string LINKING_INITALCHARACTER = "?";
         public const string DB_DATASOURCE = "cryptdriveruserdb.database.windows.net";
         public const string DB_USERID = "cryptAdmin";

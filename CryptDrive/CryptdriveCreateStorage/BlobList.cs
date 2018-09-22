@@ -10,6 +10,8 @@ using Microsoft.WindowsAzure.Storage;
 using System;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CryptdriveCloud
 {
@@ -35,6 +37,7 @@ namespace CryptdriveCloud
                 var backupBlobClient = storageAccount.CreateCloudBlobClient();
                 var cloudBlobContainer = backupBlobClient.GetContainerReference(containerName);
 
+                List<CloudBlob> allBlobs = new List<CloudBlob>();
                 BlobContinuationToken blobContinuationToken = null;
                 do
                 {
@@ -44,11 +47,13 @@ namespace CryptdriveCloud
                     blobContinuationToken = results.ContinuationToken;
                     foreach (IListBlobItem item in results.Results)
                     {
-                        log.LogInformation(item.Uri.ToString());
+                        if (item is CloudBlob test)
+                        {
+                            allBlobs.Add(test);
+                        }
                     }
                 } while (blobContinuationToken != null); // Loop while the continuation token is not null.
-
-                return new OkObjectResult($"lul");
+                return new OkObjectResult(string.Join(">", allBlobs.Select(X => X.Name)));
             }
             catch (Exception e)
             {

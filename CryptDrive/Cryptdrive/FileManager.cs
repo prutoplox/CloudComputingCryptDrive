@@ -279,6 +279,31 @@ namespace Cryptdrive
             }
         }
 
+        public async Task<IEnumerable<string>> ListFiles(DateTimeOffset timestamp)
+        {
+            try
+            {
+                string fullURL = AzureLinkStringStorage.BLOB_LIST + AzureLinkStringStorage.LINKING_INITALCHARACTER + "containername=" + FileManager.instance.containerName;
+                var response = await AzureConnectionManager.client.PostAsync(fullURL, null);
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                if (responseString == String.Empty)
+                {
+                    return Enumerable.Empty<string>();
+                }
+                else
+                {
+                    Logger.instance.logInfo("Loaded a complete list of files in the cloud");
+                    return responseString.Split('>');
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                Logger.instance.logError(e.Message);
+                return Enumerable.Empty<string>();
+            }
+        }
+
         private static byte[] encryptAndCompressFile(string path)
         {
             byte[] fileAsByteArray = File.ReadAllBytes(path);
