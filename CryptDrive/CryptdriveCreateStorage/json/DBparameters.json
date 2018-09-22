@@ -1,0 +1,99 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "servers_cryptdriveruserdb_name": {
+            "value": null
+        },
+        "firewallRules_All_name": {
+            "value": null
+        },
+        "advisors_DropIndex_name": {
+            "value": null
+        },
+        "keys_ServiceManaged_name": {
+            "value": null
+        },
+        "advisors_CreateIndex_name": {
+            "value": null
+        },
+        "databases_cryptdriverdb_name": {
+            "value": null
+        },
+        "advisors_DefragmentIndex_name": {
+            "value": null
+        },
+        "auditingPolicies_Default_name": {
+            "value": null
+        },
+        "advisors_ForceLastGoodPlan_name": {
+            "value": null
+        },
+        "advisors_DbParameterization_name": {
+            "value": null
+        },
+        "encryptionProtector_current_name": {
+            "value": null
+        },
+        "firewallRules_AllowAllWindowsAzureIps_name": {
+            "value": null
+        },
+        "auditingPolicies_Default_name_1": {
+            "value": null
+        },
+        "databases_master_name": {
+            "value": null
+        },
+        "advisors_DropIndex_name_1": {
+            "value": null
+        },
+        "geoBackupPolicies_Default_name": {
+            "value": null
+        },
+        "advisors_CreateIndex_name_1": {
+            "value": null
+        },
+        "firewallRules_ClientIPAddress_2018_9_10_19_15_34_name": {
+            "value": null
+        },
+        "firewallRules_ClientIPAddress_2018_9_11_11_59_28_name": {
+            "value": null
+        },
+        "firewallRules_ClientIPAddress_2018_9_12_13_35_55_name": {
+            "value": null
+        },
+        "firewallRules_ClientIPAddress_2018_9_15_17_23_26_name": {
+            "value": null
+        },
+        "firewallRules_ClientIPAddress_2018_9_18_12_15_25_name": {
+            "value": null
+        },
+        "firewallRules_ClientIPAddress_2018_9_19_12_14_46_name": {
+            "value": null
+        },
+        "advisors_DefragmentIndex_name_1": {
+            "value": null
+        },
+        "auditingPolicies_Default_name_2": {
+            "value": null
+        },
+        "firewallRules_ClientIPAddress_2018_09_09_08:53:19_name": {
+            "value": null
+        },
+        "geoBackupPolicies_Default_name_1": {
+            "value": null
+        },
+        "advisors_ForceLastGoodPlan_name_1": {
+            "value": null
+        },
+        "transparentDataEncryption_current_name": {
+            "value": null
+        },
+        "advisors_DbParameterization_name_1": {
+            "value": null
+        },
+        "transparentDataEncryption_current_name_1": {
+            "value": null
+        }
+    }
+}

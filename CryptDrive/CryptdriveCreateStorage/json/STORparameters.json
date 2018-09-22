@@ -1,0 +1,21 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sites_CryptdriveCloud20180907011132_name": {
+            "value": null
+        },
+        "storageAccounts_devstoragemarius_name": {
+            "value": null
+        },
+        "serverfarms_CryptdriveCloud20180907011132Plan_name": {
+            "value": null
+        },
+        "config_web_name": {
+            "value": null
+        },
+        "hostNameBindings_cryptdrivecloud20180907011132.azurewebsites.net_name": {
+            "value": null
+        }
+    }
+}

@@ -8,6 +8,8 @@ namespace Cryptdrive
 {
     public class AzureLinkStringStorage
     {
+        public const string RESET_DB = "http://localhost:7071/api/ResetDB";
+        public const string INIT_ALL = "http://localhost:7071/api/InitAll";
         public const string STORAGE_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=devstoragemarius;AccountKey=Z0+9qcUyTzgovwkCCsLWH0RZUkih8/tltiabksN3QfB7SthB3c7TYdJBgA7KuTi6B40CMqF1BRAQk5cL6tMfSQ==;EndpointSuffix=core.windows.net";
         public const string BASE_URL = "http://localhost:7071/api/";
 
@@ -23,7 +25,6 @@ namespace Cryptdrive
         public const string LOGIN_AZURE_STRING = BASE_URL + "Login";
         public const string CONFIRM_EMAIL_AZURE_STRING = BASE_URL + "ConfirmEmail";
         public const string BLOB_LIST_NEWER = BASE_URL + "BlobListNewer";
-        public const string ResetDB = BASE_URL + "ResetDB";
         public const string LINKING_INITALCHARACTER = "?";
         public const string DB_DATASOURCE = "cryptdriveruserdb.database.windows.net";
         public const string DB_USERID = "cryptAdmin";

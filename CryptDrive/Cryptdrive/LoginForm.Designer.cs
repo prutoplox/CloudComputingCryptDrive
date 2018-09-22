@@ -28,178 +28,203 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             this.Login_button = new System.Windows.Forms.Button();
             this.Register_button = new System.Windows.Forms.Button();
-            this.Username_tf = new System.Windows.Forms.TextBox();
-            this.Password_tf = new System.Windows.Forms.TextBox();
-            this.ConfirmPassword_tf = new System.Windows.Forms.TextBox();
-            this.Email_tf = new System.Windows.Forms.TextBox();
-            this.ConfirmEmail_tf = new System.Windows.Forms.TextBox();
-            this.Username_label = new System.Windows.Forms.Label();
-            this.Password_label = new System.Windows.Forms.Label();
-            this.Email_label = new System.Windows.Forms.Label();
-            this.ConfirmPassword_label = new System.Windows.Forms.Label();
-            this.ConfirmEmail_label = new System.Windows.Forms.Label();
             this.Output_tf = new System.Windows.Forms.TextBox();
             this.ResetDB = new System.Windows.Forms.Button();
             this.skipLogin = new System.Windows.Forms.Button();
+            this.initAll = new System.Windows.Forms.Button();
+            this.Email_tf = new System.Windows.Forms.TextBox();
+            this.ConfirmPassword_tf = new System.Windows.Forms.TextBox();
+            this.ConfirmEmail_tf = new System.Windows.Forms.TextBox();
+            this.Username_tf = new System.Windows.Forms.TextBox();
+            this.Username_label = new System.Windows.Forms.Label();
+            this.Password_label = new System.Windows.Forms.Label();
+            this.Password_tf = new System.Windows.Forms.TextBox();
+            this.Email_label = new System.Windows.Forms.Label();
+            this.ConfirmPassword_label = new System.Windows.Forms.Label();
+            this.ConfirmEmail_label = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // Login_button
             // 
-            this.Login_button.Location = new System.Drawing.Point(15, 53);
+            resources.ApplyResources(this.Login_button, "Login_button");
+            this.Login_button.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(228)))), ((int)(((byte)(249)))));
+            this.Login_button.BackgroundImage = global::Cryptdrive.Properties.Resources.button3;
+            this.Login_button.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.Login_button.Name = "Login_button";
-            this.Login_button.Size = new System.Drawing.Size(75, 23);
-            this.Login_button.TabIndex = 0;
-            this.Login_button.Text = "Login";
-            this.Login_button.UseVisualStyleBackColor = true;
+            this.Login_button.UseVisualStyleBackColor = false;
             this.Login_button.Click += new System.EventHandler(this.Login_button_Click);
             // 
             // Register_button
             // 
-            this.Register_button.Location = new System.Drawing.Point(15, 89);
+            resources.ApplyResources(this.Register_button, "Register_button");
+            this.Register_button.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(228)))), ((int)(((byte)(249)))));
+            this.Register_button.BackgroundImage = global::Cryptdrive.Properties.Resources.button3;
+            this.Register_button.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.Register_button.Name = "Register_button";
-            this.Register_button.Size = new System.Drawing.Size(75, 23);
-            this.Register_button.TabIndex = 1;
-            this.Register_button.Text = "Register";
-            this.Register_button.UseVisualStyleBackColor = true;
+            this.Register_button.UseVisualStyleBackColor = false;
             this.Register_button.Click += new System.EventHandler(this.Register_button_Click);
-            // 
-            // Username_tf
-            // 
-            this.Username_tf.Location = new System.Drawing.Point(193, 34);
-            this.Username_tf.Name = "Username_tf";
-            this.Username_tf.Size = new System.Drawing.Size(212, 20);
-            this.Username_tf.TabIndex = 2;
-            this.Username_tf.TextChanged += new System.EventHandler(this.textBox1_TextChanged_1);
-            // 
-            // Password_tf
-            // 
-            this.Password_tf.Location = new System.Drawing.Point(193, 60);
-            this.Password_tf.Name = "Password_tf";
-            this.Password_tf.Size = new System.Drawing.Size(212, 20);
-            this.Password_tf.TabIndex = 3;
-            this.Password_tf.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
-            // 
-            // ConfirmPassword_tf
-            // 
-            this.ConfirmPassword_tf.Location = new System.Drawing.Point(193, 86);
-            this.ConfirmPassword_tf.Name = "ConfirmPassword_tf";
-            this.ConfirmPassword_tf.Size = new System.Drawing.Size(212, 20);
-            this.ConfirmPassword_tf.TabIndex = 4;
-            // 
-            // Email_tf
-            // 
-            this.Email_tf.Location = new System.Drawing.Point(193, 112);
-            this.Email_tf.Name = "Email_tf";
-            this.Email_tf.Size = new System.Drawing.Size(212, 20);
-            this.Email_tf.TabIndex = 5;
-            // 
-            // ConfirmEmail_tf
-            // 
-            this.ConfirmEmail_tf.Location = new System.Drawing.Point(193, 138);
-            this.ConfirmEmail_tf.Name = "ConfirmEmail_tf";
-            this.ConfirmEmail_tf.Size = new System.Drawing.Size(212, 20);
-            this.ConfirmEmail_tf.TabIndex = 6;
-            // 
-            // Username_label
-            // 
-            this.Username_label.AutoSize = true;
-            this.Username_label.Location = new System.Drawing.Point(134, 37);
-            this.Username_label.Name = "Username_label";
-            this.Username_label.Size = new System.Drawing.Size(55, 13);
-            this.Username_label.TabIndex = 7;
-            this.Username_label.Text = "Username";
-            this.Username_label.Click += new System.EventHandler(this.label1_Click);
-            // 
-            // Password_label
-            // 
-            this.Password_label.AutoSize = true;
-            this.Password_label.Location = new System.Drawing.Point(134, 63);
-            this.Password_label.Name = "Password_label";
-            this.Password_label.Size = new System.Drawing.Size(53, 13);
-            this.Password_label.TabIndex = 8;
-            this.Password_label.Text = "Password";
-            // 
-            // Email_label
-            // 
-            this.Email_label.AutoSize = true;
-            this.Email_label.Location = new System.Drawing.Point(153, 115);
-            this.Email_label.Name = "Email_label";
-            this.Email_label.Size = new System.Drawing.Size(32, 13);
-            this.Email_label.TabIndex = 9;
-            this.Email_label.Text = "Email";
-            // 
-            // ConfirmPassword_label
-            // 
-            this.ConfirmPassword_label.AutoSize = true;
-            this.ConfirmPassword_label.Location = new System.Drawing.Point(96, 89);
-            this.ConfirmPassword_label.Name = "ConfirmPassword_label";
-            this.ConfirmPassword_label.Size = new System.Drawing.Size(91, 13);
-            this.ConfirmPassword_label.TabIndex = 10;
-            this.ConfirmPassword_label.Text = "Confirm Password";
-            // 
-            // ConfirmEmail_label
-            // 
-            this.ConfirmEmail_label.AutoSize = true;
-            this.ConfirmEmail_label.Location = new System.Drawing.Point(117, 141);
-            this.ConfirmEmail_label.Name = "ConfirmEmail_label";
-            this.ConfirmEmail_label.Size = new System.Drawing.Size(70, 13);
-            this.ConfirmEmail_label.TabIndex = 11;
-            this.ConfirmEmail_label.Text = "Confirm Email";
             // 
             // Output_tf
             // 
-            this.Output_tf.Location = new System.Drawing.Point(15, 217);
+            resources.ApplyResources(this.Output_tf, "Output_tf");
             this.Output_tf.Name = "Output_tf";
-            this.Output_tf.Size = new System.Drawing.Size(390, 20);
-            this.Output_tf.TabIndex = 12;
             this.Output_tf.TextChanged += new System.EventHandler(this.Output_tf_TextChanged);
             // 
             // ResetDB
             // 
-            this.ResetDB.Location = new System.Drawing.Point(621, 230);
+            resources.ApplyResources(this.ResetDB, "ResetDB");
+            this.ResetDB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(228)))), ((int)(((byte)(249)))));
+            this.ResetDB.BackgroundImage = global::Cryptdrive.Properties.Resources.button3;
+            this.ResetDB.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ResetDB.Name = "ResetDB";
-            this.ResetDB.Size = new System.Drawing.Size(151, 61);
-            this.ResetDB.TabIndex = 13;
-            this.ResetDB.Text = "ResetDB";
-            this.ResetDB.UseVisualStyleBackColor = true;
+            this.ResetDB.UseVisualStyleBackColor = false;
             this.ResetDB.Click += new System.EventHandler(this.ResetDB_Click);
             // 
             // skipLogin
             // 
-            this.skipLogin.Location = new System.Drawing.Point(506, 165);
+            resources.ApplyResources(this.skipLogin, "skipLogin");
+            this.skipLogin.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(228)))), ((int)(((byte)(249)))));
+            this.skipLogin.BackgroundImage = global::Cryptdrive.Properties.Resources.button3;
+            this.skipLogin.Cursor = System.Windows.Forms.Cursors.Default;
+            this.skipLogin.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.skipLogin.Name = "skipLogin";
-            this.skipLogin.Size = new System.Drawing.Size(75, 23);
-            this.skipLogin.TabIndex = 13;
-            this.skipLogin.Text = "Skip Login";
-            this.skipLogin.UseVisualStyleBackColor = true;
+            this.skipLogin.UseVisualStyleBackColor = false;
             this.skipLogin.Click += new System.EventHandler(this.skipLogin_Click);
+            // 
+            // initAll
+            // 
+            resources.ApplyResources(this.initAll, "initAll");
+            this.initAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(115)))), ((int)(((byte)(228)))), ((int)(((byte)(249)))));
+            this.initAll.BackgroundImage = global::Cryptdrive.Properties.Resources.button3;
+            this.initAll.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.initAll.Name = "initAll";
+            this.initAll.UseVisualStyleBackColor = false;
+            this.initAll.Click += new System.EventHandler(this.initAll_Click);
+            // 
+            // Email_tf
+            // 
+            resources.ApplyResources(this.Email_tf, "Email_tf");
+            this.Email_tf.Name = "Email_tf";
+            this.Email_tf.TextChanged += new System.EventHandler(this.Email_tf_TextChanged);
+            // 
+            // ConfirmPassword_tf
+            // 
+            resources.ApplyResources(this.ConfirmPassword_tf, "ConfirmPassword_tf");
+            this.ConfirmPassword_tf.Name = "ConfirmPassword_tf";
+            this.ConfirmPassword_tf.TextChanged += new System.EventHandler(this.ConfirmPassword_tf_TextChanged);
+            // 
+            // ConfirmEmail_tf
+            // 
+            resources.ApplyResources(this.ConfirmEmail_tf, "ConfirmEmail_tf");
+            this.ConfirmEmail_tf.Name = "ConfirmEmail_tf";
+            this.ConfirmEmail_tf.TextChanged += new System.EventHandler(this.ConfirmEmail_tf_TextChanged);
+            // 
+            // Username_tf
+            // 
+            resources.ApplyResources(this.Username_tf, "Username_tf");
+            this.Username_tf.Name = "Username_tf";
+            this.Username_tf.TextChanged += new System.EventHandler(this.textBox1_TextChanged_1);
+            // 
+            // Username_label
+            // 
+            resources.ApplyResources(this.Username_label, "Username_label");
+            this.Username_label.BackColor = System.Drawing.Color.PaleTurquoise;
+            this.Username_label.Name = "Username_label";
+            this.Username_label.Click += new System.EventHandler(this.label1_Click);
+            // 
+            // Password_label
+            // 
+            resources.ApplyResources(this.Password_label, "Password_label");
+            this.Password_label.BackColor = System.Drawing.Color.PaleTurquoise;
+            this.Password_label.Name = "Password_label";
+            this.Password_label.Click += new System.EventHandler(this.Password_label_Click);
+            // 
+            // Password_tf
+            // 
+            resources.ApplyResources(this.Password_tf, "Password_tf");
+            this.Password_tf.Name = "Password_tf";
+            this.Password_tf.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            // 
+            // Email_label
+            // 
+            resources.ApplyResources(this.Email_label, "Email_label");
+            this.Email_label.BackColor = System.Drawing.Color.PaleTurquoise;
+            this.Email_label.Name = "Email_label";
+            this.Email_label.Click += new System.EventHandler(this.Email_label_Click);
+            // 
+            // ConfirmPassword_label
+            // 
+            resources.ApplyResources(this.ConfirmPassword_label, "ConfirmPassword_label");
+            this.ConfirmPassword_label.BackColor = System.Drawing.Color.PaleTurquoise;
+            this.ConfirmPassword_label.Name = "ConfirmPassword_label";
+            this.ConfirmPassword_label.Click += new System.EventHandler(this.ConfirmPassword_label_Click);
+            // 
+            // ConfirmEmail_label
+            // 
+            resources.ApplyResources(this.ConfirmEmail_label, "ConfirmEmail_label");
+            this.ConfirmEmail_label.BackColor = System.Drawing.Color.PaleTurquoise;
+            this.ConfirmEmail_label.Name = "ConfirmEmail_label";
+            this.ConfirmEmail_label.Click += new System.EventHandler(this.ConfirmEmail_label_Click);
+            // 
+            // panel1
+            // 
+            resources.ApplyResources(this.panel1, "panel1");
+            this.panel1.BackColor = System.Drawing.Color.Transparent;
+            this.panel1.BackgroundImage = global::Cryptdrive.Properties.Resources.logowithname;
+            this.panel1.Name = "panel1";
+            // 
+            // panel2
+            // 
+            resources.ApplyResources(this.panel2, "panel2");
+            this.panel2.BackColor = System.Drawing.Color.Transparent;
+            this.panel2.BackgroundImage = global::Cryptdrive.Properties.Resources.borderagain;
+            this.panel2.Controls.Add(this.Login_button);
+            this.panel2.Controls.Add(this.Register_button);
+            this.panel2.Name = "panel2";
+            // 
+            // panel3
+            // 
+            resources.ApplyResources(this.panel3, "panel3");
+            this.panel3.BackColor = System.Drawing.Color.Transparent;
+            this.panel3.BackgroundImage = global::Cryptdrive.Properties.Resources.borderagain;
+            this.panel3.Name = "panel3";
             // 
             // LoginForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.ResetDB);
+            this.BackColor = System.Drawing.Color.MediumTurquoise;
+            this.BackgroundImage = global::Cryptdrive.Properties.Resources.cloud2;
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.skipLogin);
             this.Controls.Add(this.Output_tf);
             this.Controls.Add(this.ConfirmEmail_label);
+            this.Controls.Add(this.initAll);
+            this.Controls.Add(this.ResetDB);
             this.Controls.Add(this.ConfirmPassword_label);
             this.Controls.Add(this.Email_label);
-            this.Controls.Add(this.Password_label);
-            this.Controls.Add(this.Username_label);
-            this.Controls.Add(this.ConfirmEmail_tf);
-            this.Controls.Add(this.Email_tf);
-            this.Controls.Add(this.ConfirmPassword_tf);
             this.Controls.Add(this.Password_tf);
             this.Controls.Add(this.Username_tf);
-            this.Controls.Add(this.Register_button);
-            this.Controls.Add(this.Login_button);
+            this.Controls.Add(this.Password_label);
+            this.Controls.Add(this.Email_tf);
+            this.Controls.Add(this.Username_label);
+            this.Controls.Add(this.ConfirmPassword_tf);
+            this.Controls.Add(this.ConfirmEmail_tf);
+            this.Controls.Add(this.panel3);
+            this.Controls.Add(this.panel2);
+            this.DoubleBuffered = true;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "LoginForm";
-            this.Text = "CryptDrive Login / Register";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LoginForm_FormClosed);
             this.Load += new System.EventHandler(this.LoginForm_Load);
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -209,18 +234,22 @@
 
         private System.Windows.Forms.Button Login_button;
         private System.Windows.Forms.Button Register_button;
-        private System.Windows.Forms.TextBox Username_tf;
-        private System.Windows.Forms.TextBox Password_tf;
-        private System.Windows.Forms.TextBox ConfirmPassword_tf;
-        private System.Windows.Forms.TextBox Email_tf;
-        private System.Windows.Forms.TextBox ConfirmEmail_tf;
-        private System.Windows.Forms.Label Username_label;
-        private System.Windows.Forms.Label Password_label;
-        private System.Windows.Forms.Label Email_label;
-        private System.Windows.Forms.Label ConfirmPassword_label;
-        private System.Windows.Forms.Label ConfirmEmail_label;
         private System.Windows.Forms.TextBox Output_tf;
         private System.Windows.Forms.Button ResetDB;
         private System.Windows.Forms.Button skipLogin;
+        private System.Windows.Forms.Button initAll;
+        private System.Windows.Forms.TextBox Email_tf;
+        private System.Windows.Forms.TextBox ConfirmPassword_tf;
+        private System.Windows.Forms.TextBox ConfirmEmail_tf;
+        private System.Windows.Forms.TextBox Username_tf;
+        private System.Windows.Forms.Label Username_label;
+        private System.Windows.Forms.Label Password_label;
+        private System.Windows.Forms.TextBox Password_tf;
+        private System.Windows.Forms.Label Email_label;
+        private System.Windows.Forms.Label ConfirmPassword_label;
+        private System.Windows.Forms.Label ConfirmEmail_label;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel3;
     }
 }

@@ -1,6 +1,4 @@
-﻿using Mailjet.Client;
-using Mailjet.Client.Resources;
-using System;
+﻿using System;
 using Newtonsoft.Json.Linq;
 using System.Net.Mail;
 using System.Collections.Generic;
