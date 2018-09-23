@@ -14,6 +14,16 @@ namespace Cryptdrive
 
     class FileNameStorage
     {
+        public enum FileStates
+        {
+            NOT_TRACKED,
+            NOT_CLOUD_ON_CLIENT,
+            ON_CLOUT_NOT_CLIENT,
+            ON_CLOUD__ON_CLIENT_SYNCED,
+            ON_CLOUD__ON_CLIENT_CLOUD__NEWER,
+            ON_CLOUD__ON_CLIENT_CLIENT_NEWER
+        }
+
         public const string fileMappingFile = "filelist.txt";
         public const string fileMappingFileCloudPrefix = "Cloud";
         public const string fileMappingFileCloud = fileMappingFileCloudPrefix + fileMappingFile;
@@ -142,6 +152,35 @@ namespace Cryptdrive
             }
             SaveMappingToFile();
             lastCloudSync = lastSave;
+        }
+
+        public FileStates getFileStateForCryptPath(string cryptpath)
+        {
+            if (!pathDict.ContainsValue(cryptpath))
+            {
+                //Should only ever be reached in an error state
+                return FileStates.NOT_TRACKED;
+            }
+            else
+            {
+                if (filePathsInCloudNotOnClientTracked.Contains(cryptpath))
+                {
+                    return FileStates.ON_CLOUT_NOT_CLIENT;
+                }
+                if (filePathsOnClientNotInCloud.Contains(cryptpath))
+                {
+                    return FileStates.NOT_CLOUD_ON_CLIENT;
+                }
+                if (clientFilesNewerThenCloudTimestamp.Contains(cryptpath))
+                {
+                    return FileStates.ON_CLOUD__ON_CLIENT_CLIENT_NEWER;
+                }
+                if (cloudFilesNewserThenClientTimestamp.Contains(cryptpath))
+                {
+                    return FileStates.ON_CLOUD__ON_CLIENT_CLOUD__NEWER;
+                }
+                return FileStates.ON_CLOUD__ON_CLIENT_SYNCED;
+            }
         }
 
         /// <summary>
