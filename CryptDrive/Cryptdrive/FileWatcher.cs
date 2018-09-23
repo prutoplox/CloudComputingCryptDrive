@@ -218,7 +218,7 @@ namespace Cryptdrive
             }
 
             //syncClientTreeNode();
-            GUIForm.instance.insertPath(e.FullPath);
+            GUIForm.instance.renamePath(e.OldFullPath, e.FullPath);
         }
 
         private void fileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)

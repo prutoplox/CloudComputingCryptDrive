@@ -127,13 +127,69 @@ namespace Cryptdrive
             }
         }
 
+        public void renamePath(string oldPath, string newPath)
+        {
+            //Only the last foldername or the filename is allowed to change
+            int lastIndex = oldPath.LastIndexOf("\\");
+            string commonPath = oldPath.Substring(0, lastIndex + 1);
+            string last = newPath.Replace(commonPath, "");
+
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new MethodInvoker(delegate ()
+                {
+                    //Muss = Else Block sein!
+                    CheckBoxHelper toRename = findCryptPath(FileManager.convertPathToCryptPath(oldPath));
+                    toRename.Name = last;
+                    toRename.Text = last;
+                    toRename.Label = last;
+                }));
+            }
+            else
+            {
+                //Muss = If Block sein!
+                CheckBoxHelper toRename = findCryptPath(FileManager.convertPathToCryptPath(oldPath));
+                toRename.Name = last;
+                toRename.Text = last;
+                toRename.Label = last;
+            }
+        }
+
+        public CheckBoxHelper findCryptPath(string path)
+        {
+            foreach (System.Windows.Forms.TreeNode treeNode in ucTreeView1.Nodes)
+            {
+                if (path.StartsWith(treeNode.Text))
+                {
+                    return findCryptPath(path.Substring(treeNode.Text.Length + 1), treeNode); //+1 to remove the escaped path separator
+                }
+            }
+            return null;
+        }
+
+        public CheckBoxHelper findCryptPath(string path, System.Windows.Forms.TreeNode node)
+        {
+            foreach (System.Windows.Forms.TreeNode treeNode in node.Nodes)
+            {
+                if (path == treeNode.Text)
+                {
+                    return (CheckBoxHelper)treeNode;
+                }
+                if (path.StartsWith(treeNode.Text))
+                {
+                    return findCryptPath(path.Substring(Math.Min(treeNode.Text.Length + 1, path.Length)), treeNode); //+1 to remove the escaped path separator
+                }
+            }
+            return null;
+        }
+
         public void insertCryptPath(string path)
         {
             foreach (System.Windows.Forms.TreeNode treeNode in ucTreeView1.Nodes)
             {
                 if (path.StartsWith(treeNode.Text))
                 {
-                    insertCryptPath(path.Substring(treeNode.Text.Length + 1), treeNode); //+1 to remove the escaped path separator
+                    insertCryptPath(path.Substring(Math.Min(treeNode.Text.Length + 1, path.Length)), treeNode); //+1 to remove the escaped path separator
                 }
             }
         }
@@ -151,12 +207,13 @@ namespace Cryptdrive
                 if (path.StartsWith(treeNode.Text))
                 {
                     needInserting = false;
-                    insertCryptPath(path.Substring(treeNode.Text.Length + 1), treeNode);
+                    insertCryptPath(path.Substring(Math.Min(treeNode.Text.Length + 1, path.Length)), treeNode);
                 }
             }
             if (needInserting)
             {
-                node.Nodes.Add(new CheckBoxHelper(path, false, false, false, false));
+                CheckBoxHelper newNode = new CheckBoxHelper(path, false, false, false, false);
+                node.Nodes.Add(newNode);
             }
         }
 
