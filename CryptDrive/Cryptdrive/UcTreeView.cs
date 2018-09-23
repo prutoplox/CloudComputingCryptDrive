@@ -11,8 +11,6 @@ using System.Windows.Forms.VisualStyles;
 
 public partial class UcTreeView : TreeView
 {
-    bool temp = true;
-
     [DisplayName("Checkbox Spacing"), CategoryAttribute("Appearance"),
      Description("Number of pixels between the checkboxes.")]
     public int Spacing { get; set; }
@@ -69,9 +67,35 @@ public partial class UcTreeView : TreeView
         {
             Console.WriteLine(n.FullPath);
             var tet = n.PrevNode;
+            switch (FileNameStorage.instance.getFileStateForCryptPath(e.Node.FullPath))
+            {
+                case FileNameStorage.FileStates.NOT_TRACKED:
+                    //e.Graphics.FillRectangle(Brushes.HotPink, rect);
+                    break;
 
-            e.Graphics.FillRectangle(Brushes.HotPink, rect);
-            temp = false;
+                case FileNameStorage.FileStates.NOT_CLOUD_ON_CLIENT:
+                    e.Graphics.FillRectangle(Brushes.Red, rect);
+                    break;
+
+                case FileNameStorage.FileStates.ON_CLOUT_NOT_CLIENT:
+                    e.Graphics.FillRectangle(Brushes.Yellow, rect);
+                    break;
+
+                case FileNameStorage.FileStates.ON_CLOUD__ON_CLIENT_SYNCED:
+                    e.Graphics.FillRectangle(Brushes.Green, rect);
+                    break;
+
+                case FileNameStorage.FileStates.ON_CLOUD__ON_CLIENT_CLOUD__NEWER:
+                    e.Graphics.FillRectangle(Brushes.Orange, rect);
+                    break;
+
+                case FileNameStorage.FileStates.ON_CLOUD__ON_CLIENT_CLIENT_NEWER:
+                    e.Graphics.FillRectangle(Brushes.OrangeRed, rect);
+                    break;
+
+                default:
+                    break;
+            }
 
             e.Graphics.DrawString(n.Label, Font, Brushes.Black,
                                   e.Bounds.X + offset, e.Bounds.Y);
