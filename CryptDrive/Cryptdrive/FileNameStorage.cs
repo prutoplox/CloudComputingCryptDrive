@@ -44,22 +44,22 @@ namespace Cryptdrive
         /// <summary>
         /// Only updated after Init is called!
         /// </summary>
-        public IEnumerable<string> filePathsInCloudNotOnClientTracked;
+        public IEnumerable<string> filePathsInCloudNotOnClientTracked = Enumerable.Empty<string>();
 
         /// <summary>
         /// Only updated after Init is called!
         /// </summary>
-        public IEnumerable<string> filePathsOnClientNotInCloud;
+        public IEnumerable<string> filePathsOnClientNotInCloud = Enumerable.Empty<string>();
 
         /// <summary>
         /// Only updated after Init is called!
         /// </summary>
-        public IEnumerable<string> cloudFilesNewserThenClientTimestamp;
+        public IEnumerable<string> cloudFilesNewserThenClientTimestamp = Enumerable.Empty<string>();
 
         /// <summary>
         /// Only updated after Init is called!
         /// </summary>
-        public IEnumerable<string> clientFilesNewerThenCloudTimestamp;
+        public IEnumerable<string> clientFilesNewerThenCloudTimestamp = Enumerable.Empty<string>();
 
         public async void Init()
         {
@@ -263,7 +263,7 @@ namespace Cryptdrive
 
         private async Task<bool> saveMappingToCloud()
         {
-            var wasUploaded = await FileManager.instance.uploadFileData(fileMappingFile, File.ReadAllBytes(fileMappingFile));
+            var wasUploaded = await FileManager.instance.uploadFileData(fileMappingFile, File.ReadAllBytes(fileMappingFile), false);
             if (wasUploaded)
             {
                 lastCloudSync = DateTimeOffset.UtcNow;

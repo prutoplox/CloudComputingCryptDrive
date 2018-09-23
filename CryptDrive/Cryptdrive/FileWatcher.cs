@@ -63,7 +63,8 @@ namespace Cryptdrive
                 {
                     foreach (var file in Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories))
                     {
-                        yield return FileManager.convertPathToCryptPath(file);
+                        string cleanFile = makeCleanPaths(file);
+                        yield return FileManager.convertPathToCryptPath(cleanFile);
                     }
                 }
             }
@@ -88,7 +89,8 @@ namespace Cryptdrive
             {
                 foreach (var file in Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories))
                 {
-                    if (File.GetLastWriteTimeUtc(file) > timestamp)
+                    string cleanFile = makeCleanPaths(file);
+                    if (File.GetLastWriteTimeUtc(cleanFile) > timestamp)
                     {
                         yield return FileManager.convertPathToCryptPath(file);
                     }
@@ -137,105 +139,110 @@ namespace Cryptdrive
 
         private void FileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
         {
-            if (ignoredFiles.Contains(e.FullPath))
+            string path = makeCleanPaths(e.FullPath);
+            if (ignoredFiles.Contains(path))
             {
-                Logger.instance.logInfo("Ignoring " + e.FullPath + " since it's being synced from the cloud");
+                Logger.instance.logInfo("Ignoring " + path + " since it's being synced from the cloud");
                 return;
             }
 
-            if (!File.Exists(e.FullPath))
+            if (!File.Exists(path))
             {
                 //Deletion sometimes calls the file change event for some yet unknown reason...
                 fileSystemWatcher_Deleted(sender, e);
                 return;
             }
 
-            if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
+            if (File.GetAttributes(path).HasFlag(FileAttributes.Directory))
             {
                 Logger.instance.logInfo("Folder changed: " + e.Name);
 
                 //Should be no need to iterate over the files in the folder since they should raise a separate change/create event
-                //FileManager.instance.syncFiles(filesInFolder(e.FullPath));
+                //FileManager.instance.syncFiles(filesInFolder(path));
             }
             else
             {
                 Logger.instance.logInfo("File changed: " + e.Name);
-                FileManager.instance.syncFile(e.FullPath);
+                FileManager.instance.syncFile(path, false);
             }
 
             //syncClientTreeNode();
-            GUIForm.instance.insertPath(e.FullPath);
+            GUIForm.instance.insertPath(path);
         }
 
         private void fileSystemWatcher_Created(object sender, FileSystemEventArgs e)
         {
-            if (ignoredFiles.Contains(e.FullPath))
+            string path = makeCleanPaths(e.FullPath);
+            if (ignoredFiles.Contains(path))
             {
-                Logger.instance.logInfo("Ignoring " + e.FullPath + " since it's being synced from the cloud");
+                Logger.instance.logInfo("Ignoring " + path + " since it's being synced from the cloud");
                 return;
             }
 
-            if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
+            if (File.GetAttributes(path).HasFlag(FileAttributes.Directory))
             {
                 Logger.instance.logInfo("Folder created: " + e.Name);
 
                 //The changed path is a directory, iterate over all files in it
-                FileManager.instance.syncFiles(filesInFolder(e.FullPath));
+                FileManager.instance.syncFiles(filesInFolder(path));
             }
             else
             {
                 Logger.instance.logInfo("File created: " + e.Name);
-                FileManager.instance.syncFile(e.FullPath);
+                FileManager.instance.syncFile(path, false);
             }
 
-            GUIForm.instance.insertPath(e.FullPath);
+            GUIForm.instance.insertPath(path);
 
             //syncClientTreeNode();
         }
 
         private void fileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
         {
-            if (ignoredFiles.Contains(e.FullPath))
+            string path = makeCleanPaths(e.FullPath);
+            string oldPath = makeCleanPaths(e.OldFullPath);
+            if (ignoredFiles.Contains(path))
             {
-                Logger.instance.logInfo("Ignoring " + e.FullPath + " since it's being synced from the cloud");
+                Logger.instance.logInfo("Ignoring " + path + " since it's being synced from the cloud");
                 return;
             }
 
-            if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory))
+            if (File.GetAttributes(path).HasFlag(FileAttributes.Directory))
             {
-                Logger.instance.logInfo("Folder " + e.OldFullPath + " was renamed to " + e.FullPath);
+                Logger.instance.logInfo("Folder " + oldPath + " was renamed to " + path);
 
                 //The changed path is a directory, iterate over all files in it
-                foreach (var fileName in filesInFolder(e.FullPath))
+                foreach (var fileName in filesInFolder(path))
                 {
-                    FileManager.instance.renameFileHashedNames(fileName.Replace(e.FullPath, e.OldFullPath), fileName);
+                    FileManager.instance.renameFileHashedNames(fileName.Replace(path, oldPath), fileName);
                 }
             }
             else
             {
-                Logger.instance.logInfo("File " + e.OldFullPath + " was renamed to " + e.FullPath);
-                FileManager.instance.renameFileHashedNames(e.OldFullPath, e.FullPath);
+                Logger.instance.logInfo("File " + oldPath + " was renamed to " + path);
+                FileManager.instance.renameFileHashedNames(oldPath, path);
             }
 
             //syncClientTreeNode();
-            GUIForm.instance.renamePath(e.OldFullPath, e.FullPath);
+            GUIForm.instance.renamePath(oldPath, path);
         }
 
         private void fileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
         {
-            if (ignoredFiles.Contains(e.FullPath))
+            string path = makeCleanPaths(e.FullPath);
+            if (ignoredFiles.Contains(path))
             {
-                Logger.instance.logInfo("Ignoring " + e.FullPath + " since it's being synced from the cloud");
+                Logger.instance.logInfo("Ignoring " + path + " since it's being synced from the cloud");
                 return;
             }
 
-            Logger.instance.logInfo("File or Folder deleted: " + e.Name);
-            IEnumerable<string> names = FileNameStorage.instance.getFilesWithPrefix(FileManager.convertPathToCryptPath(e.FullPath));
+            Logger.instance.logInfo("File or Folder deleted: " + path);
+            IEnumerable<string> names = FileNameStorage.instance.getFilesWithPrefix(FileManager.convertPathToCryptPath(path));
             FileManager.instance.deleteFiles(names);
 
             //syncClientTreeNode();
 
-            GUIForm.instance.insertPath(e.FullPath);
+            GUIForm.instance.insertPath(path);
         }
 
         public void syncClientTreeNode()
@@ -243,7 +250,7 @@ namespace Cryptdrive
             List<string> paths = new List<string>();
             foreach (FileSystemWatcher watcher in fileSystemWatchers.Values)
             {
-                paths.Add(watcher.Path);
+                paths.Add(makeCleanPaths(watcher.Path));
             }
             GUIForm.instance.listDirectory(paths);
         }
@@ -252,7 +259,7 @@ namespace Cryptdrive
         {
             foreach (var item in fileSystemWatchers)
             {
-                string monitoredPath = item.Value.Path;
+                string monitoredPath = makeCleanPaths(item.Value.Path);
                 if (path.Substring(0, Math.Min(monitoredPath.Length, path.Length)) == monitoredPath)
                 {
                     return item.Key;
@@ -266,7 +273,7 @@ namespace Cryptdrive
         {
             foreach (var item in fileSystemWatchers)
             {
-                string monitoredPath = item.Value.Path;
+                string monitoredPath = makeCleanPaths(item.Value.Path);
                 if (path.Substring(0, Math.Min(monitoredPath.Length, path.Length)) == monitoredPath)
                 {
                     return monitoredPath;
@@ -280,14 +287,14 @@ namespace Cryptdrive
         {
             foreach (var file in Directory.GetFiles(path, "*.*", SearchOption.AllDirectories))
             {
-                yield return file;
+                yield return makeCleanPaths(file);
             }
         }
 
         public string getFoldernameOfCryptFolder(string cryptfolder)
         {
             fileSystemWatchers.TryGetValue(cryptfolder, out FileSystemWatcher watcher);
-            return watcher.Path;
+            return makeCleanPaths(watcher.Path);
         }
 
         public DateTime getLastWriteToCryptFileUTC(string cryptPath)
@@ -304,6 +311,12 @@ namespace Cryptdrive
             {
                 return DateTime.MinValue;
             }
+        }
+
+        static string makeCleanPaths(string path)
+        {
+            string returnValue = path.Replace("\\", "/");
+            return returnValue;
         }
     }
 }

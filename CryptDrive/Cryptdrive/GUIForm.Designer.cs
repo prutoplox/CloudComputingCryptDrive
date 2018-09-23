@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Knoten4");
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Knoten5");
             System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Knoten1", new System.Windows.Forms.TreeNode[] {
@@ -65,6 +66,7 @@
             this.help_panel = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.ucTreeView1 = new UcTreeView();
+            this.FileWatcherSupportTimer = new System.Windows.Forms.Timer(this.components);
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dropbox_image)).BeginInit();
             this.control_panel.SuspendLayout();
@@ -354,6 +356,12 @@
             this.ucTreeView1.Spacing = 4;
             this.ucTreeView1.TabIndex = 9;
             // 
+            // FileWatcherSupportTimer
+            // 
+            this.FileWatcherSupportTimer.Enabled = true;
+            this.FileWatcherSupportTimer.Interval = 1000;
+            this.FileWatcherSupportTimer.Tick += new System.EventHandler(this.FileWatcherSupportTimer_Tick);
+            // 
             // GUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -405,6 +413,7 @@
         private System.Windows.Forms.CheckBox db_sync;
         private System.Windows.Forms.CheckBox cd_del;
         private System.Windows.Forms.CheckBox cd_sync;
+        private System.Windows.Forms.Timer FileWatcherSupportTimer;
     }
 }
 

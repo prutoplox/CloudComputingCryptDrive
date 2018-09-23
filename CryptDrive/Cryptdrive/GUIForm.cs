@@ -130,7 +130,7 @@ namespace Cryptdrive
         public void renamePath(string oldPath, string newPath)
         {
             //Only the last foldername or the filename is allowed to change
-            int lastIndex = oldPath.LastIndexOf("\\");
+            int lastIndex = oldPath.LastIndexOf("/");
             string commonPath = oldPath.Substring(0, lastIndex + 1);
             string last = newPath.Replace(commonPath, "");
 
@@ -308,7 +308,7 @@ namespace Cryptdrive
                 {
                     if (!FileNameStorage.instance.isFileTracked(file))
                     {
-                        FileManager.instance.syncCryptFile(file);
+                        FileManager.instance.syncCryptFile(file, false);
                     }
                 }
             }
@@ -485,13 +485,15 @@ namespace Cryptdrive
 
         private void sync_bt_Click(object sender, EventArgs e)
         {
+            foreach (var path in getAllCryptDriveSyncPaths())
+            {
+                FileManager.instance.syncCryptFile(path, true);
+            }
         }
 
         private void delete_Click(object sender, EventArgs e)
         {
-            //TODO ONLY USE CHECKED FILES
-            IEnumerable<string> paths = FileWatcher.instance.MonitoredFiles;
-            FileManager.instance.deleteFiles(paths);
+            FileManager.instance.deleteCryptFiles(getAllCryptDriveDeletePaths());
         }
 
         private void dropboxsync_btn_Click(object sender, EventArgs e)
@@ -509,6 +511,10 @@ namespace Cryptdrive
             if (sender is System.Windows.Forms.CheckBox box)
             {
                 FileManager.instance.syncFilesAutomatically = box.Checked;
+            }
+            foreach (var cryptpath in FileNameStorage.instance.filePathsOnClientNotInCloud)
+            {
+                FileManager.instance.syncCryptFile(cryptpath, false);
             }
         }
 

@@ -36,7 +36,7 @@ namespace Cryptdrive
 
         public async Task<bool> addFile(string path)
         {
-            return await syncFile(path);
+            return await syncFile(path, false);
         }
 
         public async Task<bool> syncFiles(IEnumerable<string> files)
@@ -44,21 +44,21 @@ namespace Cryptdrive
             bool allUploaded = true;
             foreach (string path in files)
             {
-                allUploaded |= await syncFile(path);
+                allUploaded |= await syncFile(path, false);
             }
             return allUploaded;
         }
 
-        public async Task<bool> syncCryptFile(string path)
+        public async Task<bool> syncCryptFile(string path, bool forceUpload)
         {
-            return await syncFile(FileManager.convertCryptPathToPath(path));
+            return await syncFile(FileManager.convertCryptPathToPath(path), forceUpload);
         }
 
-        public async Task<bool> syncFile(string path)
+        public async Task<bool> syncFile(string path, bool forceUpload)
         {
             byte[] encrpytedAndCompressedByteArray = encryptAndCompressFile(path);
             string cryptDriveFilePath = convertPathToCryptPath(path);
-            return await uploadFileDataHashedName(cryptDriveFilePath, encrpytedAndCompressedByteArray);
+            return await uploadFileDataHashedName(cryptDriveFilePath, encrpytedAndCompressedByteArray, forceUpload);
         }
 
         public async Task<bool> renameFiles(List<string> oldFileNames, List<string> newFileNames)
@@ -164,22 +164,22 @@ namespace Cryptdrive
             }
         }
 
-        public async Task<bool> uploadFileDataHashedName(string path, byte[] data)
+        public async Task<bool> uploadFileDataHashedName(string path, byte[] data, bool forceUpload)
         {
             string blobname = FileNameStorage.instance.hashPath(path, true);
-            bool returnValue = await uploadFileData(blobname, data);
+            bool returnValue = await uploadFileData(blobname, data, forceUpload);
             FileNameStorage.instance.ScheduleUpdate();
             return returnValue;
         }
 
-        public async Task<bool> uploadFileData(string path, byte[] data)
+        public async Task<bool> uploadFileData(string path, byte[] data, bool forceUpload)
         {
             try
             {
                 var content = new ByteArrayContent(data);
                 string username = containerName;
                 string fullURL = AzureLinkStringStorage.BLOB_ADD_AZURE_STRING + AzureLinkStringStorage.LINKING_INITALCHARACTER + "username=" + username + "&filename=" + path;
-                if (!syncFilesAutomatically)
+                if (!forceUpload && !syncFilesAutomatically)
                 {
                     return false;
                 }
@@ -188,7 +188,11 @@ namespace Cryptdrive
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        Logger.instance.logInfo("Uplaoded " + path + " with following answer from the server:" + responseString);
+                        Logger.instance.logInfo("Uploaded " + path + " with following answer from the server:" + responseString);
+                        string cryptDriveName = FileNameStorage.instance.lookupHash(path);
+                        FileNameStorage.instance.filePathsOnClientNotInCloud = FileNameStorage.instance.filePathsOnClientNotInCloud.Where(X => X != cryptDriveName);
+                        FileNameStorage.instance.clientFilesNewerThenCloudTimestamp = FileNameStorage.instance.clientFilesNewerThenCloudTimestamp.Where(X => X != FileNameStorage.instance.lookupHash(path));
+                        FileNameStorage.instance.ScheduleUpdate();
                         break;
 
                     case HttpStatusCode.Unauthorized:
@@ -328,7 +332,7 @@ namespace Cryptdrive
             string relativePath = cryptPath.Split('>')[1];
 
             //Prepends the virtual path of the folder in the cryptdrive where it's stored and removes unneeded parts of the full path on the client
-            return FileWatcher.instance.getFoldernameOfCryptFolder(cryptFolderName) + "//" + relativePath;
+            return FileWatcher.instance.getFoldernameOfCryptFolder(cryptFolderName) + relativePath;
         }
     }
 }
