@@ -19,13 +19,6 @@ namespace Cryptdrive
 
         public bool CryptDriveDelete { get; set; }
 
-        /*
-        public new string Text
-        {
-            get { return Label; }
-            set { Label = value; base.Text = ""; }
-        }*/
-
         public CheckBoxHelper() : base()
         {
         }
@@ -40,12 +33,6 @@ namespace Cryptdrive
         public CheckBoxHelper(string text, bool check1, bool check2, bool check3, bool check4) : this(text)
         {
             DropBoxSync = check1; DropBoxDelete = check2; CryptDriveSync = check3; CryptDriveDelete = check4;
-        }
-
-        public CheckBoxHelper(string text, CheckBoxHelper[] children)
-        {
-            Label = text;
-            foreach (CheckBoxHelper node in children) this.Nodes.Add(node);
         }
     }
 }

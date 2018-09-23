@@ -352,6 +352,7 @@
             treeNode7,
             treeNode8,
             treeNode9});
+            this.ucTreeView1.PathSeparator = "/";
             this.ucTreeView1.Size = new System.Drawing.Size(365, 336);
             this.ucTreeView1.Spacing = 4;
             this.ucTreeView1.TabIndex = 9;
