@@ -33,6 +33,8 @@ namespace Cryptdrive
         public CheckBoxHelper(string text) : base(text)
         {
             Label = text;
+            Text = text;
+            Name = text;
         }
 
         public CheckBoxHelper(string text, bool check1, bool check2, bool check3, bool check4) : this(text)

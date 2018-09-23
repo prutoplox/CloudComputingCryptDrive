@@ -162,7 +162,9 @@ namespace Cryptdrive
                 Logger.instance.logInfo("File changed: " + e.Name);
                 FileManager.instance.syncFile(e.FullPath);
             }
-            syncClientTreeNode();
+
+            //syncClientTreeNode();
+            GUIForm.instance.insertPath(e.FullPath);
         }
 
         private void fileSystemWatcher_Created(object sender, FileSystemEventArgs e)
@@ -186,7 +188,9 @@ namespace Cryptdrive
                 FileManager.instance.syncFile(e.FullPath);
             }
 
-            syncClientTreeNode();
+            GUIForm.instance.insertPath(e.FullPath);
+
+            //syncClientTreeNode();
         }
 
         private void fileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
@@ -213,7 +217,8 @@ namespace Cryptdrive
                 FileManager.instance.renameFileHashedNames(e.OldFullPath, e.FullPath);
             }
 
-            syncClientTreeNode();
+            //syncClientTreeNode();
+            GUIForm.instance.insertPath(e.FullPath);
         }
 
         private void fileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
@@ -227,7 +232,10 @@ namespace Cryptdrive
             Logger.instance.logInfo("File or Folder deleted: " + e.Name);
             IEnumerable<string> names = FileNameStorage.instance.getFilesWithPrefix(FileManager.convertPathToCryptPath(e.FullPath));
             FileManager.instance.deleteFiles(names);
-            syncClientTreeNode();
+
+            //syncClientTreeNode();
+
+            GUIForm.instance.insertPath(e.FullPath);
         }
 
         public void syncClientTreeNode()
@@ -245,7 +253,7 @@ namespace Cryptdrive
             foreach (var item in fileSystemWatchers)
             {
                 string monitoredPath = item.Value.Path;
-                if (path.Substring(0, monitoredPath.Length) == monitoredPath)
+                if (path.Substring(0, Math.Min(monitoredPath.Length, path.Length)) == monitoredPath)
                 {
                     return item.Key;
                 }
@@ -259,7 +267,7 @@ namespace Cryptdrive
             foreach (var item in fileSystemWatchers)
             {
                 string monitoredPath = item.Value.Path;
-                if (path.Substring(0, monitoredPath.Length) == monitoredPath)
+                if (path.Substring(0, Math.Min(monitoredPath.Length, path.Length)) == monitoredPath)
                 {
                     return monitoredPath;
                 }

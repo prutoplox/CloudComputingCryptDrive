@@ -96,7 +96,7 @@
             this.help_bt.TabIndex = 1;
             this.help_bt.Text = "Help";
             this.help_bt.UseVisualStyleBackColor = false;
-            this.help_bt.Click += new System.EventHandler(this.searchFile_Click);
+            this.help_bt.Click += new System.EventHandler(this.helpBtn_Click);
             // 
             // searchFilePath
             // 
@@ -146,7 +146,6 @@
             this.Logout_bt.TabIndex = 6;
             this.Logout_bt.Text = "Logout";
             this.Logout_bt.UseVisualStyleBackColor = false;
-            this.Logout_bt.Click += new System.EventHandler(this.button1_Click);
             // 
             // dropbox_btn
             // 
@@ -372,8 +371,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "GUIForm";
             this.Text = "Crypt Drive";
-            this.Activated += new System.EventHandler(this.GUIForm_Activated);
-            this.Load += new System.EventHandler(this.GUIForm_Load);
             this.VisibleChanged += new System.EventHandler(this.GUIForm_VisibleChanged);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

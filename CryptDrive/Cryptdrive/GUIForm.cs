@@ -65,14 +65,7 @@ namespace Cryptdrive
             }
         }
 
-        private void delete_Click(object sender, EventArgs e)
-        {
-            //TODO ONLY USE CHECKED FILES
-            IEnumerable<string> paths = FileWatcher.instance.MonitoredFiles;
-            FileManager.instance.deleteFiles(paths);
-        }
-
-        private void searchFile_Click(object sender, EventArgs e)
+        private void helpBtn_Click(object sender, EventArgs e)
         {
         }
 
@@ -117,14 +110,60 @@ namespace Cryptdrive
             }
         }
 
+        public void insertPath(string path)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new MethodInvoker(delegate ()
+                {
+                    //Muss = Else Block sein!
+                    insertCryptPath(FileManager.convertPathToCryptPath(path));
+                }));
+            }
+            else
+            {
+                //Muss = If Block sein!
+                insertCryptPath(FileManager.convertPathToCryptPath(path));
+            }
+        }
+
+        public void insertCryptPath(string path)
+        {
+            foreach (System.Windows.Forms.TreeNode treeNode in ucTreeView1.Nodes)
+            {
+                if (path.StartsWith(treeNode.Text))
+                {
+                    insertCryptPath(path.Substring(treeNode.Text.Length + 1), treeNode); //+1 to remove the escaped path separator
+                }
+            }
+        }
+
+        public void insertCryptPath(string path, System.Windows.Forms.TreeNode node)
+        {
+            bool needInserting = true;
+            foreach (System.Windows.Forms.TreeNode treeNode in node.Nodes)
+            {
+                if (path == treeNode.Text)
+                {
+                    //No need to insert the same node again
+                    return;
+                }
+                if (path.StartsWith(treeNode.Text))
+                {
+                    needInserting = false;
+                    insertCryptPath(path.Substring(treeNode.Text.Length + 1), treeNode);
+                }
+            }
+            if (needInserting)
+            {
+                node.Nodes.Add(new CheckBoxHelper(path, false, false, false, false));
+            }
+        }
+
         private static CheckBoxHelper createDirectoryNode(DirectoryInfo directoryInfo, string naming)
         {
             string nodeName = naming != String.Empty ? naming : directoryInfo.Name;
             CheckBoxHelper directoryNode = new CheckBoxHelper(nodeName, false, false, false, false);
-            directoryNode.Name = nodeName;
-            directoryNode.Text = nodeName;
-
-            // var directoryNode = new TreeNode(directoryInfo.Name);
 
             foreach (var directory in directoryInfo.GetDirectories())
             {
@@ -132,10 +171,7 @@ namespace Cryptdrive
             }
             foreach (var file in directoryInfo.GetFiles())
             {
-                // directoryNode.Nodes.Add(new TreeNode(file.Name));
                 CheckBoxHelper helper = new CheckBoxHelper(file.Name, false, false, false, false);
-                helper.Name = file.Name;
-                helper.Text = file.Name;
                 directoryNode.Nodes.Add(helper);
             }
 
@@ -163,18 +199,6 @@ namespace Cryptdrive
             }
 
             searchFilePath.Enabled = true;
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void GUIForm_Load(object sender, EventArgs e)
-        {
-        }
-
-        private void GUIForm_Activated(object sender, EventArgs e)
-        {
         }
 
         private void Debug_bt_Click(object sender, EventArgs e)
@@ -207,6 +231,13 @@ namespace Cryptdrive
             System.Diagnostics.Process.Start("explorer.exe", @"testFolder");
             FileWatcher.instance.syncClientTreeNode();
             FileNameStorage.instance.Init();
+
+            //TODO handle files on cloud, files newer then cloud, file oder then cloud
+        }
+
+        private void GUIForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
 
         private bool isCheckingFileMappingFile = false;
@@ -283,11 +314,6 @@ namespace Cryptdrive
             isCheckingFileMappingFile = false;
         }
 
-        private void GUIForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            Application.Exit();
-        }
-
         public IEnumerable<Control> GetAll(Control control, Type type)
         {
             var controls = control.Controls.Cast<Control>();
@@ -303,10 +329,6 @@ namespace Cryptdrive
             FileManagerDropbox.instance.createFolder();
         }
 
-        private void btnDownload_Click()
-        {
-        }
-
         public void AuthenticateDropBox()
         {
             try
@@ -317,13 +339,12 @@ namespace Cryptdrive
                     MessageBox.Show("Please enter valid App Key !");
                     return;
                 }
-                var DBB = FileManagerDropbox.instance.DBB;
-                if (DBB == null)
+                if (FileManagerDropbox.instance.DBB == null)
                 {
-                    DBB = new DropBoxBase(somethingsomething, "CryptDriveSS2018");
+                    FileManagerDropbox.instance.DBB = new DropBoxBase(somethingsomething, "CryptDriveSS2018");
 
-                    FileManagerDropbox.instance.strAuthenticationURL = DBB.GeneratedAuthenticationURL(); // This method must be executed before generating Access Token.
-                    FileManagerDropbox.instance.strAccessToken = DBB.GenerateAccessToken();
+                    FileManagerDropbox.instance.strAuthenticationURL = FileManagerDropbox.instance.DBB.GeneratedAuthenticationURL(); // This method must be executed before generating Access Token.
+                    FileManagerDropbox.instance.strAccessToken = FileManagerDropbox.instance.DBB.GenerateAccessToken();
                     dropboxsync_btn.Enabled = true;
                     dropbox_image.Visible = true;
                     dropboxdelete_bt.Enabled = true;
@@ -339,11 +360,6 @@ namespace Cryptdrive
             {
                 throw;
             }
-        }
-
-        private void dropboxsync_btn_Click(object sender, EventArgs e)
-        {
-            FileManagerDropbox.instance.syncFiles(getAllDropBoxSyncPaths());
         }
 
         public IEnumerable<string> getAllDropBoxSyncPaths()
@@ -410,13 +426,25 @@ namespace Cryptdrive
             }
         }
 
+        private void sync_bt_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void delete_Click(object sender, EventArgs e)
+        {
+            //TODO ONLY USE CHECKED FILES
+            IEnumerable<string> paths = FileWatcher.instance.MonitoredFiles;
+            FileManager.instance.deleteFiles(paths);
+        }
+
+        private void dropboxsync_btn_Click(object sender, EventArgs e)
+        {
+            FileManagerDropbox.instance.syncFiles(getAllDropBoxSyncPaths());
+        }
+
         private void dropboxdelete_bt_Click(object sender, EventArgs e)
         {
             FileManagerDropbox.instance.deleteFiles(getAllDropBoxDeletePaths());
-        }
-
-        private void sync_bt_Click(object sender, EventArgs e)
-        {
         }
 
         private void cd_sync_CheckedChanged(object sender, EventArgs e)
