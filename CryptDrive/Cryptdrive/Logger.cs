@@ -77,6 +77,14 @@ namespace Cryptdrive
                 if (text != "")
                 {
                     Console.WriteLine(text);
+                    lock (this)
+                    {
+                        using (System.IO.StreamWriter writer = new System.IO.StreamWriter(logFilename, append, System.Text.Encoding.UTF8))
+                        {
+                            writer.WriteLine(text);
+                            writer.Flush();
+                        }
+                    }
                     if (GUIForm.instance != null)
                     {
                         if (GUIForm.instance.InvokeRequired)
@@ -95,15 +103,12 @@ namespace Cryptdrive
                     {
                         Console.WriteLine("Couldn't log next message to the UI:");
                     }
-                    lock (this)
-                    {
-                        using (System.IO.StreamWriter writer = new System.IO.StreamWriter(logFilename, append, System.Text.Encoding.UTF8))
-                        {
-                            writer.WriteLine(text);
-                            writer.Flush();
-                        }
-                    }
                 }
+            }
+            catch (ObjectDisposedException)
+            {
+                //Ignore missing logging to the UI after it has been closed...
+                return;
             }
             catch
             {
