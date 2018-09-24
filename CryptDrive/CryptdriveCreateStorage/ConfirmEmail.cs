@@ -7,6 +7,8 @@ using Microsoft.Azure.WebJobs.Host;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 
 namespace CryptdriveCloud
 {
@@ -33,13 +35,28 @@ namespace CryptdriveCloud
                     return new BadRequestObjectResult(errorMessage);
                 }
 
-                if (DbManager.UpdateUserEmailConfirmed(username))
+                List<string> columns = DbManager.GetUser(username);
+
+                string password = columns[2];
+                string email = columns[3];
+                using (SHA256CryptoServiceProvider hashFunction = new SHA256CryptoServiceProvider())
                 {
-                    return new OkObjectResult("Email confirmed");
-                }
-                else
-                {
-                    return new BadRequestObjectResult("Could not confirm email");
+                    string shouldBeLinkID = NeoSmart.Utils.UrlBase64.Encode(hashFunction.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password))) + NeoSmart.Utils.UrlBase64.Encode(hashFunction.ComputeHash(System.Text.Encoding.UTF8.GetBytes(email)));
+                    if (shouldBeLinkID == linkId)
+                    {
+                        if (DbManager.UpdateUserEmailConfirmed(username))
+                        {
+                            return new OkObjectResult("Email confirmed");
+                        }
+                        else
+                        {
+                            return new BadRequestObjectResult("Could not confirm email");
+                        }
+                    }
+                    else
+                    {
+                        return new BadRequestObjectResult("The link ID was not correct for the user");
+                    }
                 }
             }
             catch (Exception e)
