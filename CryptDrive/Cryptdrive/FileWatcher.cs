@@ -238,11 +238,10 @@ namespace Cryptdrive
 
             Logger.instance.logInfo("File or Folder deleted: " + path);
             IEnumerable<string> names = FileNameStorage.instance.getFilesWithPrefix(FileManager.convertPathToCryptPath(path));
-            FileManager.instance.deleteFiles(names);
+            FileManager.instance.deleteFiles(names, false);
 
             //syncClientTreeNode();
-
-            GUIForm.instance.insertPath(path);
+            GUIForm.instance.removePath(path);
         }
 
         public void syncClientTreeNode()

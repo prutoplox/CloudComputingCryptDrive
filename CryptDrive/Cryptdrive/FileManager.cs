@@ -116,20 +116,20 @@ namespace Cryptdrive
 
         public async Task<bool> deleteFile(string file)
         {
-            return await deleteFiles(new List<string>() { file });
+            return await deleteFiles(new List<string>() { file }, false);
         }
 
         public async Task<bool> deleteCryptFile(string file)
         {
-            return await deleteFiles(new List<string>() { convertPathToCryptPath(file) });
+            return await deleteFiles(new List<string>() { convertPathToCryptPath(file) }, false);
         }
 
         public async Task<bool> deleteCryptFiles(IEnumerable<string> files)
         {
-            return await deleteFiles(files.Select(X => convertPathToCryptPath(X)));
+            return await deleteFiles(files.Select(X => convertPathToCryptPath(X)), false);
         }
 
-        public async Task<bool> deleteFiles(IEnumerable<string> files)
+        public async Task<bool> deleteFiles(IEnumerable<string> files, bool forceDelete)
         {
             try
             {
@@ -146,7 +146,7 @@ namespace Cryptdrive
                     var stringContent = new StringContent(FileNameStorage.instance.hashPath(path));
                     content.Add(stringContent, i++.ToString());
                 }
-                if (!deleteFilesAutomatically)
+                if (!forceDelete && !deleteFilesAutomatically)
                 {
                     return false;
                 }

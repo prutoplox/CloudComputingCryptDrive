@@ -110,6 +110,29 @@ namespace Cryptdrive
             }
         }
 
+        public void removeCryptpath(string cryptPath)
+        {
+            CheckBoxHelper item = findCryptPath(cryptPath);
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new MethodInvoker(delegate ()
+                {
+                    //Muss = Else Block sein!
+                    item.Parent.Nodes.Remove(item);
+                }));
+            }
+            else
+            {
+                //Muss = If Block sein!
+                item.Parent.Nodes.Remove(item);
+            }
+        }
+
+        public void removePath(string path)
+        {
+            removeCryptpath(FileManager.convertPathToCryptPath(path));
+        }
+
         public void insertPath(string path)
         {
             if (this.InvokeRequired)
@@ -161,7 +184,7 @@ namespace Cryptdrive
             {
                 if (path.StartsWith(treeNode.Text))
                 {
-                    return findCryptPath(path.Substring(treeNode.Text.Length + 1), treeNode); //+1 to remove the escaped path separator
+                    return findCryptPath(path.Substring(Math.Min(treeNode.Text.Length + 1, path.Length)), treeNode); //+1 to remove the escaped path separator
                 }
             }
             return null;
@@ -493,7 +516,13 @@ namespace Cryptdrive
 
         private void delete_Click(object sender, EventArgs e)
         {
-            FileManager.instance.deleteCryptFiles(getAllCryptDriveDeletePaths());
+            IEnumerable<string> filesToDelete = getAllCryptDriveDeletePaths();
+            FileManager.instance.deleteFiles(filesToDelete, true);
+
+            while (getAllCryptDriveDeletePaths().Any())
+            {
+                removeCryptpath(getAllCryptDriveDeletePaths().First());
+            }
         }
 
         private void dropboxsync_btn_Click(object sender, EventArgs e)
