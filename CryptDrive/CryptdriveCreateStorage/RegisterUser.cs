@@ -50,7 +50,18 @@ namespace CryptdriveCloud
                     {
                         string content = "username=" + username + "&linkId=" + NeoSmart.Utils.UrlBase64.Encode(hashFunction.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password))) + NeoSmart.Utils.UrlBase64.Encode(hashFunction.ComputeHash(System.Text.Encoding.UTF8.GetBytes(email)));
                         string registrationLink = Cryptdrive.AzureLinkStringStorage.CONFIRM_EMAIL_AZURE_STRING + Cryptdrive.AzureLinkStringStorage.LINKING_INITALCHARACTER + content;
-                        EmailManager.sendEmailToUser(email, username, registrationLink, log);
+                        try
+                        {
+                            EmailManager.sendEmailToUser(email, username, registrationLink, log);
+                        }
+                        catch (System.Net.Mail.SmtpFailedRecipientsException)
+                        {
+                            log.LogCritical("Mail could not be sent!");
+                        }
+                        catch (System.Net.Mail.SmtpException)
+                        {
+                            log.LogCritical("Mail could not be sent!");
+                        }
                         await StorageCreate.create(username);
                         return new OkObjectResult($"{container}");
                     }
