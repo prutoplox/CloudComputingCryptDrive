@@ -70,6 +70,7 @@ public partial class UcTreeView : TreeView
             switch (FileNameStorage.instance.getFileStateForCryptPath(e.Node.FullPath))
             {
                 case FileNameStorage.FileStates.NOT_TRACKED:
+
                     //e.Graphics.FillRectangle(Brushes.HotPink, rect);
                     break;
 
@@ -90,7 +91,7 @@ public partial class UcTreeView : TreeView
                     break;
 
                 case FileNameStorage.FileStates.ON_CLOUD__ON_CLIENT_CLIENT_NEWER:
-                    e.Graphics.FillRectangle(Brushes.OrangeRed, rect);
+                    e.Graphics.FillRectangle(Brushes.Blue, rect);
                     break;
 
                 default:

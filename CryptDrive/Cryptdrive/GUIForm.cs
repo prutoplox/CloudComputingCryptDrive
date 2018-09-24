@@ -67,6 +67,13 @@ namespace Cryptdrive
 
         private void helpBtn_Click(object sender, EventArgs e)
         {
+            toggleLegendHelp();
+        }
+
+        private void toggleLegendHelp()
+        {
+            help_panel.Visible = !help_panel.Visible;
+            legend_panel.Visible = !legend_panel.Visible;
         }
 
         public void listDirectory(List<string> paths)
@@ -569,6 +576,11 @@ namespace Cryptdrive
             {
                 FileManagerDropbox.instance.deleteFilesAutomatically = box.Checked;
             }
+        }
+
+        private void Logout_bt_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

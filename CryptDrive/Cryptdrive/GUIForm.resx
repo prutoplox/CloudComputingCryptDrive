@@ -123,4 +123,11 @@
   <metadata name="FileWatcherSupportTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>180, 17</value>
   </metadata>
+  <data name="helpText.Text" xml:space="preserve">
+    <value>Please press the "Help" button to show a colo legend of the file listing on the left.
+To enable sync to DropBox press the "DropBox" button and allow our application access to it.
+The folder which opened by default is the main monitored folder and when you wish to monitor another monitor write a name to identify that older and then select the folder.
+The checkboxes to the left ot the Sync/Delete buttons enable automatic syncronisation to the cloud and the buttons for sync the selected files in the fileview above them.
+Logout closes CryptDrive and stops monitoring of the folder(s)</value>
+  </data>
 </root>
