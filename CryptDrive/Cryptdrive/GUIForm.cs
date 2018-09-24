@@ -319,7 +319,7 @@ namespace Cryptdrive
             FileWatcher.instance.syncClientTreeNode();
             FileNameStorage.instance.Init();
 
-            //TODO handle files on cloud, files newer then cloud, file oder then cloud
+            FileWatcherSupportTimer.Enabled = true;
         }
 
         private void GUIForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -580,7 +580,7 @@ namespace Cryptdrive
 
         private void Logout_bt_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Application.Exit();
         }
     }
 }

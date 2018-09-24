@@ -30,21 +30,21 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GUIForm));
-            System.Windows.Forms.TreeNode treeNode46 = new System.Windows.Forms.TreeNode("Knoten4");
-            System.Windows.Forms.TreeNode treeNode47 = new System.Windows.Forms.TreeNode("Knoten5");
-            System.Windows.Forms.TreeNode treeNode48 = new System.Windows.Forms.TreeNode("Knoten1", new System.Windows.Forms.TreeNode[] {
-            treeNode46,
-            treeNode47});
-            System.Windows.Forms.TreeNode treeNode49 = new System.Windows.Forms.TreeNode("Knoten6");
-            System.Windows.Forms.TreeNode treeNode50 = new System.Windows.Forms.TreeNode("Knoten7");
-            System.Windows.Forms.TreeNode treeNode51 = new System.Windows.Forms.TreeNode("Knoten8");
-            System.Windows.Forms.TreeNode treeNode52 = new System.Windows.Forms.TreeNode("Knoten0", new System.Windows.Forms.TreeNode[] {
-            treeNode48,
-            treeNode49,
-            treeNode50,
-            treeNode51});
-            System.Windows.Forms.TreeNode treeNode53 = new System.Windows.Forms.TreeNode("Knoten2");
-            System.Windows.Forms.TreeNode treeNode54 = new System.Windows.Forms.TreeNode("Knoten3");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Knoten4");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Knoten5");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Knoten1", new System.Windows.Forms.TreeNode[] {
+            treeNode1,
+            treeNode2});
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Knoten6");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Knoten7");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Knoten8");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Knoten0", new System.Windows.Forms.TreeNode[] {
+            treeNode3,
+            treeNode4,
+            treeNode5,
+            treeNode6});
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Knoten2");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Knoten3");
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.delete = new System.Windows.Forms.Button();
             this.help_bt = new System.Windows.Forms.Button();
@@ -64,35 +64,35 @@
             this.dropboxdelete_bt = new System.Windows.Forms.Button();
             this.dropbox_image = new System.Windows.Forms.PictureBox();
             this.control_panel = new System.Windows.Forms.Panel();
+            this.legend_panel = new System.Windows.Forms.Panel();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.pictureBox6 = new System.Windows.Forms.PictureBox();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.pictureBox4 = new System.Windows.Forms.PictureBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.help_panel = new System.Windows.Forms.Panel();
+            this.helpText = new System.Windows.Forms.TextBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.FileWatcherSupportTimer = new System.Windows.Forms.Timer(this.components);
-            this.helpText = new System.Windows.Forms.TextBox();
-            this.legend_panel = new System.Windows.Forms.Panel();
             this.ucTreeView1 = new UcTreeView();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.pictureBox5 = new System.Windows.Forms.PictureBox();
-            this.pictureBox6 = new System.Windows.Forms.PictureBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dropbox_image)).BeginInit();
             this.control_panel.SuspendLayout();
-            this.help_panel.SuspendLayout();
             this.legend_panel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.help_panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // delete
@@ -319,50 +319,15 @@
             this.control_panel.BackColor = System.Drawing.Color.Transparent;
             this.control_panel.BackgroundImage = global::Cryptdrive.Properties.Resources.borderagain;
             this.control_panel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.control_panel.Controls.Add(this.legend_panel);
             this.control_panel.Controls.Add(this.help_panel);
             this.control_panel.Controls.Add(this.help_bt);
             this.control_panel.Controls.Add(this.dropbox_btn);
             this.control_panel.Controls.Add(this.Logout_bt);
+            this.control_panel.Controls.Add(this.legend_panel);
             this.control_panel.Location = new System.Drawing.Point(468, 11);
             this.control_panel.Name = "control_panel";
             this.control_panel.Size = new System.Drawing.Size(424, 253);
             this.control_panel.TabIndex = 13;
-            // 
-            // help_panel
-            // 
-            this.help_panel.BackgroundImage = global::Cryptdrive.Properties.Resources.borderagain;
-            this.help_panel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.help_panel.Controls.Add(this.helpText);
-            this.help_panel.Location = new System.Drawing.Point(28, 37);
-            this.help_panel.Name = "help_panel";
-            this.help_panel.Size = new System.Drawing.Size(385, 202);
-            this.help_panel.TabIndex = 10;
-            // 
-            // panel3
-            // 
-            this.panel3.BackColor = System.Drawing.Color.Transparent;
-            this.panel3.BackgroundImage = global::Cryptdrive.Properties.Resources.borderagain;
-            this.panel3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.panel3.Location = new System.Drawing.Point(468, 282);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(424, 181);
-            this.panel3.TabIndex = 14;
-            // 
-            // FileWatcherSupportTimer
-            // 
-            this.FileWatcherSupportTimer.Enabled = true;
-            this.FileWatcherSupportTimer.Interval = 1000;
-            this.FileWatcherSupportTimer.Tick += new System.EventHandler(this.FileWatcherSupportTimer_Tick);
-            // 
-            // helpText
-            // 
-            this.helpText.Location = new System.Drawing.Point(13, 13);
-            this.helpText.Multiline = true;
-            this.helpText.Name = "helpText";
-            this.helpText.Size = new System.Drawing.Size(359, 175);
-            this.helpText.TabIndex = 0;
-            this.helpText.Text = resources.GetString("helpText.Text");
             // 
             // legend_panel
             // 
@@ -386,129 +351,14 @@
             this.legend_panel.TabIndex = 11;
             this.legend_panel.Visible = false;
             // 
-            // ucTreeView1
+            // label7
             // 
-            this.ucTreeView1.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
-            this.ucTreeView1.HideSelection = false;
-            this.ucTreeView1.LeftPadding = 7;
-            this.ucTreeView1.Location = new System.Drawing.Point(50, 26);
-            this.ucTreeView1.Name = "ucTreeView1";
-            treeNode46.Name = "Knoten4";
-            treeNode46.Text = "Knoten4";
-            treeNode47.Name = "Knoten5";
-            treeNode47.Text = "Knoten5";
-            treeNode48.Name = "Knoten1";
-            treeNode48.Text = "Knoten1";
-            treeNode49.Name = "Knoten6";
-            treeNode49.Text = "Knoten6";
-            treeNode50.Name = "Knoten7";
-            treeNode50.Text = "Knoten7";
-            treeNode51.Name = "Knoten8";
-            treeNode51.Text = "Knoten8";
-            treeNode52.Name = "Knoten0";
-            treeNode52.Text = "Knoten0";
-            treeNode53.Name = "Knoten2";
-            treeNode53.Text = "Knoten2";
-            treeNode54.Name = "Knoten3";
-            treeNode54.Text = "Knoten3";
-            this.ucTreeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode52,
-            treeNode53,
-            treeNode54});
-            this.ucTreeView1.PathSeparator = "/";
-            this.ucTreeView1.Size = new System.Drawing.Size(365, 336);
-            this.ucTreeView1.Spacing = 4;
-            this.ucTreeView1.TabIndex = 9;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.White;
-            this.pictureBox1.Location = new System.Drawing.Point(13, 14);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(15, 15);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.BackColor = System.Drawing.Color.Red;
-            this.pictureBox2.Location = new System.Drawing.Point(13, 35);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(15, 15);
-            this.pictureBox2.TabIndex = 1;
-            this.pictureBox2.TabStop = false;
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.BackColor = System.Drawing.Color.Yellow;
-            this.pictureBox3.Location = new System.Drawing.Point(13, 56);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(15, 15);
-            this.pictureBox3.TabIndex = 2;
-            this.pictureBox3.TabStop = false;
-            // 
-            // pictureBox4
-            // 
-            this.pictureBox4.BackColor = System.Drawing.Color.Green;
-            this.pictureBox4.Location = new System.Drawing.Point(13, 77);
-            this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(15, 15);
-            this.pictureBox4.TabIndex = 3;
-            this.pictureBox4.TabStop = false;
-            // 
-            // pictureBox5
-            // 
-            this.pictureBox5.BackColor = System.Drawing.Color.Orange;
-            this.pictureBox5.Location = new System.Drawing.Point(13, 98);
-            this.pictureBox5.Name = "pictureBox5";
-            this.pictureBox5.Size = new System.Drawing.Size(15, 15);
-            this.pictureBox5.TabIndex = 4;
-            this.pictureBox5.TabStop = false;
-            // 
-            // pictureBox6
-            // 
-            this.pictureBox6.BackColor = System.Drawing.Color.Blue;
-            this.pictureBox6.Location = new System.Drawing.Point(13, 119);
-            this.pictureBox6.Name = "pictureBox6";
-            this.pictureBox6.Size = new System.Drawing.Size(15, 15);
-            this.pictureBox6.TabIndex = 5;
-            this.pictureBox6.TabStop = false;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(34, 16);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(122, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "Folder or (yet) untracked";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(34, 37);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(202, 13);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "File on client not yet synced to CryptDrive";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(34, 58);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(195, 13);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "File in the cloud but not yet downloaded";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(34, 79);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(166, 13);
-            this.label5.TabIndex = 9;
-            this.label5.Text = "File in Cloud and on Client synced";
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(34, 121);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(208, 13);
+            this.label7.TabIndex = 11;
+            this.label7.Text = "File on the client is newer then in the cloud";
             // 
             // label6
             // 
@@ -519,14 +369,163 @@
             this.label6.TabIndex = 10;
             this.label6.Text = "File in the cloud is newer then on the client";
             // 
-            // label7
+            // label5
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(34, 121);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(208, 13);
-            this.label7.TabIndex = 11;
-            this.label7.Text = "File on the client is newer then in the cloud";
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(34, 79);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(166, 13);
+            this.label5.TabIndex = 9;
+            this.label5.Text = "File in Cloud and on Client synced";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(34, 58);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(195, 13);
+            this.label4.TabIndex = 8;
+            this.label4.Text = "File in the cloud but not yet downloaded";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(34, 37);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(202, 13);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "File on client not yet synced to CryptDrive";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(34, 16);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(122, 13);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "Folder or (yet) untracked";
+            // 
+            // pictureBox6
+            // 
+            this.pictureBox6.BackColor = System.Drawing.Color.Blue;
+            this.pictureBox6.Location = new System.Drawing.Point(13, 119);
+            this.pictureBox6.Name = "pictureBox6";
+            this.pictureBox6.Size = new System.Drawing.Size(15, 15);
+            this.pictureBox6.TabIndex = 5;
+            this.pictureBox6.TabStop = false;
+            // 
+            // pictureBox5
+            // 
+            this.pictureBox5.BackColor = System.Drawing.Color.Orange;
+            this.pictureBox5.Location = new System.Drawing.Point(13, 98);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(15, 15);
+            this.pictureBox5.TabIndex = 4;
+            this.pictureBox5.TabStop = false;
+            // 
+            // pictureBox4
+            // 
+            this.pictureBox4.BackColor = System.Drawing.Color.Green;
+            this.pictureBox4.Location = new System.Drawing.Point(13, 77);
+            this.pictureBox4.Name = "pictureBox4";
+            this.pictureBox4.Size = new System.Drawing.Size(15, 15);
+            this.pictureBox4.TabIndex = 3;
+            this.pictureBox4.TabStop = false;
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.BackColor = System.Drawing.Color.Yellow;
+            this.pictureBox3.Location = new System.Drawing.Point(13, 56);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(15, 15);
+            this.pictureBox3.TabIndex = 2;
+            this.pictureBox3.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BackColor = System.Drawing.Color.Red;
+            this.pictureBox2.Location = new System.Drawing.Point(13, 35);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(15, 15);
+            this.pictureBox2.TabIndex = 1;
+            this.pictureBox2.TabStop = false;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.White;
+            this.pictureBox1.Location = new System.Drawing.Point(13, 14);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(15, 15);
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
+            // 
+            // help_panel
+            // 
+            this.help_panel.BackgroundImage = global::Cryptdrive.Properties.Resources.borderagain;
+            this.help_panel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.help_panel.Controls.Add(this.helpText);
+            this.help_panel.Location = new System.Drawing.Point(28, 37);
+            this.help_panel.Name = "help_panel";
+            this.help_panel.Size = new System.Drawing.Size(385, 202);
+            this.help_panel.TabIndex = 10;
+            // 
+            // helpText
+            // 
+            this.helpText.Location = new System.Drawing.Point(13, 13);
+            this.helpText.Multiline = true;
+            this.helpText.Name = "helpText";
+            this.helpText.Size = new System.Drawing.Size(359, 175);
+            this.helpText.TabIndex = 0;
+            this.helpText.Text = resources.GetString("helpText.Text");
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.Color.Transparent;
+            this.panel3.BackgroundImage = global::Cryptdrive.Properties.Resources.borderagain;
+            this.panel3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.panel3.Location = new System.Drawing.Point(468, 282);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(424, 181);
+            this.panel3.TabIndex = 14;
+            // 
+            // FileWatcherSupportTimer
+            // 
+            this.FileWatcherSupportTimer.Interval = 1000;
+            this.FileWatcherSupportTimer.Tick += new System.EventHandler(this.FileWatcherSupportTimer_Tick);
+            // 
+            // ucTreeView1
+            // 
+            this.ucTreeView1.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            this.ucTreeView1.HideSelection = false;
+            this.ucTreeView1.LeftPadding = 7;
+            this.ucTreeView1.Location = new System.Drawing.Point(50, 26);
+            this.ucTreeView1.Name = "ucTreeView1";
+            treeNode1.Name = "Knoten4";
+            treeNode1.Text = "Knoten4";
+            treeNode2.Name = "Knoten5";
+            treeNode2.Text = "Knoten5";
+            treeNode3.Name = "Knoten1";
+            treeNode3.Text = "Knoten1";
+            treeNode4.Name = "Knoten6";
+            treeNode4.Text = "Knoten6";
+            treeNode5.Name = "Knoten7";
+            treeNode5.Text = "Knoten7";
+            treeNode6.Name = "Knoten8";
+            treeNode6.Text = "Knoten8";
+            treeNode7.Name = "Knoten0";
+            treeNode7.Text = "Knoten0";
+            treeNode8.Name = "Knoten2";
+            treeNode8.Text = "Knoten2";
+            treeNode9.Name = "Knoten3";
+            treeNode9.Text = "Knoten3";
+            this.ucTreeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode7,
+            treeNode8,
+            treeNode9});
+            this.ucTreeView1.PathSeparator = "/";
+            this.ucTreeView1.Size = new System.Drawing.Size(365, 336);
+            this.ucTreeView1.Spacing = 4;
+            this.ucTreeView1.TabIndex = 9;
             // 
             // GUIForm
             // 
@@ -550,16 +549,16 @@
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dropbox_image)).EndInit();
             this.control_panel.ResumeLayout(false);
-            this.help_panel.ResumeLayout(false);
-            this.help_panel.PerformLayout();
             this.legend_panel.ResumeLayout(false);
             this.legend_panel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.help_panel.ResumeLayout(false);
+            this.help_panel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
